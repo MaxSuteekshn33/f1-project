@@ -3269,12 +3269,10 @@ const CUSTOM_BUDGET_QUIZZES = [
   { key:'leclerc', label:'Charles Leclerc',        emoji:'🇲🇨' },
 ];
 
-function getCustomBudgetCompleted(){
-  try{ return new Set(JSON.parse(localStorage.getItem('f1_custom_budget')||'[]')); }catch(e){ return new Set(); }
-}
-function saveCustomBudgetCompleted(s){
-  try{ localStorage.setItem('f1_custom_budget', JSON.stringify([...s])); }catch(e){}
-}
+/* In-memory only — resets on every page load so earned points don't carry over */
+const _customBudgetCompleted = new Set();
+function getCustomBudgetCompleted(){ return _customBudgetCompleted; }
+function saveCustomBudgetCompleted(s){ /* no-op — intentionally not persisted */ }
 function getCustomBudgetTotal(){
   return getCustomBudgetCompleted().size * BUDGET_PER_QUIZ;
 }

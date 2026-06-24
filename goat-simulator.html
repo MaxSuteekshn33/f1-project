@@ -4970,8 +4970,8 @@ function simulateEra(k1, k2, trackKey, weatherKey, N=100000){
    is never tainted and toDataURL() always works. */
 async function loadImg(src){
   if(!src) return null;
+  /* ── Method 1: fetch → blob → data URL (works on any HTTP server, including localhost) ── */
   try {
-    /* Fetch as blob → data URL so the canvas is never tainted by file:// or CORS issues */
     const resp = await fetch(src);
     if(!resp.ok) throw new Error('fetch failed');
     const blob = await resp.blob();
@@ -4988,9 +4988,21 @@ async function loadImg(src){
       img.src = dataUrl;
     });
   } catch(e){
-    /* fetch blocked (file:// or network) — return null so canvas stays untainted.
-       The card will render with placeholder text instead of the photo. */
-    return null;
+    /* ── Method 2 (file:// fallback): crossOrigin anonymous.
+       On some browsers/versions this prevents canvas taint for same-dir file:// images. ── */
+    try {
+      return await new Promise((resolve)=>{
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload  = ()=> resolve(img);
+        img.onerror = ()=> resolve(null);   /* failed → null, canvas stays clean */
+        img.src = src;
+        /* timeout safety: if neither fires within 3s, treat as failed */
+        setTimeout(()=> resolve(null), 3000);
+      });
+    } catch(_){
+      return null;
+    }
   }
 }
 
@@ -5056,6 +5068,7 @@ async function buildShareCanvas(r){
     loadImg(winner.car   || ''),
     loadImg(winner.photo || '')
   ]);
+  const hasPhotos = !!(carImg || drvImg);
 
   /* ── 5. Header: brand + vs label ────────────────────────── */
   ctx.fillStyle = 'rgba(45,70,137,0.55)';
@@ -5254,8 +5267,25 @@ async function buildShareCanvas(r){
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=2&data=${encodeURIComponent(siteUrl)}`;
   });
 
-  return cv;
+  return { canvas: cv, hasPhotos };
 }
+
+/* Show the "photos need a server" tip immediately if on file:// */
+(function(){
+  if(location.protocol === 'file:'){
+    const tip = document.getElementById('share-tip');
+    if(tip){
+      const dir = location.pathname.replace(/\/[^/]+$/, '').replace(/%20/g,' ');
+      tip.style.display = 'block';
+      tip.style.background = 'rgba(45,70,137,.07)';
+      tip.style.borderColor = 'rgba(45,70,137,.25)';
+      tip.innerHTML = `📸 <b>Photos in the saved card require a local server.</b><br>
+        Open Terminal and run:<br>
+        <code style="background:rgba(45,70,137,.1);padding:3px 8px;border-radius:4px;font-size:12px">cd "${dir}" && python3 -m http.server 8080</code><br>
+        Then open <b>http://localhost:8080/goat-simulator.html</b> — photos will appear in the card.`;
+    }
+  }
+})();
 
 document.getElementById('share-btn').addEventListener('click', async function(){
   const r = window.__lastResult;
@@ -5266,29 +5296,28 @@ document.getElementById('share-btn').addEventListener('click', async function(){
   btn.textContent = 'Generating card…';
 
   try {
-    const canvas = await buildShareCanvas(r);
-    const slug   = (r.pA>=r.pB ? r.A : r.B).name.split(' ').pop().toLowerCase();
-    const a      = document.createElement('a');
-    a.download   = `goat-sim-${slug}-wins.png`;
-    a.href       = canvas.toDataURL('image/png');
+    const { canvas, hasPhotos } = await buildShareCanvas(r);
+    const slug = (r.pA>=r.pB ? r.A : r.B).name.split(' ').pop().toLowerCase();
+    const a    = document.createElement('a');
+    a.download = `goat-sim-${slug}-wins.png`;
+    a.href     = canvas.toDataURL('image/png');
     a.click();
-    btn.textContent = '✓ Card Saved!';
-    setTimeout(()=>{ btn.disabled=false; btn.textContent='↓  Save Result Card'; }, 2500);
+    if(hasPhotos){
+      btn.textContent = '✓ Card Saved!';
+      const tip = document.getElementById('share-tip');
+      if(tip && location.protocol !== 'file:') tip.style.display = 'none';
+    } else {
+      btn.textContent = '✓ Saved (no photos — see note below)';
+    }
+    setTimeout(()=>{ btn.disabled=false; btn.textContent='↓  Save Result Card'; }, 3000);
   } catch(e){
     console.error('Share card error:', e);
     btn.disabled = false;
     btn.textContent = '↓  Save Result Card';
-    /* Show a friendly tip if it's the file:// security block */
-    const isSecErr = e && (e.name==='SecurityError' || String(e).includes('tainted') || String(e).includes('security'));
     const tip = document.getElementById('share-tip');
     if(tip){
       tip.style.display = 'block';
       tip.textContent = 'Something went wrong generating the card. Try running the simulation again.';
-      if(isSecErr){
-        tip.innerHTML = `<b>To include driver photos in the saved card:</b> open Terminal, run<br>
-          <code style="background:rgba(45,70,137,.1);padding:3px 8px;border-radius:4px;font-size:12px">cd "${location.pathname.replace(/\/[^/]+$/, '').replace(/%20/g,' ')}" && python3 -m http.server 8080</code><br>
-          then open <b>http://localhost:8080/goat-simulator.html</b> in your browser.`;
-      }
     }
   }
 });

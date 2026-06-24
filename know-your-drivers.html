@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Saira:wght@400;500;600;700&family=Saira+Condensed:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --carbon:#E8E8E8;--carbon2:#EFEFEC;--panel:#EFEFEC;--line:#C9D2E6;
-    --ink:#1F2732;--mute:#445171;--speed:#DA494C;--gold:#2D4689;
-    --p1:#2D4689;--p2:#DA494C;--green:#1e7c5a;--shadow:rgba(31,39,50,.14);
+    --carbon:#192038;--carbon2:#1e2a45;--panel:#223050;--line:#2a3d60;
+    --ink:#eef2ff;--mute:#7a8ab0;--speed:#e8303a;--gold:#ffffff;
+    --p1:#3b82f6;--p2:#e8303a;--green:#22c55e;--shadow:rgba(0,0,0,.5);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
@@ -20,39 +20,41 @@
     font-family:'Saira',system-ui,sans-serif;font-weight:500;line-height:1.5;
     min-height:100vh;padding-top:48px;
     background-image:
-      repeating-linear-gradient(0deg,transparent 0 31px,var(--line) 31px 32px),
-      repeating-linear-gradient(90deg,transparent 0 31px,var(--line) 31px 32px);
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(59,130,246,.22) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(59,130,246,.10) 0%, transparent 55%),
+      repeating-linear-gradient(0deg,transparent 0 31px,rgba(255,255,255,.018) 31px 32px),
+      repeating-linear-gradient(90deg,transparent 0 31px,rgba(255,255,255,.018) 31px 32px);
     background-attachment:fixed;position:relative;
   }
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:radial-gradient(ellipse at 50% 30%,rgba(232,232,232,.5),rgba(232,232,232,.88));
+    background:radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,8,.5) 100%);
   }
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
-    opacity:.055;mix-blend-mode:multiply;
+    opacity:.06;mix-blend-mode:screen;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   .wrap{max-width:980px;margin:0 auto;padding:28px 18px 80px;position:relative;z-index:1;}
-  .wrap::after{content:"";position:fixed;inset:14px;border:1px solid rgba(45,70,137,.2);pointer-events:none;z-index:9998;}
+  .wrap::after{content:"";position:fixed;inset:14px;border:1px solid rgba(255,255,255,.06);pointer-events:none;z-index:9998;}
 
   /* ── Nav ── */
   .site-nav{
     position:fixed;top:0;left:0;right:0;z-index:10000;
-    background:rgba(239,239,236,0.96);backdrop-filter:blur(10px);
-    border-bottom:2px solid rgba(45,70,137,.18);box-shadow:0 2px 14px rgba(31,39,50,.1);
+    background:rgba(13,18,32,0.96);backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.07);box-shadow:0 2px 14px rgba(0,0,0,.4);
   }
   .site-nav-inner{max-width:980px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:20px;height:48px;}
   .nav-brand{font-family:'Archivo',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--speed);flex-shrink:0;text-decoration:none;}
-  .nav-divider{width:1px;height:22px;background:rgba(45,70,137,.2);flex-shrink:0;}
+  .nav-divider{width:1px;height:22px;background:rgba(255,255,255,.08);flex-shrink:0;}
   .nav-tabs{display:flex;gap:4px;}
   .nav-tab{
     font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
     color:var(--mute);text-decoration:none;padding:6px 16px;border-radius:4px;
     border:1px solid transparent;transition:all .18s ease;white-space:nowrap;
   }
-  .nav-tab:hover{color:var(--gold);background:rgba(45,70,137,.08);border-color:rgba(45,70,137,.2);}
-  .nav-tab.active{color:var(--gold);background:rgba(45,70,137,.11);border-color:rgba(45,70,137,.28);font-weight:800;}
+  .nav-tab:hover{color:var(--gold);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);}
+  .nav-tab.active{color:var(--gold);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);font-weight:800;}
 
   /* ── Header ── */
   header{text-align:center;margin-bottom:32px;}
@@ -67,11 +69,11 @@
   }
   .era-btn{
     font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
-    padding:7px 18px;border-radius:5px;border:1.5px solid rgba(45,70,137,.25);
+    padding:7px 18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.10);
     background:var(--panel);color:var(--mute);cursor:pointer;transition:all .18s ease;
   }
   .era-btn:hover{border-color:var(--gold);color:var(--gold);}
-  .era-btn.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+  .era-btn.active{background:var(--gold);color:#0d1220;border-color:var(--gold);}
 
   /* ── Driver Grid ── */
   .drivers-grid{
@@ -80,7 +82,7 @@
   @media(max-width:480px){.drivers-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
 
   .driver-card{
-    background:var(--panel);border:1px solid rgba(45,70,137,.18);border-radius:10px;
+    background:var(--panel);border:1px solid rgba(255,255,255,.07);border-radius:10px;
     overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;
     box-shadow:0 4px 16px var(--shadow);
     display:flex;flex-direction:column;
@@ -101,7 +103,7 @@
   .dc-titles{
     display:inline-block;margin-top:6px;
     font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.04em;font-weight:700;
-    background:rgba(45,70,137,.08);color:var(--gold);border:1px solid rgba(45,70,137,.2);
+    background:rgba(255,255,255,.04);color:var(--gold);border:1px solid rgba(255,255,255,.08);
     border-radius:4px;padding:3px 8px;
   }
   .dc-era-tag{
@@ -117,7 +119,7 @@
   }
   .profile-overlay.open{display:flex;}
   .profile-box{
-    background:var(--carbon2);border:1px solid rgba(45,70,137,.22);border-radius:12px;
+    background:var(--carbon2);border:1px solid rgba(255,255,255,.09);border-radius:12px;
     max-width:760px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.65);
     animation:modalIn .3s cubic-bezier(.2,.8,.2,1);margin:auto;
     overflow:hidden;
@@ -166,12 +168,12 @@
   /* Stat pills row */
   .pb-pills{
     display:flex;flex-wrap:wrap;gap:8px;padding:16px 20px;
-    border-bottom:1px solid rgba(45,70,137,.12);
-    background:#fff;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    background:#1c1c24;
   }
   .pb-pill{
     display:flex;align-items:center;gap:6px;
-    border:1px solid rgba(45,70,137,.18);border-radius:20px;
+    border:1px solid rgba(255,255,255,.07);border-radius:20px;
     padding:5px 12px 5px 10px;
     font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
     background:var(--carbon2);
@@ -192,7 +194,7 @@
   .pb-rat-row{display:grid;grid-template-columns:18px 80px 1fr 32px;align-items:center;gap:7px;}
   .pb-rat-icon{font-size:14px;text-align:center;}
   .pb-rat-lbl{font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);}
-  .pb-rat-bar{height:13px;background:#fff;border-radius:5px;overflow:hidden;border:1.5px solid rgba(31,39,50,.18);box-shadow:inset 0 1px 3px rgba(0,0,0,.1);position:relative;}
+  .pb-rat-bar{height:13px;background:#0d0d12;border-radius:5px;overflow:hidden;border:1.5px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 3px rgba(0,0,0,.4);position:relative;}
   .pb-rat-fill{display:block;height:100%;border-radius:4px;}
   .pb-rat-bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent 23px,rgba(0,0,0,.07) 23px,rgba(0,0,0,.07) 24px);pointer-events:none;z-index:2;}
   .fill-blue{background:linear-gradient(90deg,#1a5fd4 0%,#3b8ef8 55%,#6ab4ff 100%);box-shadow:0 0 8px rgba(59,142,248,.55)}
@@ -204,7 +206,7 @@
 
   /* Bio */
   .pb-bio{
-    background:#fff;border:1px solid rgba(45,70,137,.15);border-left:4px solid var(--gold);
+    background:#1c1c24;border:1px solid rgba(255,255,255,.06);border-left:4px solid var(--gold);
     border-radius:4px;padding:16px 18px;font-family:'Saira',sans-serif;font-weight:500;
     font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:20px;
   }
@@ -213,7 +215,7 @@
   .pb-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
   @media(max-width:480px){.pb-facts{grid-template-columns:1fr 1fr;}}
   .pb-fact{
-    background:#fff;border:1px solid rgba(45,70,137,.15);border-radius:6px;
+    background:#1c1c24;border:1px solid rgba(255,255,255,.06);border-radius:6px;
     padding:12px;text-align:center;
   }
   .pb-fact-k{font-family:'Saira',sans-serif;font-weight:600;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);}
@@ -221,7 +223,7 @@
 
   /* Quote */
   .pb-quote{
-    text-align:center;padding:16px 20px;border-top:1px solid rgba(45,70,137,.1);
+    text-align:center;padding:16px 20px;border-top:1px solid rgba(255,255,255,.05);
     font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;
     color:var(--mute);font-style:italic;line-height:1.5;
   }
@@ -252,9 +254,10 @@
     <span class="nav-brand">F1 Project</span>
     <div class="nav-divider"></div>
     <div class="nav-tabs">
-      <a class="nav-tab" href="goat-simulator.html">&#127951; GOAT Simulator</a>
-      <a class="nav-tab" href="f1-guide.html">&#128218; Beginner's Guide</a>
+      <a class="nav-tab" href="goat-simulator.html">🐐 GOAT Simulator</a>
+      <a class="nav-tab" href="f1-guide.html">🏎 Beginner's Guide</a>
       <a class="nav-tab active" href="know-your-drivers.html">&#127939; Know Your Drivers</a>
+      <a class="nav-tab" href="about.html">&#128100; About</a>
     </div>
   </div>
 </nav>
@@ -280,7 +283,7 @@
   <div class="drivers-grid" id="drivers-grid"></div>
 
   <footer>KNOW YOUR DRIVERS · <span class="red">F1 PROJECT</span> · DATA BASED ON HISTORICAL RECORDS<br>
-    <a href="goat-simulator.html" style="color:var(--gold);font-weight:700;letter-spacing:.14em;text-decoration:none;border-bottom:1px dashed rgba(45,70,137,.4);">▸ Head to the GOAT Simulator</a>
+    <a href="goat-simulator.html" style="color:var(--gold);font-weight:700;letter-spacing:.14em;text-decoration:none;border-bottom:1px dashed rgba(59,130,246,.4);">▸ Head to the GOAT Simulator</a>
   </footer>
 </div>
 

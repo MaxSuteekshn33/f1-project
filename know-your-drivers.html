@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Know Your Drivers — F1 Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Saira:wght@400;500;600;700&family=Saira+Condensed:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carbon:#E8E8E8;--carbon2:#EFEFEC;--panel:#EFEFEC;--line:#C9D2E6;
+    --ink:#1F2732;--mute:#445171;--speed:#DA494C;--gold:#2D4689;
+    --p1:#2D4689;--p2:#DA494C;--green:#1e7c5a;--shadow:rgba(31,39,50,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background-color:var(--carbon);color:var(--ink);
+    font-family:'Saira',system-ui,sans-serif;font-weight:500;line-height:1.5;
+    min-height:100vh;padding-top:48px;
+    background-image:
+      repeating-linear-gradient(0deg,transparent 0 31px,var(--line) 31px 32px),
+      repeating-linear-gradient(90deg,transparent 0 31px,var(--line) 31px 32px);
+    background-attachment:fixed;position:relative;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 50% 30%,rgba(232,232,232,.5),rgba(232,232,232,.88));
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+    opacity:.055;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:28px 18px 80px;position:relative;z-index:1;}
+  .wrap::after{content:"";position:fixed;inset:14px;border:1px solid rgba(45,70,137,.2);pointer-events:none;z-index:9998;}
+
+  /* ── Nav ── */
+  .site-nav{
+    position:fixed;top:0;left:0;right:0;z-index:10000;
+    background:rgba(239,239,236,0.96);backdrop-filter:blur(10px);
+    border-bottom:2px solid rgba(45,70,137,.18);box-shadow:0 2px 14px rgba(31,39,50,.1);
+  }
+  .site-nav-inner{max-width:980px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:20px;height:48px;}
+  .nav-brand{font-family:'Archivo',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--speed);flex-shrink:0;text-decoration:none;}
+  .nav-divider{width:1px;height:22px;background:rgba(45,70,137,.2);flex-shrink:0;}
+  .nav-tabs{display:flex;gap:4px;}
+  .nav-tab{
+    font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--mute);text-decoration:none;padding:6px 16px;border-radius:4px;
+    border:1px solid transparent;transition:all .18s ease;white-space:nowrap;
+  }
+  .nav-tab:hover{color:var(--gold);background:rgba(45,70,137,.08);border-color:rgba(45,70,137,.2);}
+  .nav-tab.active{color:var(--gold);background:rgba(45,70,137,.11);border-color:rgba(45,70,137,.28);font-weight:800;}
+
+  /* ── Header ── */
+  header{text-align:center;margin-bottom:32px;}
+  .kicker{font-family:'Saira',sans-serif;font-weight:600;font-size:11px;letter-spacing:.32em;color:var(--mute);text-transform:uppercase;margin-bottom:10px;}
+  h1{font-family:'Archivo';font-weight:900;font-size:clamp(36px,8vw,68px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--gold);}
+  h1 .red{color:var(--speed);}
+  .sub{color:var(--mute);font-size:14px;margin-top:10px;font-family:'Saira';font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+
+  /* ── Era Filter ── */
+  .era-filter{
+    display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;justify-content:center;
+  }
+  .era-btn{
+    font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    padding:7px 18px;border-radius:5px;border:1.5px solid rgba(45,70,137,.25);
+    background:var(--panel);color:var(--mute);cursor:pointer;transition:all .18s ease;
+  }
+  .era-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .era-btn.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+
+  /* ── Driver Grid ── */
+  .drivers-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;
+  }
+  @media(max-width:480px){.drivers-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
+
+  .driver-card{
+    background:var(--panel);border:1px solid rgba(45,70,137,.18);border-radius:10px;
+    overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;
+    box-shadow:0 4px 16px var(--shadow);
+    display:flex;flex-direction:column;
+  }
+  .driver-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(31,39,50,.16);}
+  .dc-photo{
+    height:140px;overflow:hidden;position:relative;background:#0a0c12;
+  }
+  .dc-photo img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+  .dc-photo-placeholder{
+    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo';font-weight:900;font-size:36px;color:rgba(255,255,255,.2);
+  }
+  .dc-color-bar{height:4px;flex-shrink:0;}
+  .dc-info{padding:12px 12px 10px;flex:1;display:flex;flex-direction:column;gap:3px;}
+  .dc-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink);line-height:1.15;}
+  .dc-team{font-family:'Saira',sans-serif;font-weight:600;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);}
+  .dc-titles{
+    display:inline-block;margin-top:6px;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.04em;font-weight:700;
+    background:rgba(45,70,137,.08);color:var(--gold);border:1px solid rgba(45,70,137,.2);
+    border-radius:4px;padding:3px 8px;
+  }
+  .dc-era-tag{
+    font-family:'Saira',sans-serif;font-weight:700;font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mute);margin-top:auto;padding-top:6px;
+  }
+
+  /* ── Driver Profile Modal ── */
+  .profile-overlay{
+    display:none;position:fixed;inset:0;z-index:5000;
+    background:rgba(10,12,18,.92);backdrop-filter:blur(10px);
+    align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;
+  }
+  .profile-overlay.open{display:flex;}
+  .profile-box{
+    background:var(--carbon2);border:1px solid rgba(45,70,137,.22);border-radius:12px;
+    max-width:760px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.65);
+    animation:modalIn .3s cubic-bezier(.2,.8,.2,1);margin:auto;
+    overflow:hidden;
+  }
+  @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+
+  /* Hero banner */
+  .pb-hero{
+    position:relative;height:220px;overflow:hidden;background:#0a0c12;
+    display:flex;
+  }
+  .pb-hero-driver{
+    width:50%;height:100%;object-fit:cover;object-position:center top;display:block;
+  }
+  .pb-hero-car{
+    width:50%;height:100%;object-fit:contain;object-position:center;display:block;
+    background:#111;
+  }
+  .pb-hero::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(to top,rgba(10,12,18,.7) 0%,transparent 50%);
+    pointer-events:none;
+  }
+  .pb-hero-overlay{
+    position:absolute;bottom:16px;left:20px;z-index:2;
+  }
+  .pb-country{
+    font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.24em;
+    text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:3px;
+  }
+  .pb-name{
+    font-family:'Archivo',sans-serif;font-weight:900;
+    font-size:clamp(22px,4vw,34px);text-transform:uppercase;letter-spacing:-.01em;
+    color:#fff;line-height:1;
+  }
+
+  .pb-close{
+    position:absolute;top:14px;right:14px;z-index:10;
+    width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);
+    border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .2s ease;
+  }
+  .pb-close:hover{background:var(--speed);border-color:var(--speed);}
+
+  /* Stat pills row */
+  .pb-pills{
+    display:flex;flex-wrap:wrap;gap:8px;padding:16px 20px;
+    border-bottom:1px solid rgba(45,70,137,.12);
+    background:#fff;
+  }
+  .pb-pill{
+    display:flex;align-items:center;gap:6px;
+    border:1px solid rgba(45,70,137,.18);border-radius:20px;
+    padding:5px 12px 5px 10px;
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    background:var(--carbon2);
+  }
+  .pb-pill-icon{font-size:14px;}
+  .pb-pill-val{color:var(--gold);}
+  .pb-pill-lbl{font-size:9px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;font-family:'Saira',sans-serif;font-weight:700;}
+
+  /* Body */
+  .pb-body{padding:20px;}
+  .pb-section-title{
+    font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:10px;
+  }
+
+  /* Rating bars */
+  .pb-ratings{display:grid;gap:8px;margin-bottom:20px;}
+  .pb-rat-row{display:grid;grid-template-columns:18px 80px 1fr 32px;align-items:center;gap:7px;}
+  .pb-rat-icon{font-size:14px;text-align:center;}
+  .pb-rat-lbl{font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);}
+  .pb-rat-bar{height:13px;background:#fff;border-radius:5px;overflow:hidden;border:1.5px solid rgba(31,39,50,.18);box-shadow:inset 0 1px 3px rgba(0,0,0,.1);position:relative;}
+  .pb-rat-fill{display:block;height:100%;border-radius:4px;}
+  .pb-rat-bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent 23px,rgba(0,0,0,.07) 23px,rgba(0,0,0,.07) 24px);pointer-events:none;z-index:2;}
+  .fill-blue{background:linear-gradient(90deg,#1a5fd4 0%,#3b8ef8 55%,#6ab4ff 100%);box-shadow:0 0 8px rgba(59,142,248,.55)}
+  .fill-green{background:linear-gradient(90deg,#0a8c3a 0%,#1ec95a 55%,#5de88a 100%);box-shadow:0 0 8px rgba(30,201,90,.5)}
+  .fill-yellow{background:linear-gradient(90deg,#c47000 0%,#f0a000 55%,#fdd05a 100%);box-shadow:0 0 8px rgba(240,160,0,.5)}
+  .fill-red{background:linear-gradient(90deg,#b81518 0%,#e83030 55%,#ff7070 100%);box-shadow:0 0 8px rgba(232,48,48,.5)}
+  .pb-rat-val{font-family:'Space Mono',monospace;text-align:right;font-size:11px;font-weight:700;}
+  .val-blue{color:#1a5fd4}.val-green{color:#0a8c3a}.val-yellow{color:#c47000}.val-red{color:#c81518}
+
+  /* Bio */
+  .pb-bio{
+    background:#fff;border:1px solid rgba(45,70,137,.15);border-left:4px solid var(--gold);
+    border-radius:4px;padding:16px 18px;font-family:'Saira',sans-serif;font-weight:500;
+    font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:20px;
+  }
+
+  /* Key facts grid */
+  .pb-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+  @media(max-width:480px){.pb-facts{grid-template-columns:1fr 1fr;}}
+  .pb-fact{
+    background:#fff;border:1px solid rgba(45,70,137,.15);border-radius:6px;
+    padding:12px;text-align:center;
+  }
+  .pb-fact-k{font-family:'Saira',sans-serif;font-weight:600;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);}
+  .pb-fact-v{font-family:'Archivo',sans-serif;font-weight:800;font-size:20px;margin-top:3px;color:var(--ink);}
+
+  /* Quote */
+  .pb-quote{
+    text-align:center;padding:16px 20px;border-top:1px solid rgba(45,70,137,.1);
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;
+    color:var(--mute);font-style:italic;line-height:1.5;
+  }
+  .pb-quote::before{content:'"';font-size:28px;color:var(--gold);line-height:.6;display:block;margin-bottom:6px;}
+
+  /* CTA to GOAT simulator */
+  .pb-cta{
+    display:block;margin:16px 20px 20px;padding:14px 20px;
+    background:var(--speed);color:#fff;border-radius:8px;
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;
+    letter-spacing:.04em;text-transform:uppercase;text-decoration:none;text-align:center;
+    transition:transform .1s ease,box-shadow .2s ease;
+    box-shadow:0 6px 20px rgba(218,73,76,.3);
+  }
+  .pb-cta:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(218,73,76,.45);}
+
+  /* Hidden card (filter) */
+  .driver-card.hidden{display:none;}
+
+  footer{text-align:center;margin-top:50px;font-family:'Saira',sans-serif;font-weight:600;font-size:10px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;}
+  footer .red{color:var(--speed);font-weight:700;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <span class="nav-brand">F1 Project</span>
+    <div class="nav-divider"></div>
+    <div class="nav-tabs">
+      <a class="nav-tab" href="goat-simulator.html">&#127951; GOAT Simulator</a>
+      <a class="nav-tab" href="f1-guide.html">&#128218; Beginner's Guide</a>
+      <a class="nav-tab active" href="know-your-drivers.html">&#127939; Know Your Drivers</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">— From Fangio to Verstappen · The Complete Guide —</div>
+    <h1>Know Your <span class="red">Drivers</span></h1>
+    <div class="sub">Tap any driver to explore their stats, career &amp; legacy</div>
+  </header>
+
+  <div class="era-filter" id="era-filter">
+    <button class="era-btn active" data-era="all">All Eras</button>
+    <button class="era-btn" data-era="1950s">1950s Legends</button>
+    <button class="era-btn" data-era="1960s">1960s Heroes</button>
+    <button class="era-btn" data-era="1970s">1970s Icons</button>
+    <button class="era-btn" data-era="1980s">1980s Warriors</button>
+    <button class="era-btn" data-era="1990s">1990s Stars</button>
+    <button class="era-btn" data-era="2000s">2000s Champions</button>
+    <button class="era-btn" data-era="modern">Modern Era</button>
+  </div>
+
+  <div class="drivers-grid" id="drivers-grid"></div>
+
+  <footer>KNOW YOUR DRIVERS · <span class="red">F1 PROJECT</span> · DATA BASED ON HISTORICAL RECORDS<br>
+    <a href="goat-simulator.html" style="color:var(--gold);font-weight:700;letter-spacing:.14em;text-decoration:none;border-bottom:1px dashed rgba(45,70,137,.4);">▸ Head to the GOAT Simulator</a>
+  </footer>
+</div>
+
+<!-- ══ PROFILE MODAL ══ -->
+<div class="profile-overlay" id="profileOverlay">
+  <div class="profile-box" id="profileBox">
+    <button class="pb-close" id="pb-close">✕</button>
+    <div class="pb-hero">
+      <img class="pb-hero-driver" id="pb-hero-driver" src="" alt="">
+      <img class="pb-hero-car"    id="pb-hero-car"    src="" alt="">
+      <div class="pb-hero-overlay">
+        <div class="pb-country" id="pb-country"></div>
+        <div class="pb-name"    id="pb-name"></div>
+      </div>
+    </div>
+    <div class="pb-pills" id="pb-pills"></div>
+    <div class="pb-body">
+      <div class="pb-section-title">Performance Ratings</div>
+      <div class="pb-ratings" id="pb-ratings"></div>
+      <div class="pb-section-title">Career Story</div>
+      <div class="pb-bio" id="pb-bio"></div>
+      <div class="pb-section-title">Key Stats</div>
+      <div class="pb-facts" id="pb-facts"></div>
+    </div>
+    <div class="pb-quote" id="pb-quote"></div>
+    <a class="pb-cta" href="goat-simulator.html" id="pb-cta">▶ Compare in the GOAT Simulator</a>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   DRIVER DATABASE — Know Your Drivers
+   ══════════════════════════════════════════════════════════════════ */
+const KYD_DRIVERS = [
+  {
+    key:'fangio', name:'Juan Manuel Fangio', country:'Argentina', era:'1950s',
+    team:'Alfa Romeo · Maserati · Mercedes · Ferrari', peak:'1951–1957',
+    photo:'fangio.jpeg', car:'Fangio 1957.avif', teamColor:'#8b3a1c',
+    pace:94, quali:94, racecraft:95, wet:90, tyres:88, consistency:95,
+    titles:5, wins:24, poles:29,
+    quote:'You must always strive to be the best, but never believe that you are.',
+    bio:'The first undisputed GOAT of Formula 1. Fangio won five world championships across four different constructors in a career that spanned the most dangerous era of the sport. His 1957 German Grand Prix comeback — overcoming a 50-second deficit after a pit stop to overtake both Ferraris — is still considered the greatest drive in F1 history. He retired at 47, having proven that intelligence and precision could beat raw youth.',
+    facts:[{k:'Championships',v:'5'},{k:'Race Wins',v:'24'},{k:'Pole Positions',v:'29'},{k:'Win Rate',v:'47%'},{k:'Peak Year',v:'1957'},{k:'Teams',v:'4 diff.'}],
+  },
+  {
+    key:'moss', name:'Stirling Moss', country:'United Kingdom', era:'1950s',
+    team:'Maserati · Vanwall · Lotus', peak:'1955–1961',
+    photo:'moss.jpg', car:'Moss 1958.jpg', teamColor:'#808080',
+    pace:95, quali:93, racecraft:95, wet:93, tyres:86, consistency:84,
+    titles:0, wins:16, poles:16,
+    quote:'To achieve anything in this game, you must be prepared to dabble on the boundary of disaster.',
+    bio:'The greatest driver never to win a world championship. Moss was the complete package — fast, brave, and a genuine sportsman. He famously gave evidence that saved rival Mike Hawthorn from disqualification in 1958, directly costing himself the title. At the 1961 Monaco GP, he held off the far faster Ferraris in a slower Lotus for the entire race — one of the most brilliant displays of racecraft in F1 history.',
+    facts:[{k:'Championships',v:'0'},{k:'Race Wins',v:'16'},{k:'Pole Positions',v:'16'},{k:'Runner-up',v:'4×'},{k:'Peak Year',v:'1958'},{k:'Teams',v:'Multiple'}],
+  },
+  {
+    key:'clark', name:'Jim Clark', country:'Scotland', era:'1960s',
+    team:'Lotus', peak:'1963–1965',
+    photo:'clark.jpeg', car:'Clark 1965.jpg', teamColor:'#1a7055',
+    pace:98, quali:97, racecraft:94, wet:92, tyres:89, consistency:85,
+    titles:2, wins:25, poles:33,
+    quote:'Drive through the corner as though there isn\'t one.',
+    bio:'Jim Clark had a gift that set him apart from everyone else — he made driving an F1 car look effortless. Teammates and rivals described watching him as watching something from another world. He won the 1965 World Championship AND the Indianapolis 500 in the same year, competing in both championships simultaneously. His partnership with Colin Chapman at Lotus produced some of the most dominant performances in the sport\'s history.',
+    facts:[{k:'Championships',v:'2'},{k:'Race Wins',v:'25'},{k:'Pole Positions',v:'33'},{k:'Indy 500',v:'1965 Win'},{k:'Peak Year',v:'1965'},{k:'Team',v:'Lotus'}],
+  },
+  {
+    key:'stewart', name:'Jackie Stewart', country:'Scotland', era:'1970s',
+    team:'Tyrrell', peak:'1969–1973',
+    photo:'stewart.jpeg', car:'Stewart 1971.jpg', teamColor:'#003882',
+    pace:93, quali:92, racecraft:93, wet:96, tyres:90, consistency:94,
+    titles:3, wins:27, poles:17,
+    quote:'It takes more than just being quick.',
+    bio:'Jackie Stewart revolutionised Formula 1 in two ways — through his driving and through his relentless campaign for driver safety. He won three world championships and was the first driver to truly systematise how to go racing: managing pace, energy, and tyres rather than simply driving flat out. His 1968 German GP victory at the Nürburgring in fog and rain — by over four minutes — remains one of the most astonishing performances in motorsport history.',
+    facts:[{k:'Championships',v:'3'},{k:'Race Wins',v:'27'},{k:'Pole Positions',v:'17'},{k:'Win Rate',v:'27.3%'},{k:'Peak Year',v:'1973'},{k:'Retired',v:'At peak'}],
+  },
+  {
+    key:'lauda', name:'Niki Lauda', country:'Austria', era:'1970s',
+    team:'Ferrari · McLaren', peak:'1975–1984',
+    photo:'lauda.jpg', car:'Lauda 1977.avif', teamColor:'#cc0000',
+    pace:93, quali:91, racecraft:94, wet:85, tyres:95, consistency:96,
+    titles:3, wins:25, poles:24,
+    quote:'I am not a superstar. I am just a racing driver.',
+    bio:'Niki Lauda\'s story is one of the most extraordinary in sport. After nearly dying in the 1976 Nürburgring fire — suffering severe burns and inhaling toxic gases — he returned to racing just 42 days later and nearly retained his world title, losing it on the final lap of the final race. He then won a third championship in 1984, beating teammate Alain Prost by just half a point. Beyond the speed, he was a technical genius who helped build championship-winning cars.',
+    facts:[{k:'Championships',v:'3'},{k:'Race Wins',v:'25'},{k:'Pole Positions',v:'24'},{k:'1976 Crash',v:'42 days out'},{k:'Peak Year',v:'1984'},{k:'Teams',v:'Ferrari · McLaren'}],
+  },
+  {
+    key:'prost', name:'Alain Prost', country:'France', era:'1980s',
+    team:'McLaren · Ferrari · Williams', peak:'1985–1993',
+    photo:'prost.jpeg', car:'Prost 1989.jpg', teamColor:'#c8102e',
+    pace:95, quali:93, racecraft:96, wet:88, tyres:97, consistency:98,
+    titles:4, wins:51, poles:33,
+    quote:'To finish first, first you have to finish.',
+    bio:'Nicknamed "The Professor", Alain Prost won four world championships across four different seasons with meticulous race management. He never chased poles he didn\'t need, saved tyres longer than anyone, and calculated fuel loads to the gram. His duels with Ayrton Senna — as teammates at McLaren and rivals across the paddock — defined an entire era of F1 and remains the sport\'s most celebrated rivalry.',
+    facts:[{k:'Championships',v:'4'},{k:'Race Wins',v:'51'},{k:'Pole Positions',v:'33'},{k:'Fastest Laps',v:'41'},{k:'Peak Year',v:'1989'},{k:'Teams',v:'3 major'}],
+  },
+  {
+    key:'senna', name:'Ayrton Senna', country:'Brazil', era:'1980s',
+    team:'McLaren · Williams', peak:'1988–1991',
+    photo:'senna.jpg', car:'Senna 1991.webp', teamColor:'#c8102e',
+    pace:99, quali:100, racecraft:95, wet:100, tyres:88, consistency:90,
+    titles:3, wins:41, poles:65,
+    quote:'If you no longer go for a gap that exists, you\'re no longer a racing driver.',
+    bio:'Ayrton Senna was more than a racing driver — he was a force of nature. His 65 pole positions remain one of F1\'s most extraordinary records. In qualifying, he entered a state he described as a trance, finding speed that baffled engineers and teammates alike. In the wet — at Estoril 1985, Monaco 1984, Donington 1993 — he was untouchable. He died at Imola in 1994 while leading, and the sport was never quite the same.',
+    facts:[{k:'Championships',v:'3'},{k:'Race Wins',v:'41'},{k:'Pole Positions',v:'65'},{k:'Fastest Laps',v:'19'},{k:'Peak Year',v:'1991'},{k:'Monaco Wins',v:'6'}],
+  },
+  {
+    key:'mansell', name:'Nigel Mansell', country:'United Kingdom', era:'1980s',
+    team:'Williams · Ferrari', peak:'1986–1992',
+    photo:'mansell.jpeg', car:'Mansell 1992.avif', teamColor:'#003882',
+    pace:96, quali:95, racecraft:91, wet:93, tyres:89, consistency:88,
+    titles:1, wins:31, poles:32,
+    quote:'Anything is possible if you have enough nerve.',
+    bio:'Nigel Mansell was the most theatrical driver of his era — all raw emotion, extraordinary pace, and occasional heartbreak. He lost the 1986 championship on the final corner of the final race when a tyre blew at 200mph. Six years later, in 1992, he dominated every session, winning the first five races and wrapping up the championship with five rounds to spare in the Williams FW14B. He then immediately left to win the CART IndyCar championship in America.',
+    facts:[{k:'Championships',v:'1'},{k:'Race Wins',v:'31'},{k:'Pole Positions',v:'32'},{k:'Peak Year',v:'1992'},{k:'First 5 Races',v:'All wins'},{k:'CART Title',v:'1993'}],
+  },
+  {
+    key:'schumacher', name:'Michael Schumacher', country:'Germany', era:'2000s',
+    team:'Ferrari', peak:'2002–2004',
+    photo:'schumacher.jpg', car:'Schumacher 2004.jpg', teamColor:'#cc0000',
+    pace:98, quali:97, racecraft:97, wet:97, tyres:96, consistency:97,
+    titles:7, wins:91, poles:68,
+    quote:'Records are one thing, but dreams are more important.',
+    bio:'Michael Schumacher rewrote the record books. Seven world championships, 91 victories, 68 pole positions — numbers that seemed unreachable until Lewis Hamilton came along. But it was his 2004 season that defines the word dominance: 13 wins from 18 races, lapping the field at circuits where no one should lap the field. He was also the driver who turned F1 preparation and physical fitness into a full-time profession, raising the bar for every driver who followed.',
+    facts:[{k:'Championships',v:'7'},{k:'Race Wins',v:'91'},{k:'Pole Positions',v:'68'},{k:'Fastest Laps',v:'77'},{k:'Peak Year',v:'2004'},{k:'Streak',v:'9 wins in a row'}],
+  },
+  {
+    key:'raikkonen', name:'Kimi Räikkönen', country:'Finland', era:'2000s',
+    team:'McLaren · Ferrari · Lotus', peak:'2005–2007',
+    photo:'raikkonen.jpg', car:'Raikkonen 2007.jpg', teamColor:'#cc0000',
+    pace:96, quali:94, racecraft:92, wet:95, tyres:90, consistency:87,
+    titles:1, wins:21, poles:18,
+    quote:'Leave me alone, I know what I\'m doing.',
+    bio:'Kimi Räikkönen is perhaps the most naturally talented driver of his generation — and the least interested in talking about it. He won the 2007 title on the final lap of the final race, coming from 17 points behind Lewis Hamilton with two races to go. His ice-cool temperament, described by rivals as robotic in its calm, made him exceptional in difficult conditions. He is also the only driver to win a world championship in his only season with Ferrari in the hybrid era.',
+    facts:[{k:'Championships',v:'1'},{k:'Race Wins',v:'21'},{k:'Pole Positions',v:'18'},{k:'2007 Title',v:'Final lap drama'},{k:'Peak Year',v:'2007'},{k:'Nickname',v:'The Iceman'}],
+  },
+  {
+    key:'alonso', name:'Fernando Alonso', country:'Spain', era:'2000s',
+    team:'Renault · McLaren · Ferrari · Alpine', peak:'2005–2012',
+    photo:'alonso.jpg', car:'Alonso 2012.jpg', teamColor:'#e4002b',
+    pace:96, quali:94, racecraft:98, wet:94, tyres:96, consistency:95,
+    titles:2, wins:32, poles:22,
+    quote:'All the time you have to leave the space!',
+    bio:'Fernando Alonso may be the greatest wheel-to-wheel racer in the modern era. His 2005 title as a 24-year-old ended Schumacher\'s five-year reign, and his 2012 Ferrari season — leading the championship for most of the year in a car that was arguably the fourth-fastest on the grid — is widely considered one of the greatest performances ever seen. At 40-plus, he was still extracting results from the Aston Martin that left rivals speechless.',
+    facts:[{k:'Championships',v:'2'},{k:'Race Wins',v:'32'},{k:'Pole Positions',v:'22'},{k:'Fastest Laps',v:'23'},{k:'Peak Year',v:'2012'},{k:'Le Mans',v:'2018 & 2019 wins'}],
+  },
+  {
+    key:'hamilton', name:'Lewis Hamilton', country:'United Kingdom', era:'modern',
+    team:'McLaren · Mercedes', peak:'2017–2020',
+    photo:'hamilton.jpg', car:'Hamilton 2020.avif', teamColor:'#848484',
+    pace:97, quali:98, racecraft:96, wet:96, tyres:95, consistency:97,
+    titles:7, wins:103, poles:104,
+    quote:'Still I Rise.',
+    bio:'Lewis Hamilton rewrote every record Schumacher held. 104 pole positions — more than any driver in history. 103 victories. Seven world championships, equalling the all-time record. But statistics don\'t capture what made him special: the ability to produce a perfect lap when everything was on the line, drive through the field in the wet with an authority that recalled Senna, and maintain elite-level performance across three different generations of regulation changes. The debate about whether he is the greatest of all time will never end — which is exactly how it should be.',
+    facts:[{k:'Championships',v:'7'},{k:'Race Wins',v:'103'},{k:'Pole Positions',v:'104'},{k:'Fastest Laps',v:'67'},{k:'Peak Year',v:'2020'},{k:'Win Rate',v:'35%'}],
+  },
+  {
+    key:'vettel', name:'Sebastian Vettel', country:'Germany', era:'2000s',
+    team:'Red Bull · Ferrari', peak:'2010–2013',
+    photo:'vettel.jpg', car:'Vettel 2013.webp', teamColor:'#1e4796',
+    pace:96, quali:97, racecraft:90, wet:90, tyres:91, consistency:93,
+    titles:4, wins:53, poles:57,
+    quote:'Everyone is a Ferrari fan.',
+    bio:'Sebastian Vettel won four consecutive world championships between 2010 and 2013, and his 2013 season was a display of ruthless dominance — nine consecutive race victories to end the year, the longest winning streak in F1 history. In the right machinery, his qualifying pace was among the best the sport has ever seen. The 2010 title, won on the final lap of the final race in Abu Dhabi, remains one of the most dramatic championship finishes ever.',
+    facts:[{k:'Championships',v:'4'},{k:'Race Wins',v:'53'},{k:'Pole Positions',v:'57'},{k:'Fastest Laps',v:'38'},{k:'Peak Year',v:'2013'},{k:'Win Streak',v:'9 races'}],
+  },
+  {
+    key:'button', name:'Jenson Button', country:'United Kingdom', era:'2000s',
+    team:'Brawn GP · McLaren', peak:'2009',
+    photo:'button.jpg', car:'Button 2009.avif', teamColor:'#a8d400',
+    pace:91, quali:90, racecraft:94, wet:97, tyres:98, consistency:93,
+    titles:1, wins:15, poles:8,
+    quote:'You don\'t learn by winning. You learn by losing.',
+    bio:'Jenson Button\'s 2009 season was one of the most improbable championship victories in F1 history. His team — Brawn GP — had nearly folded when Honda withdrew from F1 at the end of 2008. Ross Brawn bought the team for a nominal sum, ran the 2009 car they\'d already built, and won the constructors\' AND drivers\' championships at the first attempt. Button won six of the first seven races and showed the world that smooth tyre management could be as powerful as raw pace.',
+    facts:[{k:'Championships',v:'1'},{k:'Race Wins',v:'15'},{k:'Pole Positions',v:'8'},{k:'First 7 Races',v:'6 wins'},{k:'Peak Year',v:'2009'},{k:'Team',v:'Brawn GP'}],
+  },
+  {
+    key:'hakkinen', name:'Mika Häkkinen', country:'Finland', era:'1990s',
+    team:'McLaren', peak:'1998–1999',
+    photo:'hakkinen.jpg', car:'Hakkinen 1998.avif', teamColor:'#5a5a5a',
+    pace:97, quali:96, racecraft:93, wet:91, tyres:92, consistency:91,
+    titles:2, wins:20, poles:26,
+    quote:'You cannot overtake fifteen cars in sunny weather... but you can when it\'s raining.',
+    bio:'Mika Häkkinen was the driver that Ayrton Senna genuinely feared — he told Ron Dennis so. Back-to-back world champion in 1998 and 1999, he outpaced teammate David Coulthard by enormous margins in identical machinery. His Monza 1999 overtake on Michael Schumacher — a perfectly timed dummy at the chicane — is one of the iconic overtaking moves in F1 history. He retired at his peak in 2001, and the sport was the poorer for it.',
+    facts:[{k:'Championships',v:'2'},{k:'Race Wins',v:'20'},{k:'Pole Positions',v:'26'},{k:'Peak Year',v:'1998'},{k:'Team',v:'McLaren only'},{k:'Senna feared',v:'Confirmed'}],
+  },
+  {
+    key:'verstappen', name:'Max Verstappen', country:'Netherlands', era:'modern',
+    team:'Red Bull', peak:'2021–2023',
+    photo:'verstappen.jpeg', car:'Verstappen 2023.avif', teamColor:'#1e4796',
+    pace:99, quali:97, racecraft:99, wet:97, tyres:92, consistency:96,
+    titles:4, wins:62, poles:40,
+    quote:'Simply lovely.',
+    bio:'Max Verstappen arrived in F1 at 17, made his debut with Toro Rosso, and scored a victory in his very first race for Red Bull in Spain 2016. By 2023, he had won 19 races in a single season — the most victories in a single F1 season ever. His wheel-to-wheel racing is the best of his generation: aggressive, precise, and utterly fearless. His four consecutive championships from 2021–2024 place him in the conversation for the greatest of all time, at an age when most careers are still developing.',
+    facts:[{k:'Championships',v:'4'},{k:'Race Wins',v:'62+'},{k:'Pole Positions',v:'40+'},{k:'2023 Season',v:'19 wins'},{k:'Peak Year',v:'2023'},{k:'Debut age',v:'17'}],
+  },
+  {
+    key:'leclerc', name:'Charles Leclerc', country:'Monaco', era:'modern',
+    team:'Ferrari', peak:'2019–2024',
+    photo:'leclrec.jpg', car:'Leclrec 2024.jpeg', teamColor:'#cc0000',
+    pace:97, quali:98, racecraft:91, wet:95, tyres:89, consistency:88,
+    titles:0, wins:8, poles:24,
+    quote:'Just an inchident.',
+    bio:'Charles Leclerc announced himself to the world with back-to-back victories at Spa and Monza in 2019 — his first full season at Ferrari. Since then, his qualifying pace has been consistently rated among the two or three best on the grid. His 2022 Monaco pole position was described by Ferrari engineers as close to a perfect lap. He finally won the Monaco Grand Prix in 2024, ending a personal jinx at his home race. Still only in his mid-twenties, his best years are ahead of him.',
+    facts:[{k:'Championships',v:'0'},{k:'Race Wins',v:'8'},{k:'Pole Positions',v:'24+'},{k:'Monaco Win',v:'2024'},{k:'Debut team',v:'Sauber'},{k:'Ferrari since',v:'2019'}],
+  },
+  {
+    key:'villeneuve', name:'Gilles Villeneuve', country:'Canada', era:'1970s',
+    team:'Ferrari', peak:'1979–1981',
+    photo:'villeneuve.jpg', car:'Vileneuve 1979.jpg', teamColor:'#cc0000',
+    pace:97, quali:93, racecraft:96, wet:94, tyres:84, consistency:82,
+    titles:0, wins:6, poles:2,
+    quote:'If you\'re going to do something, do it properly.',
+    bio:'Gilles Villeneuve never won a world championship, but his legacy towers over many who did. At the 1981 Spanish Grand Prix, he held five faster cars behind him for the entire race on tyres that were completely destroyed — one of the most extraordinary displays of racecraft ever seen. Senna called him his hero. At the 1979 Canadian GP, he drove three-quarters of a lap on three wheels. He died in qualifying at Zandvoort in 1982, robbing F1 of one of its most beloved figures.',
+    facts:[{k:'Championships',v:'0'},{k:'Race Wins',v:'6'},{k:'Pole Positions',v:'2'},{k:'Peak Year',v:'1979'},{k:'Hero of',v:'Senna'},{k:'Career end',v:'1982'}],
+  },
+  {
+    key:'fangio_era', name:'Alberto Ascari', country:'Italy', era:'1950s',
+    team:'Ferrari', peak:'1952–1953',
+    photo:'ascari.jpeg', car:'ascari 1952.webp', teamColor:'#cc0000',
+    pace:92, quali:90, racecraft:92, wet:88, tyres:85, consistency:90,
+    titles:2, wins:13, poles:14,
+    quote:'Racing is life. Everything before and after is just waiting.',
+    bio:'Alberto Ascari won back-to-back world championships in 1952 and 1953 at a time when Ferrari was the dominant force in Formula 1. He was the first Italian world champion and the first to win consecutive titles. His win rate of 40% across his championship years was exceptional for the era. He died during a private test at Monza in 1955, just four days after surviving a crash into Monaco harbour during the Grand Prix.',
+    facts:[{k:'Championships',v:'2'},{k:'Race Wins',v:'13'},{k:'Pole Positions',v:'14'},{k:'Win Rate',v:'40%'},{k:'Peak Year',v:'1952'},{k:'Team',v:'Ferrari'}],
+  },
+];
+
+/* ══════════════════════════════════════════════════════════════════
+   RENDER DRIVER CARDS
+   ══════════════════════════════════════════════════════════════════ */
+function statColor(v){
+  if(v>=97) return ['fill-blue','val-blue'];
+  if(v>=95) return ['fill-green','val-green'];
+  if(v>=91) return ['fill-yellow','val-yellow'];
+  return ['fill-red','val-red'];
+}
+
+const grid = document.getElementById('drivers-grid');
+
+KYD_DRIVERS.forEach(drv=>{
+  const card = document.createElement('div');
+  card.className = 'driver-card';
+  card.dataset.era = drv.era;
+
+  let photoHtml = drv.photo
+    ? `<img src="${drv.photo}" alt="${drv.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  photoHtml += `<div class="dc-photo-placeholder" style="${drv.photo?'display:none':''}">${drv.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>`;
+
+  card.innerHTML = `
+    <div class="dc-photo">${photoHtml}</div>
+    <div class="dc-color-bar" style="background:${drv.teamColor}"></div>
+    <div class="dc-info">
+      <div class="dc-name">${drv.name.split(' ').pop()}<br><span style="font-size:11px;color:var(--mute);font-family:'Saira',sans-serif;font-weight:600;letter-spacing:0">${drv.name.split(' ').slice(0,-1).join(' ')}</span></div>
+      <div class="dc-team">${drv.team.split('·')[0].trim()}</div>
+      <div class="dc-titles">${drv.titles > 0 ? '🏆 ' + drv.titles + ' Championship' + (drv.titles>1?'s':'') : '🎯 ' + drv.wins + ' Race Wins'}</div>
+      <div class="dc-era-tag">${drv.era.toUpperCase()} · ${drv.peak}</div>
+    </div>
+  `;
+
+  card.addEventListener('click', ()=> openProfile(drv));
+  grid.appendChild(card);
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   ERA FILTER
+   ══════════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.era-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.era-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const era = btn.dataset.era;
+    document.querySelectorAll('.driver-card').forEach(card=>{
+      const match = era==='all' || card.dataset.era===era;
+      card.classList.toggle('hidden', !match);
+    });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   PROFILE MODAL
+   ══════════════════════════════════════════════════════════════════ */
+function openProfile(drv){
+  /* Hero */
+  document.getElementById('pb-country').textContent = drv.country;
+  document.getElementById('pb-name').textContent = drv.name;
+  const heroDriver = document.getElementById('pb-hero-driver');
+  const heroCar    = document.getElementById('pb-hero-car');
+  heroDriver.src = drv.photo || '';
+  heroCar.src    = drv.car   || '';
+  heroDriver.style.display = drv.photo ? 'block' : 'none';
+  heroCar.style.display    = drv.car   ? 'block' : 'none';
+
+  /* Pills */
+  document.getElementById('pb-pills').innerHTML = [
+    {icon:'🏆',val:drv.titles,lbl:'Titles'},
+    {icon:'🏁',val:drv.wins,lbl:'Wins'},
+    {icon:'⚡',val:drv.poles,lbl:'Poles'},
+    {icon:'📅',val:drv.peak,lbl:'Peak Era'},
+  ].map(p=>`<div class="pb-pill">
+    <span class="pb-pill-icon">${p.icon}</span>
+    <div>
+      <div class="pb-pill-val">${p.val}</div>
+      <div class="pb-pill-lbl">${p.lbl}</div>
+    </div>
+  </div>`).join('');
+
+  /* Ratings */
+  const attrs=[['pace','🏎','Pace'],['quali','⚡','Qualifying'],['racecraft','🏁','Racecraft'],['wet','☁️','Wet'],['tyres','🛞','Tyres'],['consistency','🚩','Consistency']];
+  document.getElementById('pb-ratings').innerHTML = attrs.map(([attr,icon,lbl])=>{
+    const v = drv[attr];
+    const [fc,vc] = statColor(v);
+    const pct = ((v-70)/30*100).toFixed(1);
+    return `<div class="pb-rat-row">
+      <span class="pb-rat-icon">${icon}</span>
+      <span class="pb-rat-lbl">${lbl}</span>
+      <div class="pb-rat-bar"><span class="pb-rat-fill ${fc}" style="width:${pct}%"></span></div>
+      <span class="pb-rat-val ${vc}">${v}</span>
+    </div>`;
+  }).join('');
+
+  /* Bio */
+  document.getElementById('pb-bio').textContent = drv.bio;
+
+  /* Facts */
+  document.getElementById('pb-facts').innerHTML = drv.facts.map(f=>
+    `<div class="pb-fact"><div class="pb-fact-k">${f.k}</div><div class="pb-fact-v">${f.v}</div></div>`
+  ).join('');
+
+  /* Quote */
+  document.getElementById('pb-quote').textContent = '"' + drv.quote + '"';
+
+  /* CTA */
+  document.getElementById('pb-cta').href = 'goat-simulator.html';
+
+  document.getElementById('profileOverlay').classList.add('open');
+  document.getElementById('profileOverlay').scrollTop = 0;
+}
+
+document.getElementById('pb-close').addEventListener('click', ()=>{
+  document.getElementById('profileOverlay').classList.remove('open');
+});
+document.getElementById('profileOverlay').addEventListener('click', e=>{
+  if(e.target===document.getElementById('profileOverlay'))
+    document.getElementById('profileOverlay').classList.remove('open');
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') document.getElementById('profileOverlay').classList.remove('open');
+});
+</script>
+</body>
+</html>

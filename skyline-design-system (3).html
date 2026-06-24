@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nissan Skyline — JDM Blueprint Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Saira:wght@500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E8E8E8; --paper-warm:#EFEFEC; --grid:#C9D2E6;
+  --blue-blueprint:#2D4689; --blue-mid:#445171; --blue-deep:#1F2732;
+  --blue-electric:#3B62C4; --blue-pale:#B3CBFF;
+  --red-gtr:#DA494C; --red-gtr-deep:#791E27;
+  --shadow:rgba(31,39,50,.22);
+  --display:'Archivo',sans-serif; --body:'Saira',sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper); color:var(--blue-deep); font-family:var(--body); font-weight:500;
+  line-height:1.5; position:relative; overflow-x:hidden;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 31px, var(--grid) 31px 32px),
+    repeating-linear-gradient(90deg, transparent 0 31px, var(--grid) 31px 32px);
+  background-blend-mode:multiply; background-attachment:fixed;
+}
+body::before{ /* fade the grid */
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+  background:radial-gradient(ellipse at 50% 40%, rgba(232,232,232,.35), rgba(232,232,232,.85));
+}
+body::after{ /* grain */
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:.07; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.plate{max-width:900px; margin:0 auto; padding:clamp(24px,5vw,56px); position:relative}
+.plate::after{content:""; position:absolute; inset:14px; border:1px solid rgba(45,70,137,.25); pointer-events:none}
+.kicker{font-family:var(--body); font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--blue-mid); font-size:.85rem}
+section{margin-bottom:clamp(48px,8vw,100px)}
+.hr{height:2px; background:var(--blue-blueprint); border:0; opacity:.5}
+
+/* ===== TOP BAR ===== */
+.topbar{display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-bottom:18px; color:var(--blue-mid); font-size:.8rem; letter-spacing:.08em}
+.topbar .ring{width:10px; height:10px; border:2px solid var(--blue-mid); border-radius:50%}
+
+/* ===== HERO ===== */
+.hero .kick{font-family:var(--body); font-weight:600; letter-spacing:.35em; text-transform:uppercase; color:var(--blue-mid); font-size:clamp(1rem,3vw,1.5rem); margin-bottom:-.1em; animation:in .7s both}
+.hero h1{
+  font-family:var(--display); font-weight:900; font-stretch:condensed;
+  font-size:clamp(3.5rem,16vw,9rem); line-height:.85; letter-spacing:-.01em;
+  color:var(--blue-blueprint); text-transform:uppercase;
+  animation:in .8s .05s both;
+}
+.collage{
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-top:18px;
+  animation:in .9s .15s both;
+}
+.collage .tile{aspect-ratio:3/4; border:1px solid rgba(31,39,50,.25); position:relative; overflow:hidden; border-radius:2px}
+.tile.wheel{background:linear-gradient(135deg,#3a4452,#1f2732); filter:grayscale(.4)}
+.tile.badge{background:linear-gradient(160deg,#2d4689,#1a2a55); display:grid; place-items:center}
+.tile.badge .gt{font-family:var(--display); font-weight:900; font-size:1rem; color:var(--paper-warm); position:absolute; top:30%; letter-spacing:.1em}
+.tile.badge .r{font-family:var(--display); font-weight:900; font-size:3rem; color:var(--red-gtr); line-height:1}
+.tile.rear{background:linear-gradient(135deg,#2d4689,#3b62c4); position:relative}
+.tile.rear::before,.tile.rear::after{content:""; position:absolute; top:38%; width:22%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle,#da494c,#791e27); box-shadow:0 0 12px rgba(218,73,76,.6)}
+.tile.rear::before{left:22%} .tile.rear::after{right:22%}
+.hero-photo{
+  margin-top:5px; aspect-ratio:16/9; border:1px solid rgba(31,39,50,.3); border-radius:2px;
+  background:linear-gradient(120deg,#1f2732 0%,#2d4689 35%,#3b62c4 60%,#5a82e0 100%);
+  filter:saturate(.95) contrast(1.05); position:relative; overflow:hidden;
+  animation:in 1s .25s both;
+}
+.hero-photo .label{position:absolute; left:18px; bottom:14px; font-family:var(--display); font-weight:900; font-stretch:condensed; color:rgba(255,255,255,.85); font-size:clamp(1.5rem,5vw,3rem); letter-spacing:.02em}
+.tagline{margin-top:24px; text-align:right; animation:in 1s .35s both}
+.tagline span{display:block; font-family:var(--display); font-weight:800; text-transform:uppercase; color:var(--blue-blueprint); font-size:clamp(1.4rem,4vw,2.2rem); line-height:1.05}
+@keyframes in{from{opacity:0; transform:translateY(24px)}to{opacity:1; transform:none}}
+
+/* ===== DOC HEADS ===== */
+.doc-head{display:flex; align-items:baseline; gap:16px; margin-bottom:24px}
+.doc-head h2{font-family:var(--display); font-weight:900; font-stretch:condensed; text-transform:uppercase; color:var(--blue-deep); font-size:clamp(1.8rem,5vw,2.8rem); line-height:1}
+.doc-head .num{font-family:var(--mono); color:var(--blue-mid); font-size:.8rem}
+.doc-head .hr{flex:1; align-self:center}
+
+/* ===== SWATCHES ===== */
+.swatches{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px}
+.sw{border:1px solid rgba(31,39,50,.2); border-radius:2px; overflow:hidden; background:var(--paper-warm)}
+.sw .chip{height:80px}
+.sw .meta{padding:9px 11px}
+.sw .meta b{display:block; font-family:var(--body); font-weight:700; font-size:.82rem; color:var(--blue-deep)}
+.sw .meta code{font-family:var(--mono); font-size:.7rem; color:var(--blue-mid)}
+.sw .meta .u{font-size:.72rem; color:var(--blue-mid)}
+
+/* ===== TYPE ===== */
+.spec{border-top:1px solid rgba(31,39,50,.18); padding:20px 0; display:grid; grid-template-columns:130px 1fr; gap:22px; align-items:baseline}
+.spec .l{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; text-transform:uppercase; color:var(--blue-mid)}
+.t-hero{font-family:var(--display); font-weight:900; font-stretch:condensed; text-transform:uppercase; color:var(--blue-blueprint); font-size:clamp(2.4rem,7vw,4.5rem); line-height:.85}
+.t-kick{font-family:var(--body); font-weight:600; letter-spacing:.35em; text-transform:uppercase; color:var(--blue-mid); font-size:1.3rem}
+.t-tag{font-family:var(--display); font-weight:800; text-transform:uppercase; color:var(--blue-blueprint); font-size:1.8rem}
+.t-body{font-family:var(--body); font-weight:500; color:var(--blue-deep); font-size:1.05rem; max-width:48ch}
+.t-mono{font-family:var(--mono); color:var(--blue-mid); letter-spacing:.05em; text-transform:uppercase; font-size:.9rem}
+
+/* ===== COMPONENTS ===== */
+.comp{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px}
+.card{background:var(--paper-warm); border:1px solid rgba(31,39,50,.18); border-radius:2px; padding:20px; box-shadow:0 6px 20px var(--shadow)}
+.card .cap{font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--blue-mid); margin-bottom:14px}
+.badge-big{aspect-ratio:1; background:linear-gradient(160deg,#2d4689,#1a2a55); border-radius:2px; display:grid; place-items:center; position:relative}
+.badge-big .gt{position:absolute; top:26%; font-family:var(--display); font-weight:900; color:var(--paper-warm); letter-spacing:.1em}
+.badge-big .r{font-family:var(--display); font-weight:900; font-size:4rem; color:var(--red-gtr); line-height:1}
+.btn{font-family:var(--body); font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.8rem; padding:12px 24px; border:0; border-radius:2px; cursor:pointer; transition:transform .2s, background .2s}
+.btn-blue{background:var(--blue-blueprint); color:var(--paper-warm)}
+.btn-blue:hover{background:var(--blue-electric); transform:translateY(-2px)}
+.btn-red{background:var(--red-gtr); color:#fff}
+.btn-red:hover{background:var(--red-gtr-deep); transform:translateY(-2px)}
+.btn-ghost{background:transparent; color:var(--blue-blueprint); box-shadow:inset 0 0 0 2px var(--blue-blueprint)}
+.btn-ghost:hover{background:var(--blue-blueprint); color:var(--paper)}
+.pill{display:inline-grid; place-items:center; width:52px; height:52px; border-radius:9999px; background:var(--paper-warm); box-shadow:0 6px 16px var(--shadow); color:var(--blue-deep); font-size:1.2rem; transition:transform .25s,box-shadow .25s; border:1px solid rgba(31,39,50,.12)}
+.pill:hover{transform:translateY(-3px); box-shadow:0 12px 24px var(--shadow)}
+.credit{display:inline-flex; align-items:center; gap:8px; color:var(--blue-mid); font-size:.8rem; letter-spacing:.06em}
+.credit .ring{width:10px;height:10px;border:2px solid var(--blue-mid);border-radius:50%}
+.brandmark{font-family:var(--display); font-weight:900; font-stretch:condensed; letter-spacing:.05em; color:var(--blue-blueprint); font-size:1.6rem; display:flex; align-items:center; gap:14px}
+.brandmark .hr{flex:1}
+
+footer{display:flex; align-items:center; gap:16px; padding:30px 0 50px}
+footer .jdm{font-family:var(--display); font-weight:900; font-stretch:condensed; color:var(--blue-blueprint); font-size:1.4rem; letter-spacing:.05em}
+footer .hr{flex:1}
+</style>
+</head>
+<body>
+<div class="plate">
+
+  <div class="topbar"><span class="ring"></span> serge.manrique</div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kick">Nissan</div>
+    <h1>Skyline</h1>
+    <div class="collage">
+      <div class="tile wheel"></div>
+      <div class="tile badge"><span class="gt">GT</span><span class="r">R</span></div>
+      <div class="tile rear"></div>
+    </div>
+    <div class="hero-photo"><span class="label">R34 GT-R</span></div>
+    <div class="tagline"><span>Anyone,</span><span>Anytime,</span><span>Anywhere</span></div>
+  </section>
+
+  <!-- COLOR -->
+  <section>
+    <div class="doc-head"><h2>Color</h2><span class="num">01</span><hr class="hr"></div>
+    <div class="swatches" id="sw"></div>
+  </section>
+
+  <!-- TYPE -->
+  <section>
+    <div class="doc-head"><h2>Type</h2><span class="num">02</span><hr class="hr"></div>
+    <div class="spec"><span class="l">Hero / Archivo 900 cond.</span><div class="t-hero">Skyline</div></div>
+    <div class="spec"><span class="l">Kicker / Saira 600</span><div class="t-kick">Nissan</div></div>
+    <div class="spec"><span class="l">Tagline / Archivo 800</span><div class="t-tag">Anyone, Anytime, Anywhere</div></div>
+    <div class="spec"><span class="l">Body / Saira 500</span><div class="t-body">The R34 generation refined the platform with the RB26DETT twin-turbo inline-six and an advanced ATTESA all-wheel-drive system.</div></div>
+    <div class="spec"><span class="l">Spec / Space Mono</span><div class="t-mono">RB26DETT · 2.6L · AWD · 1999</div></div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section>
+    <div class="doc-head"><h2>Components</h2><span class="num">03</span><hr class="hr"></div>
+    <div class="comp">
+      <div class="card">
+        <div class="cap">Badge accent (only red)</div>
+        <div class="badge-big"><span class="gt">GT</span><span class="r">R</span></div>
+      </div>
+      <div class="card">
+        <div class="cap">Buttons</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px">
+          <button class="btn btn-blue">Configure</button>
+          <button class="btn btn-red">GT-R</button>
+          <button class="btn btn-ghost">Specs</button>
+        </div>
+        <div class="cap">Floating pills</div>
+        <div style="display:flex; gap:12px"><span class="pill">⤢</span><span class="pill">↺</span></div>
+      </div>
+      <div class="card">
+        <div class="cap">Credit chip</div>
+        <div class="credit"><span class="ring"></span> serge.manrique</div>
+        <div class="cap" style="margin-top:22px">Brand footer</div>
+        <div class="brandmark">JDM <hr class="hr"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer><span class="jdm">JDM</span><hr class="hr"></footer>
+
+</div>
+
+<script>
+const colors=[
+ ['Paper','#E8E8E8','Background'],
+ ['Paper Warm','#EFEFEC','Surfaces / pills'],
+ ['Grid','#C9D2E6','Blueprint grid'],
+ ['Blueprint','#2D4689','Headline / brand'],
+ ['Blue Mid','#445171','Kicker / text'],
+ ['Blue Deep','#1F2732','Max ink'],
+ ['Electric','#3B62C4','Accents / hover'],
+ ['Blue Pale','#B3CBFF','Highlights'],
+ ['GT-R Red','#DA494C','Hot accent'],
+ ['Red Deep','#791E27','Pressed / shadow'],
+];
+document.getElementById('sw').innerHTML=colors.map(([n,h,u])=>
+ `<div class="sw"><div class="chip" style="background:${h}"></div><div class="meta"><b>${n}</b><code>${h}</code><div class="u">${u}</div></div></div>`
+).join('');
+</script>
+</body>
+</html>

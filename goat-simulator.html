@@ -431,6 +431,76 @@
   }
   .goat-cap-close:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(218,73,76,.4)}
 
+  /* ── Boost Quiz section (non-custom drivers) ── */
+  .csp-boost-section{
+    background:rgba(30,78,150,.06);
+    border:1px solid rgba(45,70,137,.22);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:14px;
+    text-align:center;
+  }
+  .csp-boost-locked{
+    font-family:'Saira',sans-serif;font-size:11px;color:var(--mute);
+    margin-bottom:10px;letter-spacing:.04em;
+  }
+  .csp-boost-take-btn{
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;
+    color:#fff;background:var(--gold);
+    border:none;border-radius:5px;padding:9px 20px;
+    cursor:pointer;transition:all .15s ease;width:100%;
+  }
+  .csp-boost-take-btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(45,70,137,.4)}
+  .csp-boost-budget-row{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .csp-boost-budget-label{
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--gold);
+  }
+  .csp-boost-budget-val{
+    font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--ink);
+  }
+  .csp-boost-budget-val .rem{color:var(--green)}
+
+  /* ── BROSKI PLZ popup ── */
+  #broski-popup{
+    display:none;position:fixed;inset:0;z-index:99999;
+    background:rgba(0,0,0,.75);
+    align-items:center;justify-content:center;
+  }
+  #broski-popup.open{display:flex}
+  .broski-box{
+    background:var(--panel);
+    border:3px solid var(--speed);
+    border-radius:14px;
+    padding:36px 32px 28px;
+    text-align:center;
+    max-width:320px;width:90%;
+    box-shadow:0 20px 60px rgba(218,73,76,.35);
+    animation:panelSlideIn .2s ease;
+  }
+  .broski-emoji{font-size:52px;margin-bottom:10px;display:block;line-height:1}
+  .broski-title{
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:26px;
+    letter-spacing:.04em;text-transform:uppercase;
+    color:var(--speed);margin-bottom:8px;
+  }
+  .broski-sub{
+    font-family:'Saira',sans-serif;font-size:12px;
+    color:var(--mute);margin-bottom:22px;line-height:1.6;
+  }
+  .broski-close{
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:12px;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:#fff;background:var(--speed);border:none;
+    border-radius:6px;padding:10px 28px;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .broski-close:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(218,73,76,.4)}
+
   /* Conditions — replaced by gamified selectors */
 
   /* Run button */
@@ -2110,6 +2180,16 @@
   </div>
 </div>
 
+<!-- ══ BROSKI PLZ POPUP (boost budget empty) ══ -->
+<div id="broski-popup">
+  <div class="broski-box">
+    <span class="broski-emoji">🤦</span>
+    <div class="broski-title">BROSKI PLZ!!</div>
+    <div class="broski-sub">You've used all your boost points for this driver. You're out of room — the stats are locked.</div>
+    <button class="broski-close" onclick="document.getElementById('broski-popup').classList.remove('open')">Okay Fine</button>
+  </div>
+</div>
+
 <!-- ══ GOAT CAP POPUP (95 ceiling) ══ -->
 <div id="goat-cap-popup">
   <div class="goat-cap-box">
@@ -3167,6 +3247,48 @@ function showQuizResult(){
   const body   = document.getElementById('qb-body');
   const passed = quizScore >= 10;
 
+  /* ── Boost mode: quiz was opened to boost a real driver's stats ── */
+  if(quizMode === 'boost'){
+    const entry  = getBoostQuiz(boostQuizKey);
+    const needed = entry ? entry.quiz.pass : 10;
+    const passed = quizScore >= needed;
+    const drv    = DRIVERS[boostQuizKey];
+    const total  = shuffledQuestions.length;
+    if(passed){
+      getBoostState(boostQuizKey).completed = true;
+    }
+    body.innerHTML = `
+      <div class="quiz-result-box">
+        <span class="qrb-emoji">${passed?'🏆':'😬'}</span>
+        <div class="qrb-headline">${passed?'10 PTS EARNED!':'NOT QUITE!'}</div>
+        <div class="qrb-score">${quizScore}/${total} correct${passed?' — You passed!':' — Need '+needed+'/'+total+' to earn points.'}</div>
+        ${passed ? `
+          <div class="qrb-unlock-msg">✅ +10 boost points added for ${drv.name.split(' ').pop()}!</div>
+          <div class="qrb-ctas">
+            <button class="qrb-cta-btn qrb-red" id="qrb-boost-ok">▶ Back to Sliders</button>
+          </div>
+        ` : `
+          <div style="font-family:'Saira',sans-serif;font-size:12px;color:var(--mute);margin-bottom:16px;letter-spacing:.06em;line-height:1.7">
+            Study up and try again!
+          </div>
+          <div class="qrb-ctas">
+            <button class="qrb-cta-btn qrb-primary" id="qrb-boost-retry">↺ Try Again</button>
+            <button class="qrb-cta-btn qrb-secondary" id="qrb-boost-ok">✕ Close</button>
+          </div>
+        `}
+      </div>`;
+    body.querySelector('#qrb-boost-ok')?.addEventListener('click', ()=>{
+      document.getElementById('quizOverlay').classList.remove('open');
+      quizMode = 'unlock';
+      buildSliders(boostQuizSlot, boostQuizKey);
+      const otherSlot = boostQuizSlot===1 ? 2 : 1;
+      const otherKey  = document.getElementById('d'+otherSlot)?.value;
+      if(otherKey === boostQuizKey) buildSliders(otherSlot, boostQuizKey);
+    });
+    body.querySelector('#qrb-boost-retry')?.addEventListener('click', ()=> openBoostQuiz(boostQuizKey, boostQuizSlot));
+    return;
+  }
+
   /* ── Budget mode: quiz was opened from the custom driver panel ── */
   if(quizMode === 'budget'){
     if(passed){
@@ -3340,14 +3462,342 @@ function refreshBudgetUI(){
   if(note) note.style.display = getCustomBudgetTotal()===0 ? 'block' : 'none';
 }
 
-/* ── Quiz mode flag (budget vs driver-unlock) ── */
-let quizMode = 'unlock';   /* 'unlock' | 'budget' */
+/* ═══════════════════════════════════════════════════════════════
+   DRIVER BOOST QUIZ DATA
+   — Standard (15 Q, need 10): always-unlocked drivers
+   — Hard (10 Q, need 7): lockable drivers (once unlocked)
+   ═══════════════════════════════════════════════════════════════ */
+const DRIVER_BOOST_QUIZZES = {
+  schumacher:{pass:10,questions:[
+    {q:"Which country was Michael Schumacher from?",opts:["Germany","France","Italy","Brazil"],a:0},
+    {q:"With which team did Schumacher win his first World Championship?",opts:["Benetton","Ferrari","McLaren","Williams"],a:0},
+    {q:"In which year did Schumacher win his first title?",opts:["1994","1995","1993","1996"],a:0},
+    {q:"Which team is Schumacher most famously associated with?",opts:["Ferrari","Benetton","Mercedes","McLaren"],a:0},
+    {q:"How many World Championships did Schumacher win?",opts:["7","5","6","8"],a:0},
+    {q:"In which year did Schumacher join Ferrari?",opts:["1996","1995","1997","1998"],a:0},
+    {q:"Which driver tied Schumacher's record of seven titles?",opts:["Lewis Hamilton","Sebastian Vettel","Alain Prost","Ayrton Senna"],a:0},
+    {q:"What race number is strongly associated with Schumacher?",opts:["1","3","5","7"],a:0},
+    {q:"Which brother of Michael also raced in Formula 1?",opts:["Ralf Schumacher","Mick Schumacher","Klaus Schumacher","Hans Schumacher"],a:0},
+    {q:"Between 2000 and 2004, how many consecutive titles did Schumacher win?",opts:["5","3","4","6"],a:0},
+    {q:"What does a black-and-white chequered flag signify?",opts:["End of the race","Start of the race","Penalty issued","Pit stop signal"],a:0},
+    {q:"What is a pit wall?",opts:["Area where team strategists operate","Driver waiting area","Pit crew equipment zone","The starting grid wall"],a:0},
+    {q:"What is a formation lap?",opts:["Lap before the race start","Lap after race finish","A practice lap","The cool-down lap"],a:0},
+    {q:"How many drivers stand on an F1 podium?",opts:["3","1","5","2"],a:0},
+    {q:"What does P1 mean in F1?",opts:["First Position","Pit Lane Entry One","First Practice Session","Points Leader"],a:0},
+  ]},
+  hamilton:{pass:10,questions:[
+    {q:"Which country does Lewis Hamilton represent?",opts:["United Kingdom","Germany","USA","Australia"],a:0},
+    {q:"Which team gave Hamilton his F1 debut?",opts:["McLaren","Ferrari","Williams","Renault"],a:0},
+    {q:"In which year did Hamilton become World Champion for the first time?",opts:["2008","2007","2009","2010"],a:0},
+    {q:"Which team did Hamilton join in 2013?",opts:["Mercedes","Ferrari","Red Bull","Williams"],a:0},
+    {q:"How many World Championships has Hamilton won?",opts:["7","6","5","8"],a:0},
+    {q:"Who did Hamilton famously battle for the 2021 title?",opts:["Max Verstappen","Sebastian Vettel","Charles Leclerc","Fernando Alonso"],a:0},
+    {q:"What race number does Hamilton use?",opts:["44","1","3","77"],a:0},
+    {q:"Which team principal worked closely with Hamilton at Mercedes?",opts:["Toto Wolff","Ross Brawn","Ron Dennis","Christian Horner"],a:0},
+    {q:"Hamilton's first teammate in F1 was who?",opts:["Fernando Alonso","Heikki Kovalainen","Jenson Button","Nico Rosberg"],a:0},
+    {q:"Which driver did Hamilton surpass to become the all-time leader in race wins?",opts:["Michael Schumacher","Ayrton Senna","Alain Prost","Sebastian Vettel"],a:0},
+    {q:"What does DRS stand for?",opts:["Drag Reduction System","Driver Reaction Speed","Dynamic Race Signal","Downforce Reduction System"],a:0},
+    {q:"What is pole position?",opts:["First place on the starting grid","Fastest race lap","Best team result","First corner advantage"],a:0},
+    {q:"What does a yellow flag indicate?",opts:["Danger ahead","Race suspended","Pit lane open","Overtaking allowed"],a:0},
+    {q:"What is an overtake?",opts:["Passing another car","A penalty move","Going off track","A pit stop manoeuvre"],a:0},
+    {q:"How many points does a race winner receive?",opts:["25","18","26","15"],a:0},
+  ]},
+  prost:{pass:10,questions:[
+    {q:"Which country was Alain Prost from?",opts:["France","Belgium","Italy","Switzerland"],a:0},
+    {q:"What nickname was Prost known by?",opts:["The Professor","The Flying Frenchman","The Maestro","The Artist"],a:0},
+    {q:"How many World Championships did Prost win?",opts:["4","3","5","2"],a:0},
+    {q:"Which rival is most associated with Prost's career?",opts:["Ayrton Senna","Nigel Mansell","Nelson Piquet","Niki Lauda"],a:0},
+    {q:"Which team did Prost win three titles with?",opts:["McLaren","Ferrari","Williams","Renault"],a:0},
+    {q:"In which year did Prost win his first championship?",opts:["1985","1984","1986","1983"],a:0},
+    {q:"Which team did Prost drive for in 1993?",opts:["Williams","Ferrari","McLaren","Renault"],a:0},
+    {q:"What did Prost win in 1993?",opts:["World Championship","Constructors' Cup","Monaco Trophy","Sprint title"],a:0},
+    {q:"What was Prost particularly famous for?",opts:["Race strategy and consistency","Fearless overtaking","Wet weather mastery","Qualifying pace"],a:0},
+    {q:"Which team later carried Prost's name?",opts:["Prost Grand Prix","Prost Racing","Team Prost","Prost Motorsport"],a:0},
+    {q:"What is a Grand Prix?",opts:["An F1 race event","A practice session","A qualifying run","A team briefing"],a:0},
+    {q:"What is qualifying?",opts:["Session to determine grid positions","Fastest lap competition","Race pre-check","Driver briefing"],a:0},
+    {q:"What is a circuit?",opts:["Race track","Pit lane","Paddock","Grandstand area"],a:0},
+    {q:"What does DNF mean?",opts:["Did Not Finish","Driver Not Fast","Did Not Follow","Disqualified Not Finished"],a:0},
+    {q:"What is a championship point?",opts:["Points earned toward standings","Race prize money","Fastest lap bonus","Constructor award"],a:0},
+  ]},
+  alonso:{pass:10,questions:[
+    {q:"Which country is Fernando Alonso from?",opts:["Spain","Portugal","Italy","France"],a:0},
+    {q:"Which team did Alonso win his championships with?",opts:["Renault","McLaren","Ferrari","Alpine"],a:0},
+    {q:"How many World Championships has Alonso won?",opts:["2","3","1","4"],a:0},
+    {q:"In which years did Alonso win his titles?",opts:["2005 and 2006","2004 and 2005","2006 and 2007","2003 and 2004"],a:0},
+    {q:"Whose championship streak did Alonso end in 2005?",opts:["Michael Schumacher's","Lewis Hamilton's","Kimi Räikkönen's","Jenson Button's"],a:0},
+    {q:"Which team did Alonso join in 2007?",opts:["McLaren","Ferrari","Williams","Mercedes"],a:0},
+    {q:"Which team is Alonso currently most associated with in recent years?",opts:["Aston Martin","Alpine","McLaren","Ferrari"],a:0},
+    {q:"What race number does Alonso use?",opts:["14","1","33","5"],a:0},
+    {q:"Alonso is known for excellence in which racecraft skill?",opts:["Overtaking","Tyre management","Wet weather driving","Qualifying pace"],a:0},
+    {q:"Which famous endurance race has Alonso won twice?",opts:["24 Hours of Le Mans","Indianapolis 500","Daytona 500","12 Hours of Sebring"],a:0},
+    {q:"What is an undercut in F1?",opts:["Earlier pit stop to gain position","Staying out longer than rivals","Cutting a chicane","A defensive driving move"],a:0},
+    {q:"What is a Safety Car?",opts:["Vehicle that neutralizes race pace","A backup driver car","A pace car for starts only","A rain-specific vehicle"],a:0},
+    {q:"What is a podium finish?",opts:["Top-three finish","A race win only","A points finish","Top-five finish"],a:0},
+    {q:"What does P3 mean?",opts:["Third Position","Third Pit stop","Third Practice","Third Points slot"],a:0},
+    {q:"What is tyre degradation?",opts:["Loss of tyre performance over time","Tyre puncture risk","Tyre compound hardness","Tyre heating phase"],a:0},
+  ]},
+  vettel:{pass:10,questions:[
+    {q:"Which country is Sebastian Vettel from?",opts:["Germany","Austria","Switzerland","Netherlands"],a:0},
+    {q:"Which team did Vettel win his championships with?",opts:["Red Bull Racing","Ferrari","Renault","Toro Rosso"],a:0},
+    {q:"How many World Championships did Vettel win?",opts:["4","3","5","6"],a:0},
+    {q:"Between which years did Vettel win consecutive titles?",opts:["2010–2013","2011–2014","2009–2012","2012–2015"],a:0},
+    {q:"Which team did Vettel join in 2015?",opts:["Ferrari","McLaren","Williams","Renault"],a:0},
+    {q:"What race number did Vettel choose?",opts:["5","1","4","7"],a:0},
+    {q:"At which team did Vettel make his F1 debut?",opts:["BMW Sauber","Toro Rosso","Red Bull","Renault"],a:0},
+    {q:"Which team gave Vettel his first race win?",opts:["Toro Rosso","Red Bull","BMW Sauber","Renault"],a:0},
+    {q:"At which Grand Prix did Vettel earn his first win?",opts:["Italian Grand Prix 2008","German Grand Prix 2008","Monaco Grand Prix 2008","Belgian Grand Prix 2008"],a:0},
+    {q:"Which cause became important to Vettel later in his career?",opts:["Sustainability and climate awareness","Animal welfare","Equal pay in sport","Road safety campaigns"],a:0},
+    {q:"What is a pit stop?",opts:["Stop for tyres and adjustments","A time penalty served","A fuel-only top-up","A drive-through penalty"],a:0},
+    {q:"What does a red flag mean?",opts:["Race stopped","Overtaking zone active","Pit lane now open","Driver warning issued"],a:0},
+    {q:"What is the starting grid?",opts:["Drivers' starting order","Grid penalty list","Race finish order","Pit lane exit order"],a:0},
+    {q:"What is a lap record?",opts:["Fastest lap ever around a circuit","Race winner's time","Best sector time","Qualifying benchmark"],a:0},
+    {q:"What does P5 mean?",opts:["Fifth Position","Fifth pit stop","Fifth practice run","Five-second penalty"],a:0},
+  ]},
+  mansell:{pass:10,questions:[
+    {q:"Which country was Nigel Mansell from?",opts:["United Kingdom","Australia","Ireland","Canada"],a:0},
+    {q:"How many World Championships did Mansell win?",opts:["1","2","3","4"],a:0},
+    {q:"In which year did Mansell become champion?",opts:["1992","1991","1993","1990"],a:0},
+    {q:"Which team is Mansell most associated with?",opts:["Williams","Ferrari","Lotus","McLaren"],a:0},
+    {q:"What nickname was Mansell known by?",opts:["Il Leone","The Flying Brit","The Red Baron","The Bulldog"],a:0},
+    {q:"What distinctive feature was part of Mansell's famous image?",opts:["His trademark moustache","His trademark sideburns","His distinctive beard","His unique helmet design"],a:0},
+    {q:"Which American racing championship did Mansell also win?",opts:["CART IndyCar Series","NASCAR Cup","DTM Championship","Formula Atlantic"],a:0},
+    {q:"Who was Mansell's famous teammate-rival at Williams?",opts:["Nelson Piquet","Ayrton Senna","Riccardo Patrese","Alain Prost"],a:0},
+    {q:"Which red team did Mansell drive for in the late 1980s?",opts:["Ferrari","Alfa Romeo","Marlboro McLaren","Philip Morris Ferrari"],a:0},
+    {q:"What nationality was Mansell?",opts:["British","Australian","Irish","Canadian"],a:0},
+    {q:"What is slipstreaming?",opts:["Following closely to reduce drag","A type of wing adjustment","Overtaking on a straight","A fuel saving technique"],a:0},
+    {q:"What is a chicane?",opts:["A quick change of direction","A long straight","A large sweeping corner","A pit lane entrance"],a:0},
+    {q:"What does a blue flag mean?",opts:["Let faster car pass","Race stopped","Start of race","Danger ahead"],a:0},
+    {q:"What is a marshal in F1?",opts:["A track safety official","A race commentator","A team engineer","The safety car driver"],a:0},
+    {q:"What does P2 mean?",opts:["Second Position","Second pit stop","Second practice","Two-point finish"],a:0},
+  ]},
+  villeneuve:{pass:10,questions:[
+    {q:"Which country was Gilles Villeneuve from?",opts:["Canada","France","USA","Italy"],a:0},
+    {q:"Which team is Villeneuve most associated with?",opts:["Ferrari","McLaren","Williams","Renault"],a:0},
+    {q:"Who is Gilles Villeneuve's son?",opts:["Jacques Villeneuve","Joann Villeneuve","Gilles Jr","Patrick Villeneuve"],a:0},
+    {q:"What was Gilles famous for?",opts:["Fearless driving style","Tyre conservation","Technical precision","Wet weather mastery"],a:0},
+    {q:"In which decade did Villeneuve race in F1?",opts:["1970s and early 1980s","1960s and 1970s","The 1980s","1950s and 1960s"],a:0},
+    {q:"At which race did Villeneuve score his first victory?",opts:["Canadian Grand Prix 1978","Monaco Grand Prix 1978","Italian Grand Prix 1978","Brazilian Grand Prix 1979"],a:0},
+    {q:"Which Ferrari team boss recruited Villeneuve?",opts:["Enzo Ferrari","Colin Chapman","Ron Dennis","Ken Tyrrell"],a:0},
+    {q:"What nationality was Villeneuve?",opts:["Canadian","French","Italian","American"],a:0},
+    {q:"Which Belgian circuit is associated with his final accident?",opts:["Zolder","Spa-Francorchamps","Nivelles","Chimay"],a:0},
+    {q:"Which current F1 circuit is named after him?",opts:["Circuit Gilles Villeneuve","Circuit de Catalunya","Circuit Villeneuve","Villeneuve Park Circuit"],a:0},
+    {q:"What is a race steward?",opts:["Official enforcing F1 rules","The safety car driver","A pit crew member","The race commentator"],a:0},
+    {q:"What is parc fermé?",opts:["Restricted setup conditions after qualifying","An open practice period","A car inspection zone","Pit lane closing rules"],a:0},
+    {q:"What is a pit lane?",opts:["Lane leading to team garages","The starting grid area","A track safety zone","The medical centre route"],a:0},
+    {q:"What is a constructor in F1?",opts:["F1 team that builds its own car","An engine supplier","A tyre manufacturer","A race organizer"],a:0},
+    {q:"What does DRS help improve?",opts:["Overtaking opportunities","Cornering speed","Braking distance","Fuel efficiency"],a:0},
+  ]},
+  hakkinen:{pass:10,questions:[
+    {q:"Which country is Mika Häkkinen from?",opts:["Finland","Sweden","Norway","Denmark"],a:0},
+    {q:"How many World Championships did Häkkinen win?",opts:["2","1","3","4"],a:0},
+    {q:"In which years did Häkkinen become champion?",opts:["1998 and 1999","1997 and 1998","1999 and 2000","2000 and 2001"],a:0},
+    {q:"Which team did Häkkinen win titles with?",opts:["McLaren","Ferrari","Williams","Mercedes"],a:0},
+    {q:"Who was Häkkinen's biggest rival during his title years?",opts:["Michael Schumacher","Eddie Irvine","David Coulthard","Rubens Barrichello"],a:0},
+    {q:"What nickname was Häkkinen given by fans?",opts:["The Flying Finn","The Iceman","The Professor","El Maestro"],a:0},
+    {q:"Which engine supplier powered McLaren during his title years?",opts:["Mercedes","Honda","Ferrari","Renault"],a:0},
+    {q:"At which team did Häkkinen debut in F1?",opts:["Lotus","Brabham","Williams","Ferrari"],a:0},
+    {q:"What nationality is Häkkinen?",opts:["Finnish","Swedish","German","British"],a:0},
+    {q:"Which famous Belgian circuit saw many Häkkinen successes?",opts:["Spa-Francorchamps","Monaco","Silverstone","Monza"],a:0},
+    {q:"What is fastest lap?",opts:["Quickest single lap in a race","Fastest qualifying time","Best sector time","Pole lap time"],a:0},
+    {q:"What is tyre strategy?",opts:["Planning when and what tyres to use","Pit crew training schedule","Tyre manufacturing process","Tyre inflation procedure"],a:0},
+    {q:"What is a Safety Car restart?",opts:["Racing resumes after the Safety Car returns","The race is stopped permanently","The pit lane opens for all","A new race leader takes over"],a:0},
+    {q:"What does P4 mean?",opts:["Fourth Position","Fourth pit stop","Four-point finish","Fourth qualifier"],a:0},
+    {q:"What is qualifying trim?",opts:["Car setup optimized for qualifying","Full fuel load setup","Race tyre configuration","Wet weather setup"],a:0},
+  ]},
+  raikkonen:{pass:10,questions:[
+    {q:"Which country is Kimi Räikkönen from?",opts:["Finland","Sweden","Norway","Estonia"],a:0},
+    {q:"What nickname is Kimi famous for?",opts:["The Iceman","The Flying Finn","El Maestro","The Professor"],a:0},
+    {q:"How many World Championships did Kimi win?",opts:["1","2","3","4"],a:0},
+    {q:"In which year did Kimi become champion?",opts:["2007","2008","2006","2009"],a:0},
+    {q:"Which team did Kimi win the title with?",opts:["Ferrari","McLaren","Williams","Renault"],a:0},
+    {q:"Which team gave Kimi his F1 debut?",opts:["Sauber","McLaren","Ferrari","Renault"],a:0},
+    {q:"Which team did Kimi race for before Ferrari?",opts:["McLaren","Williams","Renault","Red Bull"],a:0},
+    {q:"What race number did Kimi use after permanent numbers were introduced?",opts:["7","1","9","17"],a:0},
+    {q:"What was Kimi known for off the track?",opts:["Calm and quiet personality","Aggressive public persona","Technical engineering input","Intense media presence"],a:0},
+    {q:"Which driver did Kimi narrowly beat for the 2007 title?",opts:["Lewis Hamilton","Felipe Massa","Fernando Alonso","Jenson Button"],a:0},
+    {q:"What is a warm-up lap?",opts:["Lap before the race start to heat tyres","Lap after race finish","Cool-down lap","Safety car lap"],a:0},
+    {q:"What is a wheel-to-wheel battle?",opts:["Close racing between two drivers","A pit lane incident","A radio argument","A start line collision"],a:0},
+    {q:"What is track position in F1?",opts:["A driver's place on circuit relative to rivals","Fastest sector split","Tyre compound usage","Current fuel level"],a:0},
+    {q:"What does P7 mean?",opts:["Seventh Position","Seven-second penalty","Seventh practice run","Seven-point finish"],a:0},
+    {q:"What is a tyre stint?",opts:["Period racing on one set of tyres","The tyre change window","Pit stop duration","Tyre warm-up phase"],a:0},
+  ]},
+  moss:{pass:10,questions:[
+    {q:"Which country was Stirling Moss from?",opts:["United Kingdom","Australia","USA","South Africa"],a:0},
+    {q:"How many F1 World Championships did Moss win?",opts:["None","One","Two","Three"],a:0},
+    {q:"What title is Moss often given despite never winning a championship?",opts:["Greatest driver never to win a title","The Unlucky Champion","The Nearly Man","The Silver Fox"],a:0},
+    {q:"In which decade was Moss most successful?",opts:["1950s","1960s","1940s","1970s"],a:0},
+    {q:"Which manufacturer is closely linked with Moss?",opts:["Mercedes-Benz","Ferrari","Maserati","Cooper"],a:0},
+    {q:"Which famous road race did Moss win in 1955?",opts:["Mille Miglia","Monaco Grand Prix","Le Mans 24 Hours","Targa Florio"],a:0},
+    {q:"How many times was Moss runner-up in the championship?",opts:["Four","Three","Two","Five"],a:0},
+    {q:"What nationality was Moss?",opts:["British","Australian","South African","American"],a:0},
+    {q:"Which Argentine champion was Moss often compared with?",opts:["Juan Manuel Fangio","Alberto Ascari","Giuseppe Farina","Mike Hawthorn"],a:0},
+    {q:"What was Moss known for in his racing career?",opts:["Versatility across many racing categories","Aggressive overtaking","Technical precision","Wet weather mastery"],a:0},
+    {q:"What is the Drivers' Championship?",opts:["Season-long driver title contest","A single-race award","The race win trophy","A constructor award"],a:0},
+    {q:"What is the Constructors' Championship?",opts:["Season-long team title contest","A driver title competition","The race win award","An engineering prize"],a:0},
+    {q:"What is a race weekend?",opts:["Practice, qualifying and race combined","Race day only","Qualifying and race only","Test session and race"],a:0},
+    {q:"What does DNF stand for?",opts:["Did Not Finish","Driver Not Fast","Did Not Follow","Disqualified Not Finished"],a:0},
+    {q:"What is a pole lap?",opts:["The fastest qualifying lap","The fastest race lap","The race winning time","The best sector time"],a:0},
+  ]},
+};
+
+/* Hard boost quizzes for the 8 lockable drivers (10 Q, need 7) */
+const DRIVER_HARD_QUIZZES = {
+  verstappen:{pass:7,questions:[
+    {q:"Which circuit hosted Verstappen's first Formula 1 race victory?",opts:["Barcelona — 2016 Spanish GP","Monza — 2016 Italian GP","Monaco — 2016 Monaco GP","Bahrain — 2016 Bahrain GP"],a:0},
+    {q:"Who did Verstappen replace at Red Bull Racing mid-2016?",opts:["Daniil Kvyat","Daniel Ricciardo","Carlos Sainz","Nico Hülkenberg"],a:0},
+    {q:"At what age did Verstappen become the youngest F1 race winner?",opts:["18 years, 228 days","17 years, 166 days","19 years, 44 days","18 years, 150 days"],a:0},
+    {q:"Which team did Verstappen race for in European Formula 3 before F1?",opts:["Van Amersfoort Racing","Prema Racing","ART Grand Prix","Carlin"],a:0},
+    {q:"Which Grand Prix saw Verstappen and Hamilton collide on lap one in 2021?",opts:["British Grand Prix","Hungarian Grand Prix","Italian Grand Prix","Austrian Grand Prix"],a:0},
+    {q:"At which Grand Prix did Verstappen clinch his first World Championship?",opts:["2021 Abu Dhabi Grand Prix","2021 Saudi Arabian GP","2021 Brazilian GP","2021 Japanese GP"],a:0},
+    {q:"Which engine supplier powered Red Bull during Verstappen's 2021 title season?",opts:["Honda","Renault","Red Bull Powertrains","Ferrari"],a:0},
+    {q:"What karting championship did Verstappen win in 2013?",opts:["FIA European KZ Championship","FIA World Karting Championship","WSK Master Series","Rotax Max Challenge"],a:0},
+    {q:"Which driver partnered Verstappen during his first full title-winning season?",opts:["Sergio Pérez","Pierre Gasly","Alexander Albon","Yuki Tsunoda"],a:0},
+    {q:"How many Grand Prix wins did Verstappen record in the 2023 season?",opts:["19","17","21","15"],a:0},
+  ]},
+  senna:{pass:7,questions:[
+    {q:"Which team gave Senna his Formula 1 debut in 1984?",opts:["Toleman","Lotus","McLaren","Williams"],a:0},
+    {q:"At which circuit did Senna nearly win in a rain-shortened event in 1984?",opts:["Monaco","Spa","Zandvoort","Estoril"],a:0},
+    {q:"How many pole positions did Senna achieve in his career?",opts:["65","68","60","72"],a:0},
+    {q:"Which engine powered Senna's championship-winning McLaren MP4/4 in 1988?",opts:["Honda V6 Turbo","Ford V8","Ferrari V12","Renault V10"],a:0},
+    {q:"Which driver beat Senna to the 1989 World Championship?",opts:["Alain Prost","Nigel Mansell","Nelson Piquet","Gerhard Berger"],a:0},
+    {q:"What was Senna's final race victory?",opts:["1993 Australian Grand Prix","1993 Brazilian GP","1994 Pacific GP","1993 Monaco GP"],a:0},
+    {q:"Which Williams chassis did Senna drive in 1994?",opts:["FW16","FW15C","FW17","FW14B"],a:0},
+    {q:"At which corner did Senna's fatal accident occur at Imola?",opts:["Tamburello","Aqua Minerale","Variante Bassa","Tosa"],a:0},
+    {q:"How many Monaco Grand Prix did Senna win?",opts:["Six","Five","Seven","Eight"],a:0},
+    {q:"How many total F1 race victories did Senna achieve?",opts:["41","38","45","35"],a:0},
+  ]},
+  leclerc:{pass:7,questions:[
+    {q:"Which team did Leclerc drive for before joining Ferrari in 2019?",opts:["Sauber","Haas","Renault","Force India"],a:0},
+    {q:"At which circuit did Leclerc score his first pole position?",opts:["Bahrain International Circuit","Circuit de Catalunya","Monaco","Silverstone"],a:0},
+    {q:"Who finished second behind Leclerc in his first F1 victory at Spa in 2019?",opts:["Lewis Hamilton","Valtteri Bottas","Sebastian Vettel","Max Verstappen"],a:0},
+    {q:"Which famous Ferrari programme does Leclerc belong to?",opts:["Ferrari Driver Academy","Red Bull Junior","Mercedes Young Driver","McLaren Academy"],a:0},
+    {q:"Which teammate did Leclerc outperform during his debut Ferrari season?",opts:["Sebastian Vettel","Kimi Räikkönen","Carlos Sainz","Fernando Alonso"],a:0},
+    {q:"At which Grand Prix did Leclerc finally win his home race?",opts:["2024 Monaco Grand Prix","2022 Monaco Grand Prix","2023 Monaco Grand Prix","2021 Monaco Grand Prix"],a:0},
+    {q:"In which year did Leclerc win the GP3 Series Championship?",opts:["2016","2015","2017","2014"],a:0},
+    {q:"Which close friend's death deeply impacted Leclerc in junior racing?",opts:["Anthoine Hubert","Jules Bianchi","Dan Ticktum","Callum Ilott"],a:0},
+    {q:"What is Leclerc's race number?",opts:["16","1","7","55"],a:0},
+    {q:"In which year did Leclerc win the Formula 2 Championship?",opts:["2017","2016","2018","2015"],a:0},
+  ]},
+  clark:{pass:7,questions:[
+    {q:"Which team principal discovered and nurtured Jim Clark's talent?",opts:["Colin Chapman","Ken Tyrrell","Enzo Ferrari","Jack Brabham"],a:0},
+    {q:"In which year did Clark win both the Indianapolis 500 and the F1 World Championship?",opts:["1965","1963","1964","1966"],a:0},
+    {q:"Which Lotus chassis did Clark drive during his dominant 1963 season?",opts:["Lotus 25","Lotus 33","Lotus 49","Lotus 18"],a:0},
+    {q:"How many Grand Prix victories did Jim Clark achieve?",opts:["25","27","22","30"],a:0},
+    {q:"At which circuit did Clark suffer his fatal accident in 1968?",opts:["Hockenheimring","Nürburgring","Spa-Francorchamps","Monza"],a:0},
+    {q:"What nationality was Jim Clark?",opts:["Scottish","English","Welsh","Irish"],a:0},
+    {q:"Which engine manufacturer powered many of Clark's Lotus victories?",opts:["Coventry Climax","Ford","BRM","Ferrari"],a:0},
+    {q:"How many races did Clark win during the 1963 season?",opts:["7 out of 10","6 out of 10","8 out of 10","5 out of 10"],a:0},
+    {q:"How many F1 World Championships did Jim Clark win?",opts:["2","1","3","4"],a:0},
+    {q:"Which team did Clark race for throughout his entire F1 career?",opts:["Lotus","BRM","Ferrari","Cooper"],a:0},
+  ]},
+  fangio:{pass:7,questions:[
+    {q:"Which team did Fangio drive for when winning the 1951 title?",opts:["Alfa Romeo","Maserati","Mercedes","Ferrari"],a:0},
+    {q:"Which team did Fangio drive for during his final championship season in 1957?",opts:["Maserati","Mercedes","Ferrari","Alfa Romeo"],a:0},
+    {q:"What nickname was Fangio known by?",opts:["El Maestro","El Diablo","El Gran Jefe","El Rápido"],a:0},
+    {q:"How many different teams did Fangio win championships with?",opts:["Four","Three","Two","Five"],a:0},
+    {q:"Which famous race featured Fangio's legendary comeback drive in 1957?",opts:["German Grand Prix at Nürburgring","Monaco Grand Prix","Italian Grand Prix","French Grand Prix"],a:0},
+    {q:"At what age did Fangio win his final championship?",opts:["46","42","48","50"],a:0},
+    {q:"How many race wins did Fangio achieve in Formula 1?",opts:["24","25","27","22"],a:0},
+    {q:"Which driver eventually surpassed Fangio's record of five world titles?",opts:["Michael Schumacher","Lewis Hamilton","Sebastian Vettel","Max Verstappen"],a:0},
+    {q:"How many World Championships did Fangio win?",opts:["5","4","3","6"],a:0},
+    {q:"Which car manufacturer returned to F1 decades later still celebrating Fangio's legacy?",opts:["Mercedes-Benz","Ferrari","Alfa Romeo","Maserati"],a:0},
+  ]},
+  lauda:{pass:7,questions:[
+    {q:"Which Ferrari model carried Lauda to the 1975 title?",opts:["Ferrari 312T","Ferrari 312B3","Ferrari 312T2","Ferrari 156"],a:0},
+    {q:"How many championships did Niki Lauda win?",opts:["3","2","1","4"],a:0},
+    {q:"Which corner of Nürburgring was the site of Lauda's 1976 crash?",opts:["Bergwerk","Brünnchen","Adenauer Forst","Karussel"],a:0},
+    {q:"How many points did Lauda lose the 1976 title by?",opts:["1 point","2 points","0.5 points","3 points"],a:0},
+    {q:"Which team did Lauda return with in 1982?",opts:["McLaren","Williams","Brabham","Renault"],a:0},
+    {q:"How many points separated Lauda and Prost in the 1984 title fight?",opts:["0.5 points","1 point","2 points","3 points"],a:0},
+    {q:"Which airline did Lauda found?",opts:["Lauda Air","Austrian Air","Vienna Airlines","Lauda Express"],a:0},
+    {q:"What role did Lauda hold at Mercedes during Hamilton's early years?",opts:["Non-Executive Chairman","Team Principal","Technical Director","Race Director"],a:0},
+    {q:"Which rival beat Lauda to the 1976 title?",opts:["James Hunt","Jody Scheckter","Carlos Reutemann","Patrick Depailler"],a:0},
+    {q:"In which year did Lauda suffer his famous Nürburgring crash?",opts:["1976","1975","1977","1978"],a:0},
+  ]},
+  stewart:{pass:7,questions:[
+    {q:"Which team won all three championships with Stewart?",opts:["Tyrrell","BRM","Ferrari","Lotus"],a:0},
+    {q:"What nickname was Stewart known by?",opts:["The Flying Scot","The Professor","Il Leone","El Maestro"],a:0},
+    {q:"In which year did Stewart win his final championship?",opts:["1973","1972","1971","1974"],a:0},
+    {q:"How many Grand Prix victories did Stewart achieve?",opts:["27","25","30","22"],a:0},
+    {q:"What major reform campaign did Stewart champion?",opts:["Circuit and driver safety","Environmental protection","Equal pay in motorsport","Anti-tobacco sponsorship"],a:0},
+    {q:"Which circuit did Stewart frequently criticize for safety concerns?",opts:["Nürburgring Nordschleife","Monaco","Spa-Francorchamps","Silverstone"],a:0},
+    {q:"Which engine supplier powered many Tyrrell victories?",opts:["Ford-Cosworth","Ferrari","BRM","Renault"],a:0},
+    {q:"What team did Stewart later establish?",opts:["Stewart Grand Prix","Stewart Racing","Tyrrell F1","Stewart Motorsport"],a:0},
+    {q:"How many World Championships did Jackie Stewart win?",opts:["3","2","1","4"],a:0},
+    {q:"What did Stewart Grand Prix eventually become after acquisition?",opts:["Jaguar Racing","McLaren","Red Bull Racing","Force India"],a:0},
+  ]},
+  button:{pass:7,questions:[
+    {q:"Which team gave Jenson Button his Formula 1 debut in 2000?",opts:["Williams","Benetton","McLaren","Renault"],a:0},
+    {q:"What chassis did Brawn GP use in its championship-winning 2009 season?",opts:["BGP 001","BGP 002","Brawn 001","Honda RA109"],a:0},
+    {q:"How many races did Button win in the opening seven rounds of 2009?",opts:["Six","Five","Seven","Four"],a:0},
+    {q:"Which aerodynamic innovation helped Brawn GP dominate in 2009?",opts:["Double diffuser","KERS system","F-duct","Flexible front wing"],a:0},
+    {q:"Which teammate did Button defeat for the 2009 title?",opts:["Rubens Barrichello","Sebastian Vettel","Kimi Räikkönen","Mark Webber"],a:0},
+    {q:"Which team did Button join immediately after winning the title?",opts:["McLaren","Ferrari","Williams","Red Bull"],a:0},
+    {q:"What race number did Button use during his title-winning season?",opts:["22","7","3","99"],a:0},
+    {q:"At which Grand Prix did Button secure the 2009 World Championship?",opts:["Brazilian Grand Prix","Japanese Grand Prix","Abu Dhabi Grand Prix","Chinese Grand Prix"],a:0},
+    {q:"Which future seven-time champion was Button's teammate at McLaren?",opts:["Lewis Hamilton","Nico Rosberg","Fernando Alonso","Sebastian Vettel"],a:0},
+    {q:"Who did Button replace at Williams in 2000?",opts:["Alessandro Zanardi","Ralf Schumacher","David Coulthard","Marc Webber"],a:0},
+  ]},
+};
+
+/* Which quiz applies to which driver */
+function getBoostQuiz(key){
+  if(DRIVER_BOOST_QUIZZES[key]) return {quiz: DRIVER_BOOST_QUIZZES[key], type:'standard'};
+  if(DRIVER_HARD_QUIZZES[key])  return {quiz: DRIVER_HARD_QUIZZES[key],  type:'hard'};
+  return null;
+}
+
+/* ── Boost state — in-memory, resets on page load ── */
+const driverBoostState = {}; /* key → { completed: bool, remaining: 10 } */
+
+function getBoostState(key){
+  if(!driverBoostState[key]) driverBoostState[key] = { completed: false, remaining: 10 };
+  return driverBoostState[key];
+}
+function getBoostRemaining(key){
+  return getBoostState(key).remaining;
+}
+function getBoostUsed(key, slot){
+  const attrs = ['pace','quali','racecraft','wet','tyres','consistency'];
+  let used = 0;
+  attrs.forEach(attr=>{
+    const cur = customStats[slot][attr] !== undefined ? customStats[slot][attr] : DRIVERS[key][attr];
+    const base = DRIVERS[key][attr];
+    used += Math.max(0, cur - base);
+  });
+  return used;
+}
+
+/* ── Quiz mode flag ── */
+let quizMode = 'unlock';   /* 'unlock' | 'budget' | 'boost' */
 let budgetQuizKey = null;
+let boostQuizKey  = null;
+let boostQuizSlot = null;
+
+function openBoostQuiz(key, slot){
+  const entry = getBoostQuiz(key);
+  if(!entry) return;
+  quizMode     = 'boost';
+  boostQuizKey = key;
+  boostQuizSlot = slot;
+  currentQuizKey = key + '_boost';
+  quizQIdx = 0; quizScore = 0;
+  const total = entry.quiz.questions.length;
+  quizAnswers = new Array(total).fill(null);
+  shuffledQuestions = shuffleQuizOptions(entry.quiz.questions);
+  const drv  = DRIVERS[key];
+  const label = entry.type === 'hard' ? ' — Hard Quiz' : ' — Boost Quiz';
+  document.getElementById('qb-title').innerHTML =
+    'Earn 10 Points<span> — ' + drv.name.split(' ').pop() + label + '</span>';
+  document.getElementById('quizOverlay').classList.add('open');
+  document.getElementById('quizOverlay').scrollTop = 0;
+  renderQuizQ();
+}
 
 function openCustomBudgetQuiz(quizKey){
   quizMode = 'budget';
   budgetQuizKey = quizKey;
-  currentQuizKey = quizKey;
+  currentQuizKey = quizKey + '_budget';
   quizQIdx = 0; quizScore = 0;
   quizAnswers = new Array(15).fill(null);
   shuffledQuestions = shuffleQuizOptions(DRIVER_QUIZZES[quizKey].questions);
@@ -3588,7 +4038,36 @@ function buildSliders(slot, key){
     </div>`;
   }
 
-  box.innerHTML = budgetHtml + order.map(([attr,lab])=>{
+  /* ── Boost section for real (non-custom) drivers ── */
+  const boostEntry = isCustom ? null : getBoostQuiz(key);
+  let boostHtml = '';
+  if(boostEntry){
+    const bstate    = getBoostState(key);
+    const remaining = bstate.remaining;
+    const total     = 10;
+    const pct       = Math.round((remaining/total)*100);
+    const label     = boostEntry.type==='hard' ? '🔥 Hard Quiz — Earn 10 Pts' : '🎯 Boost Quiz — Earn 10 Pts';
+    if(!bstate.completed){
+      boostHtml = `
+        <div class="csp-boost-section">
+          <div class="csp-boost-locked">🔒 Sliders are locked — pass the quiz to adjust this driver's stats</div>
+          <button class="csp-boost-take-btn" data-boostkey="${key}" data-boostslot="${slot}">${label}</button>
+        </div>`;
+    } else {
+      boostHtml = `
+        <div class="csp-boost-section" style="text-align:left">
+          <div class="csp-boost-budget-row">
+            <span class="csp-boost-budget-label">🎯 Boost Points</span>
+            <span class="csp-boost-budget-val" id="boost-counter-${slot}"><span class="rem">${remaining}</span> / ${total} pts left</span>
+          </div>
+          <div class="csp-budget-bar-wrap">
+            <div class="csp-budget-bar-fill" id="boost-bar-${slot}" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }
+  }
+
+  box.innerHTML = budgetHtml + boostHtml + order.map(([attr,lab])=>{
     const rawV = isCustom
       ? (customStats[slot][attr] !== undefined ? customStats[slot][attr] : CUSTOM_STAT_BASE)
       : getStatValue(key, attr, slot);
@@ -3596,29 +4075,39 @@ function buildSliders(slot, key){
     const sliderMax = isCustom ? CUSTOM_STAT_MAX : 100;
     const sliderMin = isCustom ? CUSTOM_STAT_BASE : 1;
     const [,vc] = statColorClass(v);
-    const locked = isCustom && getCustomBudgetTotal()===0;
+    const lockedCustom  = isCustom && getCustomBudgetTotal()===0;
+    const lockedBoost   = boostEntry && !getBoostState(key).completed;
+    const isDisabled    = lockedCustom || lockedBoost;
     return `<div class="csp-row">
       <span class="csp-lbl">${STAT_ICONS[attr]} ${lab}</span>
       <input class="csp-slider" type="range" min="${sliderMin}" max="${sliderMax}" value="${v}"
-        data-attr="${attr}" data-slot="${slot}" ${locked?'disabled':''}>
+        data-attr="${attr}" data-slot="${slot}" ${isDisabled?'disabled':''}>
       <span class="csp-val ${vc}" id="cspval-${slot}-${attr}">${v}</span>
     </div>`;
   }).join('');
 
-  /* Wire up quiz buttons */
+  /* Wire up custom budget quiz buttons */
   if(isCustom && slot===1){
     box.querySelectorAll('.csp-quiz-take-btn:not([disabled])').forEach(btn=>{
       btn.addEventListener('click', ()=> openCustomBudgetQuiz(btn.dataset.qkey));
     });
   }
 
+  /* Wire up boost quiz button */
+  if(boostEntry){
+    const boostBtn = box.querySelector('.csp-boost-take-btn');
+    if(boostBtn) boostBtn.addEventListener('click', ()=>{
+      openBoostQuiz(boostBtn.dataset.boostkey, parseInt(boostBtn.dataset.boostslot));
+    });
+  }
+
   /* Wire up sliders */
   box.querySelectorAll('.csp-slider').forEach(sl => {
     sl.addEventListener('input', e => {
-      const a   = e.target.dataset.attr;
-      const s   = parseInt(e.target.dataset.slot);
+      const a    = e.target.dataset.attr;
+      const s    = parseInt(e.target.dataset.slot);
       const newV = parseInt(e.target.value);
-      const curV = customStats[s][a] !== undefined ? customStats[s][a] : CUSTOM_STAT_BASE;
+      const curV = customStats[s][a] !== undefined ? customStats[s][a] : (isCustom ? CUSTOM_STAT_BASE : DRIVERS[key][a]);
 
       if(isCustom){
         /* Hard cap at 95 — show GOAT popup */
@@ -3629,14 +4118,12 @@ function buildSliders(slot, key){
         }
         /* Budget check — only block increases */
         if(newV > curV){
-          const increase = newV - curV;
+          const increase  = newV - curV;
           const remaining = getCustomBudgetRemaining();
           if(increase > remaining){
-            /* Clamp to what's affordable */
             const affordable = curV + remaining;
             e.target.value = affordable;
             customStats[s][a] = affordable;
-            /* Show "out of budget" popup (not GOAT popup) */
             document.getElementById('budget-empty-popup').classList.add('open');
             refreshBudgetUI();
             const [,vc2] = statColorClass(affordable);
@@ -3647,18 +4134,64 @@ function buildSliders(slot, key){
           }
         }
         customStats[s][a] = newV;
-        /* Show "out of budget" popup when remaining hits exactly 0 after a spend */
         if(newV > curV && getCustomBudgetRemaining() === 0){
           document.getElementById('budget-empty-popup').classList.add('open');
         }
         refreshBudgetUI();
+
+      } else if(boostEntry){
+        /* Boost slider — can only increase above driver's original stat, up to 10 pts total */
+        const base      = DRIVERS[key][a];
+        const bstate    = getBoostState(key);
+        const overBase  = Math.max(0, newV - base);
+        const curOver   = Math.max(0, curV - base);
+        const netChange = overBase - curOver;
+
+        if(netChange > 0 && netChange > bstate.remaining){
+          /* Can't afford the increase */
+          const affordable = base + curOver + bstate.remaining;
+          e.target.value = affordable;
+          customStats[s][a] = affordable;
+          /* Consume remaining budget */
+          bstate.remaining = 0;
+          document.getElementById('broski-popup').classList.add('open');
+          /* Update boost bar */
+          const bar = document.getElementById('boost-bar-'+s);
+          const ctr = document.getElementById('boost-counter-'+s);
+          if(bar) bar.style.width = '0%';
+          if(ctr) ctr.innerHTML = '<span class="rem">0</span> / 10 pts left';
+          const [,vc2] = statColorClass(affordable);
+          const valEl2 = document.getElementById('cspval-'+s+'-'+a);
+          if(valEl2){ valEl2.textContent = affordable; valEl2.className='csp-val '+vc2; }
+          drawRatings('r'+s, key, s);
+          return;
+        }
+        /* Clamp: can't go below driver's original stat */
+        if(newV < base){
+          e.target.value = base;
+          customStats[s][a] = base;
+        } else {
+          customStats[s][a] = newV;
+          bstate.remaining -= netChange;
+        }
+        /* Show BROSKI if budget now exactly 0 after an increase */
+        if(netChange > 0 && bstate.remaining === 0){
+          document.getElementById('broski-popup').classList.add('open');
+        }
+        /* Update boost bar */
+        const pct2 = Math.round((bstate.remaining/10)*100);
+        const bar2 = document.getElementById('boost-bar-'+s);
+        const ctr2 = document.getElementById('boost-counter-'+s);
+        if(bar2) bar2.style.width = pct2+'%';
+        if(ctr2) ctr2.innerHTML = '<span class="rem">'+bstate.remaining+'</span> / 10 pts left';
+
       } else {
         customStats[s][a] = newV;
       }
 
-      const [,vc] = statColorClass(newV);
+      const [,vc] = statColorClass(parseInt(e.target.value));
       const valEl = document.getElementById('cspval-'+s+'-'+a);
-      if(valEl){ valEl.textContent = newV; valEl.className = 'csp-val '+vc; }
+      if(valEl){ valEl.textContent = e.target.value; valEl.className = 'csp-val '+vc; }
       const k = (s===1 ? document.getElementById('d1') : document.getElementById('d2')).value;
       drawRatings('r'+s, k, s);
     });

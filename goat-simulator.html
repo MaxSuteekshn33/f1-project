@@ -11,17 +11,17 @@
 <style>
   :root{
     /* ── Midnight Grand Prix palette ── */
-    --carbon:#192038;        /* page background — deep navy */
-    --carbon2:#1e2a45;       /* surface — dark navy card */
-    --panel:#223050;         /* card surface */
-    --line:#2a3d60;          /* subtle grid / dividers */
-    --ink:#eef2ff;           /* max ink — cool white */
-    --mute:#7a8ab0;          /* secondary text — slate blue */
+    --carbon:#1a1507;        /* page background — dark vintage brown */
+    --carbon2:#242009;       /* surface — warm brown card */
+    --panel:#2e2a0e;         /* card surface */
+    --line:#443c1a;          /* subtle grid / dividers */
+    --ink:#f0e8d0;           /* max ink — warm cream */
+    --mute:#8a7a52;          /* secondary text — warm muted */
     --speed:#e8303a;         /* F1 red */
-    --gold:#ffffff;          /* white accent */
-    --p1:#3b82f6;            /* driver 1 — racing blue */
+    --gold:#d4a843;          /* warm gold accent */
+    --p1:#5c8b45;            /* olive green */
     --p2:#e8303a;            /* driver 2 — F1 red */
-    --green:#22c55e;
+    --green:#4a9a3a;
     --shadow:rgba(0,0,0,.5);
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -36,11 +36,11 @@
     line-height:1.5;
     min-height:100vh;
     background-image:
-      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(59,130,246,.22) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 45% at 0% 60%, rgba(59,130,246,.08) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(59,130,246,.10) 0%, transparent 55%),
-      repeating-linear-gradient(0deg,  transparent 0 31px, rgba(255,255,255,.018) 31px 32px),
-      repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,255,255,.018) 31px 32px);
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(180,130,40,.18) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 0% 60%, rgba(80,110,50,.10) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(180,100,30,.10) 0%, transparent 55%),
+      repeating-linear-gradient(0deg,  transparent 0 31px, rgba(255,230,150,.015) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,230,150,.015) 31px 32px);
     background-attachment:fixed;
     position:relative;
   }
@@ -1336,8 +1336,36 @@
     border:1px solid transparent;
     transition:all .18s ease;white-space:nowrap;
   }
-  .nav-tab:hover{ color:var(--gold);background:rgba(45,70,137,.08);border-color:rgba(255,255,255,.08); }
-  .nav-tab.active{ color:var(--gold);background:rgba(45,70,137,.11);border-color:rgba(45,70,137,.28);font-weight:800; }
+  .nav-tab:hover{ color:var(--gold);background:rgba(100,80,20,.2);border-color:rgba(212,168,67,.2); }
+  .nav-tab.active{ color:var(--gold);background:rgba(100,80,20,.25);border-color:rgba(212,168,67,.35);font-weight:800; }
+  /* Dropdown nav */
+  .nav-dropdown{ position:relative; }
+  .nav-dropdown-btn{
+    font-family:'Saira',sans-serif;font-weight:700;font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;
+    color:var(--mute);background:none;border:1px solid transparent;
+    padding:6px 16px;border-radius:4px;cursor:pointer;
+    transition:all .18s ease;white-space:nowrap;display:flex;align-items:center;gap:5px;
+  }
+  .nav-dropdown-btn:hover,.nav-dropdown:hover .nav-dropdown-btn{
+    color:var(--gold);background:rgba(100,80,20,.2);border-color:rgba(212,168,67,.2);
+  }
+  .nav-dropdown-btn.active{ color:var(--gold);background:rgba(100,80,20,.25);border-color:rgba(212,168,67,.35);font-weight:800; }
+  .nav-dropdown-menu{
+    display:none;position:absolute;top:calc(100% + 6px);left:0;
+    background:#1e1a08;border:1px solid rgba(212,168,67,.2);border-radius:8px;
+    min-width:200px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu{ display:block; }
+  .nav-dropdown-item{
+    display:block;padding:10px 16px;font-family:'Saira',sans-serif;font-size:11px;
+    font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--mute);text-decoration:none;
+    transition:all .15s;border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .nav-dropdown-item:last-child{border-bottom:none;}
+  .nav-dropdown-item:hover{background:rgba(100,80,20,.25);color:var(--gold);}
+  .nav-dropdown-item.active{color:var(--gold);}
 
   /* ── GIF display in winner quote ── */
   .wq-gif-wrap{
@@ -1847,11 +1875,21 @@
     <span class="nav-brand">F1 Project</span>
     <div class="nav-divider"></div>
     <div class="nav-tabs">
-      <a class="nav-tab active" href="goat-simulator.html">🐐 GOAT Simulator</a>
-      <a class="nav-tab" href="f1-guide.html">🏎 Beginner's Guide</a>
-      <a class="nav-tab" href="know-your-drivers.html">&#127939; Know Your Drivers</a>
-      <a class="nav-tab" href="about.html">&#128100; About</a>
-      <a class="nav-tab" href="comments.html">💬 Discussion</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn active">🐐 Who is the GOAT? ▾</button>
+        <div class="nav-dropdown-menu">
+          <a class="nav-dropdown-item active" href="goat-simulator.html">🐐 GOAT Simulator</a>
+          <a class="nav-dropdown-item" href="comments.html">💬 Discussion</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn">📚 Ball Knowledge ▾</button>
+        <div class="nav-dropdown-menu">
+          <a class="nav-dropdown-item" href="f1-guide.html">🏎 F1 Beginner's Guide</a>
+          <a class="nav-dropdown-item" href="know-your-drivers.html">🏃 Know Your Drivers</a>
+        </div>
+      </div>
+      <a class="nav-tab" href="about.html">👤 About</a>
     </div>
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
       <button id="nav-login-btn" onclick="openAuthModal()" style="background:var(--speed);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;cursor:pointer;letter-spacing:.04em;">Sign In</button>
@@ -2118,6 +2156,12 @@
       ↓ &nbsp;Save Result Card
     </button>
     <div id="share-tip" style="display:none;margin-top:10px;padding:12px 16px;background:rgba(218,73,76,.07);border:1px solid rgba(218,73,76,.25);border-radius:6px;font-family:'Saira',sans-serif;font-size:12px;color:var(--ink);line-height:1.7;"></div>
+
+    <!-- Discussion CTA -->
+    <div style="margin-top:24px;text-align:center;padding:20px;background:rgba(92,139,69,.08);border:1px solid rgba(92,139,69,.2);border-radius:12px;">
+      <p style="font-family:'Saira',sans-serif;font-size:13px;color:var(--mute);margin-bottom:12px;">Got a hot take on the result? Share it with the community 👇</p>
+      <a href="comments.html" style="display:inline-block;background:var(--p1);color:#fff;border-radius:8px;padding:10px 28px;font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;text-decoration:none;letter-spacing:.04em;">💬 Join the Discussion</a>
+    </div>
 
   </div>
 

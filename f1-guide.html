@@ -9,14 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Saira:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --carbon:#192038;
-    --carbon2:#1e2a45;
-    --panel:#223050;
-    --line:#2a3d60;
-    --ink:#eef2ff;
-    --mute:#7a8ab0;
+    --carbon:#1a1507;
+    --carbon2:#242009;
+    --panel:#2e2a0e;
+    --line:#443c1a;
+    --ink:#f0e8d0;
+    --mute:#8a7a52;
     --speed:#e8303a;
-    --gold:#ffffff;
+    --gold:#d4a843;
     --shadow:rgba(0,0,0,.5);
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -30,10 +30,10 @@
     line-height:1.5;
     min-height:100vh;
     background-image:
-      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(59,130,246,.22) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(59,130,246,.10) 0%, transparent 55%),
-      repeating-linear-gradient(0deg,  transparent 0 31px, rgba(255,255,255,.018) 31px 32px),
-      repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,255,255,.018) 31px 32px);
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(180,130,40,.18) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(80,110,50,.10) 0%, transparent 55%),
+      repeating-linear-gradient(0deg,  transparent 0 31px, rgba(255,230,150,.015) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,230,150,.015) 31px 32px);
     background-attachment:fixed;
     position:relative;
   }
@@ -84,8 +84,18 @@
     border:1px solid transparent;
     transition:all .18s ease;white-space:nowrap;
   }
-  .nav-tab:hover{ color:var(--gold);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08); }
-  .nav-tab.active{ color:var(--gold);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);font-weight:800; }
+  .nav-tab:hover{ color:var(--gold);background:rgba(100,80,20,.2);border-color:rgba(212,168,67,.2); }
+  .nav-tab.active{ color:var(--gold);background:rgba(100,80,20,.25);border-color:rgba(212,168,67,.35);font-weight:800; }
+  .nav-dropdown{ position:relative; }
+  .nav-dropdown-btn{ font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid transparent;padding:6px 16px;border-radius:4px;cursor:pointer;transition:all .18s ease;white-space:nowrap;display:flex;align-items:center;gap:5px; }
+  .nav-dropdown-btn:hover,.nav-dropdown:hover .nav-dropdown-btn{ color:var(--gold);background:rgba(100,80,20,.2);border-color:rgba(212,168,67,.2); }
+  .nav-dropdown-btn.active{ color:var(--gold);background:rgba(100,80,20,.25);border-color:rgba(212,168,67,.35);font-weight:800; }
+  .nav-dropdown-menu{ display:none;position:absolute;top:calc(100% + 6px);left:0;background:#1e1a08;border:1px solid rgba(212,168,67,.2);border-radius:8px;min-width:200px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden; }
+  .nav-dropdown:hover .nav-dropdown-menu{ display:block; }
+  .nav-dropdown-item{ display:block;padding:10px 16px;font-family:'Saira',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:all .15s;border-bottom:1px solid rgba(255,255,255,.05); }
+  .nav-dropdown-item:last-child{border-bottom:none;}
+  .nav-dropdown-item:hover{background:rgba(100,80,20,.25);color:var(--gold);}
+  .nav-dropdown-item.active{color:var(--gold);}
 
   /* ── Header ── */
   header{text-align:center;margin-bottom:36px}
@@ -345,10 +355,21 @@
     <span class="nav-brand">F1 Project</span>
     <div class="nav-divider"></div>
     <div class="nav-tabs">
-      <a class="nav-tab" href="goat-simulator.html">🐐 GOAT Simulator</a>
-      <a class="nav-tab active" href="f1-guide.html">🏎 Beginner's Guide</a>
-      <a class="nav-tab" href="know-your-drivers.html">&#127939; Know Your Drivers</a>
-      <a class="nav-tab" href="about.html">&#128100; About</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn">🐐 Who is the GOAT? ▾</button>
+        <div class="nav-dropdown-menu">
+          <a class="nav-dropdown-item" href="goat-simulator.html">🐐 GOAT Simulator</a>
+          <a class="nav-dropdown-item" href="comments.html">💬 Discussion</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn active">📚 Ball Knowledge ▾</button>
+        <div class="nav-dropdown-menu">
+          <a class="nav-dropdown-item active" href="f1-guide.html">🏎 F1 Beginner's Guide</a>
+          <a class="nav-dropdown-item" href="know-your-drivers.html">🏃 Know Your Drivers</a>
+        </div>
+      </div>
+      <a class="nav-tab" href="about.html">👤 About</a>
     </div>
   </div>
 </nav>

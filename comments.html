@@ -40,13 +40,12 @@
   .nav-dropdown-btn{font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid transparent;padding:6px 16px;border-radius:4px;cursor:pointer;transition:all .18s ease;white-space:nowrap;display:flex;align-items:center;gap:5px;}
   .nav-dropdown-btn:hover,.nav-dropdown:hover .nav-dropdown-btn{color:var(--gold);background:rgba(0,120,120,.15);border-color:rgba(0,160,160,.3);}
   .nav-dropdown-btn.active{color:var(--gold);background:rgba(232,48,58,.1);border-color:rgba(232,48,58,.4);font-weight:800;}
-  .nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;padding-top:6px;background:transparent;min-width:200px;z-index:500;}
-  .nav-dropdown-menu-inner{background:#0d1f3c;border:1px solid rgba(59,130,246,.4);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.6);overflow:hidden;}
-  .nav-dropdown:hover .nav-dropdown-menu{display:block;}
-  .nav-dropdown-item{display:block;padding:11px 18px;font-family:'Saira',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ffffff;text-decoration:none;transition:all .15s;border-bottom:1px solid rgba(59,130,246,.2);}
+  .nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;padding-top:4px;background:transparent;min-width:210px;z-index:500;}
+  .nav-dropdown-menu-inner{background:#0d1f3c;border:2px solid rgba(59,130,246,.5);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.7);overflow:hidden;}
+  .nav-dropdown-item{display:block;padding:12px 18px;font-family:'Saira',sans-serif;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#ffffff !important;text-decoration:none;transition:background .1s;border-bottom:1px solid rgba(59,130,246,.25);}
   .nav-dropdown-item:last-child{border-bottom:none;}
-  .nav-dropdown-item:hover{background:rgba(59,130,246,.35);color:#ffffff;}
-  .nav-dropdown-item.active{background:rgba(59,130,246,.2);color:#60a5fa;}
+  .nav-dropdown-item:hover{background:rgba(59,130,246,.4);color:#ffffff !important;}
+  .nav-dropdown-item.active{background:rgba(59,130,246,.25);color:#93c5fd !important;}
 
   /* PAGE */
   .page-wrap{max-width:720px;margin:0 auto;padding:40px 20px 80px;}
@@ -350,6 +349,13 @@
   };
   window.signOutUser = async () => { await signOut(auth); };
   function showErr(msg){ const el=document.getElementById('auth-error'); el.style.display='block'; el.textContent=msg.replace('Firebase:','').replace(/\(auth.*\)/,''); }
+</script>
+<script>
+document.querySelectorAll('.nav-dropdown').forEach(function(dd){
+  var menu=dd.querySelector('.nav-dropdown-menu');
+  dd.addEventListener('mouseenter',function(){menu.style.display='block';});
+  dd.addEventListener('mouseleave',function(){menu.style.display='none';});
+});
 </script>
 </body>
 </html>

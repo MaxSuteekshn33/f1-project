@@ -1351,18 +1351,12 @@
     color:#ffffff;background:rgba(232,48,58,.2);border-color:rgba(232,48,58,.4);
   }
   .nav-dropdown-btn.active{ color:var(--gold);background:rgba(232,48,58,.1);border-color:rgba(232,48,58,.4);font-weight:800; }
-  .nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;padding-top:6px;background:transparent;min-width:200px;z-index:500;}
-  .nav-dropdown-menu-inner{background:#0d1f3c;border:1px solid rgba(59,130,246,.4);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.6);overflow:hidden;}
-  .nav-dropdown:hover .nav-dropdown-menu{ display:block; }
-  .nav-dropdown-item{
-    display:block;padding:11px 18px;font-family:'Saira',sans-serif;font-size:11px;
-    font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-    color:#ffffff;text-decoration:none;
-    transition:all .15s;border-bottom:1px solid rgba(59,130,246,.2);
-  }
+  .nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;padding-top:4px;background:transparent;min-width:210px;z-index:500;}
+  .nav-dropdown-menu-inner{background:#0d1f3c;border:2px solid rgba(59,130,246,.5);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.7);overflow:hidden;}
+  .nav-dropdown-item{display:block;padding:12px 18px;font-family:'Saira',sans-serif;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#ffffff !important;text-decoration:none;transition:background .1s;border-bottom:1px solid rgba(59,130,246,.25);}
   .nav-dropdown-item:last-child{border-bottom:none;}
-  .nav-dropdown-item:hover{background:rgba(59,130,246,.35);color:#ffffff;}
-  .nav-dropdown-item.active{background:rgba(59,130,246,.2);color:#60a5fa;}
+  .nav-dropdown-item:hover{background:rgba(59,130,246,.4);color:#ffffff !important;}
+  .nav-dropdown-item.active{background:rgba(59,130,246,.25);color:#93c5fd !important;}
 
   /* ── GIF display in winner quote ── */
   .wq-gif-wrap{
@@ -5755,6 +5749,13 @@ document.getElementById('era-btn').addEventListener('click', function(){
       </div>`;
     }).join('');
   });
+</script>
+<script>
+document.querySelectorAll('.nav-dropdown').forEach(function(dd){
+  var menu=dd.querySelector('.nav-dropdown-menu');
+  dd.addEventListener('mouseenter',function(){menu.style.display='block';});
+  dd.addEventListener('mouseleave',function(){menu.style.display='none';});
+});
 </script>
 </body>
 </html>

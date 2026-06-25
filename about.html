@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About the Creator — F1 Project</title>
+<title>The F1 Project — GOAT Debates, Driver Profiles & Beginner Guides</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Saira:wght@400;500;600;700&family=Saira+Condensed:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -332,6 +332,108 @@
   }
   .connect-card:hover .cc-arrow{transform:translateX(4px);}
 
+  /* ══════════════════════════════════
+     FEATURE CARDS
+  ══════════════════════════════════ */
+  .features-section{margin-bottom:60px;}
+  .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:680px){.features-grid{grid-template-columns:1fr;}}
+
+  .feat-card{
+    position:relative;border-radius:14px;overflow:hidden;
+    text-decoration:none;display:flex;flex-direction:column;
+    transition:transform .22s ease, box-shadow .22s ease;
+    cursor:pointer;min-height:260px;
+  }
+  .feat-card:hover{transform:translateY(-6px);}
+
+  /* GOAT card */
+  .feat-goat{background:#0a0a0a;border:1px solid rgba(232,48,58,.35);box-shadow:0 8px 32px rgba(232,48,58,.2);}
+  .feat-goat:hover{box-shadow:0 16px 48px rgba(232,48,58,.35);}
+  /* Discussion card */
+  .feat-discuss{background:#0d1a0d;border:1px solid rgba(34,197,94,.3);box-shadow:0 8px 32px rgba(34,197,94,.15);}
+  .feat-discuss:hover{box-shadow:0 16px 48px rgba(34,197,94,.28);}
+  /* Guide card */
+  .feat-guide{background:#0a0a1a;border:1px solid rgba(59,130,246,.3);box-shadow:0 8px 32px rgba(59,130,246,.15);overflow:hidden;}
+  .feat-guide:hover{box-shadow:0 16px 48px rgba(59,130,246,.28);}
+  /* Drivers card */
+  .feat-drivers{background:#1a1000;border:1px solid rgba(240,160,0,.3);box-shadow:0 8px 32px rgba(240,160,0,.15);}
+  .feat-drivers:hover{box-shadow:0 16px 48px rgba(240,160,0,.28);}
+
+  .feat-header{padding:18px 20px 12px;display:flex;align-items:center;gap:10px;}
+  .feat-icon{font-size:22px;line-height:1;}
+  .feat-title{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.04em;}
+  .feat-goat .feat-title{color:#e8303a;}
+  .feat-discuss .feat-title{color:#22c55e;}
+  .feat-guide .feat-title{color:#60a5fa;}
+  .feat-drivers .feat-title{color:#f0a000;}
+
+  .feat-brief{padding:0 20px 14px;font-family:'Saira',sans-serif;font-weight:600;font-size:11.5px;color:rgba(255,255,255,.6);letter-spacing:.04em;line-height:1.5;}
+
+  .feat-body{flex:1;padding:0 20px 16px;}
+
+  /* GOAT card — Hamilton stat bars */
+  .feat-stat-row{display:grid;grid-template-columns:80px 1fr 28px;align-items:center;gap:6px;margin-bottom:6px;}
+  .feat-stat-lbl{font-family:'Saira',sans-serif;font-weight:800;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+  .feat-stat-bar{height:10px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+  .feat-stat-fill{height:100%;border-radius:4px;}
+  .fsf-red{background:linear-gradient(90deg,#b81518,#e83030 55%,#ff7070);box-shadow:0 0 6px rgba(232,48,48,.5);}
+  .fsf-blue{background:linear-gradient(90deg,#1a5fd4,#3b8ef8 55%,#6ab4ff);box-shadow:0 0 6px rgba(59,142,248,.5);}
+  .fsf-gold{background:linear-gradient(90deg,#c47000,#f0a000 55%,#fdd05a);box-shadow:0 0 6px rgba(240,160,0,.5);}
+  .feat-stat-val{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#e83030;text-align:right;}
+
+  .feat-driver-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(232,48,58,.15);border:1px solid rgba(232,48,58,.3);border-radius:6px;padding:4px 10px;margin-bottom:10px;}
+  .feat-driver-flag{font-size:14px;}
+  .feat-driver-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#ffffff;}
+  .feat-driver-num{font-family:'Space Mono',monospace;font-size:11px;color:#e83030;font-weight:700;}
+
+  /* Discussion card — mock comments */
+  .feat-comment{background:rgba(255,255,255,.05);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:8px 10px;margin-bottom:7px;}
+  .feat-comment-user{font-family:'Saira',sans-serif;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#22c55e;margin-bottom:3px;}
+  .feat-comment-text{font-family:'Saira',sans-serif;font-weight:600;font-size:11px;color:rgba(255,255,255,.85);line-height:1.4;}
+  .feat-reply{background:rgba(255,255,255,.03);border-left:2px solid rgba(34,197,94,.4);border-radius:0 6px 6px 0;padding:6px 10px;margin-left:14px;margin-bottom:7px;}
+  .feat-reply-user{font-family:'Saira',sans-serif;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(34,197,94,.7);margin-bottom:2px;}
+  .feat-reply-text{font-family:'Saira',sans-serif;font-weight:600;font-size:10.5px;color:rgba(255,255,255,.65);line-height:1.4;}
+
+  /* Guide card — topics + checkered flag */
+  .feat-guide-bg{position:absolute;top:0;right:0;width:100px;height:100%;opacity:.06;background-image:repeating-conic-gradient(#fff 0% 25%,#000 0% 50%);background-size:16px 16px;pointer-events:none;}
+  .feat-topic{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(59,130,246,.1);}
+  .feat-topic:last-child{border-bottom:none;}
+  .feat-topic-icon{font-size:13px;flex-shrink:0;}
+  .feat-topic-text{font-family:'Saira',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.85);letter-spacing:.03em;}
+
+  /* Know Your Drivers — retro Fangio */
+  .feat-retro-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .feat-retro-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid rgba(240,160,0,.5);flex-shrink:0;filter:sepia(.6) contrast(1.1);}
+  .feat-retro-photo img{width:100%;height:100%;object-fit:cover;object-position:top;}
+  .feat-retro-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:-.01em;color:#f0a000;line-height:1.1;}
+  .feat-retro-sub{font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:3px;}
+  .feat-retro-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .feat-retro-stat{background:rgba(240,160,0,.08);border:1px solid rgba(240,160,0,.2);border-radius:6px;padding:6px 8px;text-align:center;}
+  .feat-retro-num{font-family:'Space Mono',monospace;font-weight:700;font-size:16px;color:#f0a000;line-height:1;}
+  .feat-retro-lbl{font-family:'Saira',sans-serif;font-weight:700;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:2px;}
+  .feat-retro-era{margin-top:8px;font-family:'Saira',sans-serif;font-weight:700;font-size:10px;color:rgba(240,160,0,.6);letter-spacing:.1em;text-transform:uppercase;text-align:center;}
+
+  /* CTA footer on each card */
+  .feat-cta{
+    padding:12px 20px;display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid rgba(255,255,255,.06);margin-top:auto;
+  }
+  .feat-cta-text{font-family:'Saira',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;}
+  .feat-goat .feat-cta-text{color:#e8303a;}
+  .feat-discuss .feat-cta-text{color:#22c55e;}
+  .feat-guide .feat-cta-text{color:#60a5fa;}
+  .feat-drivers .feat-cta-text{color:#f0a000;}
+  .feat-cta-arrow{font-size:16px;transition:transform .18s ease;}
+  .feat-card:hover .feat-cta-arrow{transform:translateX(5px);}
+
+  .creator-kicker{
+    font-family:'Saira',sans-serif;font-weight:800;font-size:10px;
+    letter-spacing:.3em;text-transform:uppercase;color:var(--speed);
+    margin-bottom:20px;display:flex;align-items:center;gap:10px;
+  }
+  .creator-kicker::before,.creator-kicker::after{content:"";flex:1;height:1px;background:rgba(0,160,160,.2);}
+
   /* Footer */
   footer{
     text-align:center;margin-top:30px;
@@ -376,10 +478,166 @@
 
   <!-- Page Header -->
   <header class="page-header">
-    <div class="kicker">— The Mind Behind The Project —</div>
-    <h1>ABOUT THE <span class="red">CREATOR</span></h1>
-    <div class="sub">Overthinker · Builder · Storyteller</div>
+    <div class="kicker">— Formula 1 · Decoded & Debated —</div>
+    <h1>THE <span class="red">F1</span> PROJECT</h1>
+    <div class="sub">GOAT Debates · Driver Profiles · Beginner Guides · Community</div>
   </header>
+
+  <!-- ── 4 FEATURE CARDS ── -->
+  <div class="features-section">
+    <div class="features-grid">
+
+      <!-- Card 1: GOAT Simulator -->
+      <a class="feat-card feat-goat" href="goat-simulator.html">
+        <div class="feat-header">
+          <span class="feat-icon">🐐</span>
+          <span class="feat-title">GOAT Simulator</span>
+        </div>
+        <div class="feat-brief">Rate the all-time legends. Build your case. Who deserves the crown?</div>
+        <div class="feat-body">
+          <div class="feat-driver-tag">
+            <span class="feat-driver-flag">🇬🇧</span>
+            <span class="feat-driver-name">Lewis Hamilton</span>
+            <span class="feat-driver-num">#44</span>
+          </div>
+          <div class="feat-stat-row">
+            <span class="feat-stat-lbl">Race Craft</span>
+            <div class="feat-stat-bar"><div class="feat-stat-fill fsf-red" style="width:97%"></div></div>
+            <span class="feat-stat-val">97</span>
+          </div>
+          <div class="feat-stat-row">
+            <span class="feat-stat-lbl">Consistency</span>
+            <div class="feat-stat-bar"><div class="feat-stat-fill fsf-blue" style="width:95%"></div></div>
+            <span class="feat-stat-val" style="color:#3b8ef8">95</span>
+          </div>
+          <div class="feat-stat-row">
+            <span class="feat-stat-lbl">Wet Weather</span>
+            <div class="feat-stat-bar"><div class="feat-stat-fill fsf-blue" style="width:98%"></div></div>
+            <span class="feat-stat-val" style="color:#3b8ef8">98</span>
+          </div>
+          <div class="feat-stat-row">
+            <span class="feat-stat-lbl">Titles</span>
+            <div class="feat-stat-bar"><div class="feat-stat-fill fsf-gold" style="width:100%"></div></div>
+            <span class="feat-stat-val" style="color:#f0a000">7</span>
+          </div>
+        </div>
+        <div class="feat-cta">
+          <span class="feat-cta-text">Enter the Simulator</span>
+          <span class="feat-cta-arrow" style="color:#e8303a">→</span>
+        </div>
+      </a>
+
+      <!-- Card 2: Discussion -->
+      <a class="feat-card feat-discuss" href="comments.html">
+        <div class="feat-header">
+          <span class="feat-icon">💬</span>
+          <span class="feat-title">Discussion</span>
+        </div>
+        <div class="feat-brief">The debate never ends. Drop your take, challenge others, argue freely.</div>
+        <div class="feat-body">
+          <div class="feat-comment">
+            <div class="feat-comment-user">RacingFan92</div>
+            <div class="feat-comment-text">Hamilton is the GOAT. 7 titles, 103 wins — the numbers don't lie.</div>
+          </div>
+          <div class="feat-reply">
+            <div class="feat-reply-user">PitlanePhil</div>
+            <div class="feat-reply-text">Schumacher had 7 too. And dominated in a far more competitive era...</div>
+          </div>
+          <div class="feat-comment">
+            <div class="feat-comment-user">MonacoMadness</div>
+            <div class="feat-comment-text">No one touched Senna in the wet. GOAT conversation starts and ends there. 🌧️</div>
+          </div>
+        </div>
+        <div class="feat-cta">
+          <span class="feat-cta-text">Join the Debate</span>
+          <span class="feat-cta-arrow" style="color:#22c55e">→</span>
+        </div>
+      </a>
+
+      <!-- Card 3: Beginner's Guide -->
+      <a class="feat-card feat-guide" href="f1-guide.html">
+        <div class="feat-guide-bg"></div>
+        <div class="feat-header">
+          <span class="feat-icon">🏎</span>
+          <span class="feat-title">F1 Beginner's Guide</span>
+        </div>
+        <div class="feat-brief">Never watched a race? Start here. Everything you need to get hooked.</div>
+        <div class="feat-body">
+          <div class="feat-topic">
+            <span class="feat-topic-icon">🚩</span>
+            <span class="feat-topic-text">Race Flags — What Each Colour Means</span>
+          </div>
+          <div class="feat-topic">
+            <span class="feat-topic-icon">🛞</span>
+            <span class="feat-topic-text">Tyre Compounds & Pit Stop Strategy</span>
+          </div>
+          <div class="feat-topic">
+            <span class="feat-topic-icon">📡</span>
+            <span class="feat-topic-text">What is DRS & How It Changes Races</span>
+          </div>
+          <div class="feat-topic">
+            <span class="feat-topic-icon">🏆</span>
+            <span class="feat-topic-text">How the Points System Works</span>
+          </div>
+          <div class="feat-topic">
+            <span class="feat-topic-icon">🌧️</span>
+            <span class="feat-topic-text">Wet vs Dry Racing — The Strategy Shift</span>
+          </div>
+        </div>
+        <div class="feat-cta">
+          <span class="feat-cta-text">Read the Guide</span>
+          <span class="feat-cta-arrow" style="color:#60a5fa">→</span>
+        </div>
+      </a>
+
+      <!-- Card 4: Know Your Drivers -->
+      <a class="feat-card feat-drivers" href="know-your-drivers.html">
+        <div class="feat-header">
+          <span class="feat-icon">🏁</span>
+          <span class="feat-title">Know Your Drivers</span>
+        </div>
+        <div class="feat-brief">From Fangio to Verstappen — every legend has a story worth knowing.</div>
+        <div class="feat-body">
+          <div class="feat-retro-header">
+            <div class="feat-retro-photo">
+              <img src="fangio.jpeg" alt="Juan Manuel Fangio">
+            </div>
+            <div>
+              <div class="feat-retro-name">Juan Manuel<br>Fangio</div>
+              <div class="feat-retro-sub">🇦🇷 Argentina · 1950–1958</div>
+            </div>
+          </div>
+          <div class="feat-retro-stats">
+            <div class="feat-retro-stat">
+              <div class="feat-retro-num">5</div>
+              <div class="feat-retro-lbl">World Titles</div>
+            </div>
+            <div class="feat-retro-stat">
+              <div class="feat-retro-num">24</div>
+              <div class="feat-retro-lbl">Race Wins</div>
+            </div>
+            <div class="feat-retro-stat">
+              <div class="feat-retro-num">46%</div>
+              <div class="feat-retro-lbl">Win Rate</div>
+            </div>
+            <div class="feat-retro-stat">
+              <div class="feat-retro-num">52</div>
+              <div class="feat-retro-lbl">Races</div>
+            </div>
+          </div>
+          <div class="feat-retro-era">✦ The Original GOAT ✦</div>
+        </div>
+        <div class="feat-cta">
+          <span class="feat-cta-text">Meet the Drivers</span>
+          <span class="feat-cta-arrow" style="color:#f0a000">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── CREATOR SECTION ── -->
+  <div class="creator-kicker">Meet the Creator</div>
 
   <!-- ── GAME CARD ── -->
   <div class="creator-card-wrap">

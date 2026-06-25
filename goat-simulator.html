@@ -1351,21 +1351,18 @@
     color:#ffffff;background:rgba(232,48,58,.2);border-color:rgba(232,48,58,.4);
   }
   .nav-dropdown-btn.active{ color:var(--gold);background:rgba(232,48,58,.1);border-color:rgba(232,48,58,.4);font-weight:800; }
-  .nav-dropdown-menu{
-    display:none;position:absolute;top:calc(100% + 6px);left:0;
-    background:#0a0a0a;border:1px solid rgba(232,48,58,.3);border-radius:8px;
-    min-width:200px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
-  }
+  .nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;padding-top:6px;background:transparent;min-width:200px;z-index:500;}
+  .nav-dropdown-menu-inner{background:#0d1f3c;border:1px solid rgba(59,130,246,.4);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.6);overflow:hidden;}
   .nav-dropdown:hover .nav-dropdown-menu{ display:block; }
   .nav-dropdown-item{
-    display:block;padding:10px 16px;font-family:'Saira',sans-serif;font-size:11px;
-    font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-    color:#ffffff;font-weight:800;text-decoration:none;
-    transition:all .15s;border-bottom:1px solid rgba(255,255,255,.08);
+    display:block;padding:11px 18px;font-family:'Saira',sans-serif;font-size:11px;
+    font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    color:#ffffff;text-decoration:none;
+    transition:all .15s;border-bottom:1px solid rgba(59,130,246,.2);
   }
   .nav-dropdown-item:last-child{border-bottom:none;}
-  .nav-dropdown-item:hover{background:rgba(100,80,20,.25);color:var(--gold);}
-  .nav-dropdown-item.active{color:var(--gold);}
+  .nav-dropdown-item:hover{background:rgba(59,130,246,.35);color:#ffffff;}
+  .nav-dropdown-item.active{background:rgba(59,130,246,.2);color:#60a5fa;}
 
   /* ── GIF display in winner quote ── */
   .wq-gif-wrap{
@@ -1878,15 +1875,19 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-btn active">🐐 Who is the GOAT? ▾</button>
         <div class="nav-dropdown-menu">
-          <a class="nav-dropdown-item active" href="goat-simulator.html">🐐 GOAT Simulator</a>
-          <a class="nav-dropdown-item" href="comments.html">💬 Discussion</a>
+          <div class="nav-dropdown-menu-inner">
+            <a class="nav-dropdown-item active" href="goat-simulator.html">🐐 GOAT Simulator</a>
+            <a class="nav-dropdown-item" href="comments.html">💬 Discussion</a>
+          </div>
         </div>
       </div>
       <div class="nav-dropdown">
         <button class="nav-dropdown-btn">📚 Ball Knowledge ▾</button>
         <div class="nav-dropdown-menu">
-          <a class="nav-dropdown-item" href="f1-guide.html">🏎 F1 Beginner's Guide</a>
-          <a class="nav-dropdown-item" href="know-your-drivers.html">🏃 Know Your Drivers</a>
+          <div class="nav-dropdown-menu-inner">
+            <a class="nav-dropdown-item" href="f1-guide.html">🏎 F1 Beginner's Guide</a>
+            <a class="nav-dropdown-item" href="know-your-drivers.html">🏃 Know Your Drivers</a>
+          </div>
         </div>
       </div>
       <a class="nav-tab" href="about.html">👤 About</a>

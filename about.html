@@ -156,7 +156,7 @@
   }
   .card-hippos-sub{
     font-family:'Saira',sans-serif;font-weight:600;font-size:9px;
-    letter-spacing:.12em;color:var(--mute);text-transform:uppercase;
+    letter-spacing:.12em;color:#0a0a0a;font-weight:800;text-transform:uppercase;
   }
 
   @media(max-width:560px){
@@ -167,17 +167,17 @@
   .card-stats{display:grid;gap:7px;}
   .card-stat-row{display:grid;grid-template-columns:18px 80px 1fr 28px;align-items:center;gap:6px;}
   .cs-icon{font-size:12px;text-align:center;}
-  .cs-lbl{font-family:'Saira',sans-serif;font-weight:700;color:var(--mute);letter-spacing:.06em;font-size:8.5px;text-transform:uppercase;}
+  .cs-lbl{font-family:'Saira',sans-serif;font-weight:900;color:#0a0a0a;letter-spacing:.06em;font-size:8.5px;text-transform:uppercase;}
   .cs-bar{height:13px;background:#b0dcdc;border-radius:5px;overflow:hidden;border:1.5px solid rgba(0,160,160,.25);box-shadow:inset 0 1px 3px rgba(0,0,0,.4);position:relative;}
   .cs-fill{display:block;height:100%;border-radius:4px;transition:width .7s cubic-bezier(.2,.8,.2,1);}
   .cs-fill::before{content:"";position:absolute;left:0;right:0;top:0;height:48%;background:rgba(255,255,255,.22);border-radius:4px 4px 0 0;pointer-events:none;}
-  .cs-val{font-family:'Space Mono',monospace;text-align:right;font-size:10px;font-weight:700;letter-spacing:-.02em;}
+  .cs-val{font-family:'Space Mono',monospace;text-align:right;font-size:11px;font-weight:900;letter-spacing:-.02em;}
   .fill-blue{background:linear-gradient(90deg,#1a5fd4,#3b8ef8 55%,#6ab4ff);box-shadow:0 0 8px rgba(59,142,248,.55)}
   .fill-red{background:linear-gradient(90deg,#b81518,#e83030 55%,#ff7070);box-shadow:0 0 8px rgba(232,48,48,.5)}
   .fill-green{background:linear-gradient(90deg,#0a8c3a,#1ec95a 55%,#5de88a);box-shadow:0 0 8px rgba(30,201,90,.5)}
   .fill-yellow{background:linear-gradient(90deg,#c47000,#f0a000 55%,#fdd05a);box-shadow:0 0 8px rgba(240,160,0,.5)}
   .fill-purple{background:linear-gradient(90deg,#7c3aed,#a855f7 55%,#d8b4fe);box-shadow:0 0 8px rgba(168,85,247,.5)}
-  .val-blue{color:#6ab4ff} .val-green{color:#4ade80} .val-yellow{color:#fbbf24} .val-red{color:#ff6060} .val-purple{color:#d8b4fe}
+  .val-blue{color:#1a5fd4} .val-green{color:#0a8c3a} .val-yellow{color:#c47000} .val-red{color:#cc1a1a} .val-purple{color:#6d28d9}
 
   /* Flip hint */
   .card-flip-hint{
@@ -231,17 +231,17 @@
     background:var(--panel);border:1px solid rgba(0,160,160,.2);
     border-left:4px solid var(--p1);border-radius:8px;
     padding:22px 24px;margin-bottom:16px;
-    font-family:'Saira',sans-serif;font-size:15px;color:#c8d4f0;line-height:1.75;
+    font-family:'Saira',sans-serif;font-size:15px;color:#0a0a0a;line-height:1.75;
   }
   .about-block p{margin-bottom:12px;}
   .about-block p:last-child{margin-bottom:0;}
-  .about-block strong{color:var(--gold);font-weight:700;}
+  .about-block strong{color:#e8303a;font-weight:800;}
   .about-block .highlight{color:var(--speed);font-weight:700;}
   .about-block .quote-pull{
     display:block;
     font-family:'Archivo',sans-serif;font-weight:900;
     font-size:clamp(14px,2.2vw,17px);
-    color:var(--gold);letter-spacing:.02em;text-transform:uppercase;
+    color:#0a0a0a;font-weight:900;letter-spacing:.02em;text-transform:uppercase;
     border-left:3px solid var(--speed);padding-left:14px;margin:16px 0;
     line-height:1.3;
   }
@@ -249,20 +249,20 @@
   /* Numbered reasons */
   .reasons-grid{display:grid;gap:12px;margin-bottom:16px;}
   .reason-item{
-    background:rgba(59,130,246,.06);
-    border:1px solid rgba(59,130,246,.18);
+    background:rgba(0,160,160,.08);
+    border:1px solid rgba(0,160,160,.25);
     border-radius:8px;padding:14px 16px;
     display:flex;align-items:flex-start;gap:14px;
   }
   .reason-num{
     font-family:'Archivo',sans-serif;font-weight:900;font-size:22px;
-    color:var(--p1);line-height:1;flex-shrink:0;opacity:.7;
+    color:#e8303a;line-height:1;flex-shrink:0;opacity:1;font-size:26px;
   }
   .reason-text{
-    font-family:'Saira',sans-serif;font-weight:600;font-size:13px;
-    color:#c8d4f0;line-height:1.55;
+    font-family:'Saira',sans-serif;font-weight:700;font-size:13px;
+    color:#0a0a0a;line-height:1.55;
   }
-  .reason-text strong{color:var(--gold);}
+  .reason-text strong{color:#e8303a;font-weight:800;}
 
   /* ══════════════════════════════════
      COMMUNITY STATS STRIP

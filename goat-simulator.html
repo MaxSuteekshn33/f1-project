@@ -618,8 +618,9 @@
   }
 
   /* ── Results ── */
-  .results{margin-top:34px;opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease;pointer-events:none}
-  .results.show{opacity:1;transform:none;pointer-events:auto}
+  .results{display:none;margin-top:34px;}
+  .results.show{display:block;animation:resultsIn .55s ease forwards;}
+  @keyframes resultsIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
 
   @keyframes flashIn{
     0%{opacity:0;transform:scale(.95) translateY(8px)}
@@ -1876,10 +1877,10 @@
         <div class="nav-dropdown-menu">
           <div class="nav-dropdown-menu-inner">
             <a class="nav-dropdown-item active" href="goat-simulator.html">🐐 GOAT Simulator</a>
-            <a class="nav-dropdown-item" href="comments.html">💬 Discussion</a>
           </div>
         </div>
       </div>
+      <a class="nav-tab" href="comments.html">💬 Discussion</a>
       <div class="nav-dropdown">
         <button class="nav-dropdown-btn">📚 Ball Knowledge ▾</button>
         <div class="nav-dropdown-menu">

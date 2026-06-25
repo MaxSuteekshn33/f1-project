@@ -11,17 +11,17 @@
 <style>
   :root{
     /* ── Midnight Grand Prix palette ── */
-    --carbon:#1a1507;        /* page background — dark vintage brown */
-    --carbon2:#242009;       /* surface — warm brown card */
-    --panel:#2e2a0e;         /* card surface */
-    --line:#443c1a;          /* subtle grid / dividers */
-    --ink:#f0e8d0;           /* max ink — warm cream */
-    --mute:#8a7a52;          /* secondary text — warm muted */
+    --carbon:#e0f4f4;        /* page background — light teal */
+    --carbon2:#c8eaea;       /* surface — teal card */
+    --panel:#b0dcdc;         /* card surface */
+    --line:#8ecece;          /* subtle grid / dividers */
+    --ink:#0a0a0a;           /* max ink — pure black */
+    --mute:#444444;          /* secondary text — dark grey */
     --speed:#e8303a;         /* F1 red */
-    --gold:#d4a843;          /* warm gold accent */
-    --p1:#5c8b45;            /* olive green */
+    --gold:#e8303a;          /* red accent — active nav */
+    --p1:#0a0a0a;            /* black — driver 1 bars */
     --p2:#e8303a;            /* driver 2 — F1 red */
-    --green:#4a9a3a;
+    --green:#22c55e;
     --shadow:rgba(0,0,0,.5);
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -36,11 +36,11 @@
     line-height:1.5;
     min-height:100vh;
     background-image:
-      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(180,130,40,.18) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 45% at 0% 60%, rgba(80,110,50,.10) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(180,100,30,.10) 0%, transparent 55%),
-      repeating-linear-gradient(0deg,  transparent 0 31px, rgba(255,230,150,.015) 31px 32px),
-      repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,230,150,.015) 31px 32px);
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(0,180,180,.12) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 0% 60%, rgba(0,160,160,.08) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 100% 40%, rgba(0,140,140,.08) 0%, transparent 55%),
+      repeating-linear-gradient(0deg,  transparent 0 31px, rgba(0,120,120,.04) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(0,120,120,.04) 31px 32px);
     background-attachment:fixed;
     position:relative;
   }
@@ -1336,8 +1336,8 @@
     border:1px solid transparent;
     transition:all .18s ease;white-space:nowrap;
   }
-  .nav-tab:hover{ color:var(--gold);background:rgba(100,80,20,.2);border-color:rgba(212,168,67,.2); }
-  .nav-tab.active{ color:var(--gold);background:rgba(100,80,20,.25);border-color:rgba(212,168,67,.35);font-weight:800; }
+  .nav-tab:hover{ color:var(--gold);background:rgba(0,120,120,.15);border-color:rgba(0,160,160,.3); }
+  .nav-tab.active{ color:var(--gold);background:rgba(232,48,58,.1);border-color:rgba(232,48,58,.4);font-weight:800; }
   /* Dropdown nav */
   .nav-dropdown{ position:relative; }
   .nav-dropdown-btn{
@@ -1348,12 +1348,12 @@
     transition:all .18s ease;white-space:nowrap;display:flex;align-items:center;gap:5px;
   }
   .nav-dropdown-btn:hover,.nav-dropdown:hover .nav-dropdown-btn{
-    color:var(--gold);background:rgba(100,80,20,.2);border-color:rgba(212,168,67,.2);
+    color:var(--gold);background:rgba(0,120,120,.15);border-color:rgba(0,160,160,.3);
   }
-  .nav-dropdown-btn.active{ color:var(--gold);background:rgba(100,80,20,.25);border-color:rgba(212,168,67,.35);font-weight:800; }
+  .nav-dropdown-btn.active{ color:var(--gold);background:rgba(232,48,58,.1);border-color:rgba(232,48,58,.4);font-weight:800; }
   .nav-dropdown-menu{
     display:none;position:absolute;top:calc(100% + 6px);left:0;
-    background:#1e1a08;border:1px solid rgba(212,168,67,.2);border-radius:8px;
+    background:#c8eaea;border:1px solid rgba(0,160,160,.3);border-radius:8px;
     min-width:200px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
   }
   .nav-dropdown:hover .nav-dropdown-menu{ display:block; }

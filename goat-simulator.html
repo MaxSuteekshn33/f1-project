@@ -1851,12 +1851,13 @@
       <a class="nav-tab" href="f1-guide.html">🏎 Beginner's Guide</a>
       <a class="nav-tab" href="know-your-drivers.html">&#127939; Know Your Drivers</a>
       <a class="nav-tab" href="about.html">&#128100; About</a>
+      <a class="nav-tab" href="comments.html">💬 Discussion</a>
     </div>
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
       <button id="nav-login-btn" onclick="openAuthModal()" style="background:var(--speed);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;cursor:pointer;letter-spacing:.04em;">Sign In</button>
       <div id="nav-user-info" style="display:none;align-items:center;gap:8px;">
         <img id="nav-user-avatar" src="" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--speed);object-fit:cover;display:none;">
-        <span id="nav-user-name" style="font-size:13px;color:var(--ink);font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="nav-user-name" style="font-size:13px;color:#0d1220;font-weight:800;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
         <button onclick="openDashboard()" style="background:transparent;color:var(--p1);border:1px solid var(--p1);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:700;">Dashboard</button>
         <button onclick="signOutUser()" style="background:transparent;color:var(--mute);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;">Sign Out</button>
       </div>
@@ -1926,7 +1927,26 @@
     </div>
     <div style="margin-bottom:16px;">
       <h3 style="font-family:'Archivo',sans-serif;font-size:13px;font-weight:800;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;">🏆 Drivers Unlocked</h3>
-      <div id="dash-drivers" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      <div id="dash-drivers" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+    </div>
+    <!-- Favourite Driver -->
+    <div id="dash-fav-section" style="background:#131929;border-radius:10px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <h3 style="font-family:'Archivo',sans-serif;font-size:13px;font-weight:800;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;">⭐ Favourite Driver</h3>
+        <button id="dash-set-fav-btn" onclick="showFavPicker()" style="background:var(--p1);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Archivo',sans-serif;">Set Favourite</button>
+      </div>
+      <div id="dash-fav-display" style="font-size:14px;color:var(--ink);"></div>
+      <div id="dash-fav-locked" style="font-size:12px;color:var(--mute);display:none;">Run 4 simulations to unlock favourite driver selection</div>
+      <!-- Fav picker dropdown -->
+      <div id="fav-picker" style="display:none;margin-top:12px;">
+        <select id="fav-driver-select" style="width:100%;background:#1e2a45;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;color:var(--ink);font-size:13px;font-family:'Saira',sans-serif;margin-bottom:10px;">
+          <option value="">— Select a driver —</option>
+        </select>
+        <button onclick="saveFavDriver()" style="background:var(--speed);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-weight:800;font-size:12px;cursor:pointer;font-family:'Archivo',sans-serif;">Save Favourite</button>
+      </div>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <a href="comments.html" style="display:inline-block;background:var(--p1);color:#fff;border-radius:8px;padding:10px 24px;font-weight:800;font-size:13px;text-decoration:none;font-family:'Archivo',sans-serif;">💬 Go to Discussion Board</a>
     </div>
   </div>
 </div>
@@ -2426,7 +2446,7 @@
 const DUMMY_HELMET_SVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231a1a1a'/%3E%3Cellipse cx='50' cy='46' rx='30' ry='33' fill='%23333'/%3E%3Cellipse cx='50' cy='44' rx='30' ry='33' fill='%23444'/%3E%3Cpath d='M22 55 Q50 72 78 55 L76 64 Q50 80 24 64Z' fill='%23222'/%3E%3Crect x='26' y='47' width='48' height='14' rx='4' fill='%231a3a6e'/%3E%3Crect x='26' y='47' width='20' height='14' rx='4' fill='%231d5fb0' opacity='.5'/%3E%3Ccircle cx='50' cy='20' r='5' fill='%23555'/%3E%3C/svg%3E`;
 const DUMMY_CAR_SVG   = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 80'%3E%3Crect width='200' height='80' fill='%231a1a1a'/%3E%3Cellipse cx='100' cy='44' rx='72' ry='14' fill='%23333'/%3E%3Crect x='38' y='30' width='124' height='18' rx='5' fill='%23444'/%3E%3Cpolygon points='38,48 28,52 32,56 38,54' fill='%23555'/%3E%3Cpolygon points='162,48 172,52 168,56 162,54' fill='%23555'/%3E%3Cellipse cx='52' cy='54' rx='10' ry='10' fill='%23222' stroke='%23666' stroke-width='3'/%3E%3Cellipse cx='52' cy='54' rx='5' ry='5' fill='%23444'/%3E%3Cellipse cx='148' cy='54' rx='10' ry='10' fill='%23222' stroke='%23666' stroke-width='3'/%3E%3Cellipse cx='148' cy='54' rx='5' ry='5' fill='%23444'/%3E%3Crect x='70' y='22' width='60' height='12' rx='3' fill='%23555'/%3E%3Ctext x='100' y='33' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='9' fill='%23aaa'%3EDD%3C/text%3E%3C/svg%3E`;
 
-const DRIVERS = {
+const DRIVERS = window.DRIVERS = {
 
   custom: {
     name:"Dummy Driver", team:"Custom Entry", yr:2024,
@@ -4574,6 +4594,10 @@ function showReveal(winnerSlot){
 }
 
 runBtn.onclick=()=>{
+  if(!window.fbCurrentUser){
+    openAuthModal();
+    return;
+  }
   openPrediction();
 };
 
@@ -4595,6 +4619,9 @@ function runSimulation(){
     const winnerKey    = r.pA>=r.pB ? r.k1 : r.k2;
     const winnerDriver = r.pA>=r.pB ? r.A : r.B;
     const winnerPct    = Math.max(r.pA, r.pB);
+
+    /* Track in Firebase */
+    if(window.fbTrackSim) window.fbTrackSim(winnerDriver.name);
 
     /* Winner name in backdrop */
     const wname = document.getElementById('winnername');
@@ -5313,7 +5340,7 @@ async function buildShareCanvas(r){
   );
 
   /* ── QR code + CTA — top-right quadrant (above the photo boxes) ── */
-  const siteUrl = 'https://symphonious-custard-ef9cf3.netlify.app/goat-simulator.html';
+  const siteUrl = 'https://maxsuteekshn33.github.io/f1-project/goat-simulator.html';
   const qrSize  = 96;
   const qrX     = W - 44 - qrSize;          /* flush with right margin */
   const qrY     = 100;                        /* sits in the empty top-right area */
@@ -5500,10 +5527,12 @@ document.getElementById('era-btn').addEventListener('click', function(){
   const db = getFirestore(app);
 
   let currentUser = null;
+  window.fbCurrentUser = null;
 
   // ── Auth state listener ──
   onAuthStateChanged(auth, async user => {
     currentUser = user;
+    window.fbCurrentUser = user;
     if (user) {
       document.getElementById('nav-login-btn').style.display = 'none';
       const ui = document.getElementById('nav-user-info');
@@ -5555,8 +5584,44 @@ document.getElementById('era-btn').addEventListener('click', function(){
     }
     const driversEl = document.getElementById('dash-drivers');
     const drivers = d.driversUnlocked || [];
-    driversEl.innerHTML = drivers.length ? drivers.map(d => `<span style="background:#131929;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--ink);">🏎 ${d}</span>`).join('') : '<span style="color:var(--mute);font-size:13px;">No drivers unlocked yet — play some quizzes!</span>';
+    driversEl.innerHTML = drivers.length ? drivers.map(n => `<span style="background:#1e2a45;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--ink);">🏎 ${n}</span>`).join('') : '<span style="color:var(--mute);font-size:13px;">No drivers unlocked yet — play some quizzes!</span>';
+    // favourite driver section
+    const simsRun = d.simsRun || 0;
+    const favBtn = document.getElementById('dash-set-fav-btn');
+    const favLocked = document.getElementById('dash-fav-locked');
+    const favDisplay = document.getElementById('dash-fav-display');
+    if (simsRun < 4) {
+      favBtn.style.display = 'none';
+      favLocked.style.display = 'block';
+      favLocked.textContent = `Run ${4 - simsRun} more simulation${4-simsRun===1?'':'s'} to unlock favourite driver selection`;
+    } else {
+      favBtn.style.display = 'block';
+      favLocked.style.display = 'none';
+    }
+    favDisplay.textContent = d.favouriteDriver ? `⭐ ${d.favouriteDriver}` : 'Not set yet';
     document.getElementById('dashboard-modal').style.display = 'flex';
+  };
+
+  window.showFavPicker = () => {
+    const picker = document.getElementById('fav-picker');
+    picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+    const sel = document.getElementById('fav-driver-select');
+    if (sel.options.length <= 1 && window.DRIVERS) {
+      Object.values(window.DRIVERS).forEach(drv => {
+        const opt = document.createElement('option');
+        opt.value = drv.name; opt.textContent = drv.name;
+        sel.appendChild(opt);
+      });
+    }
+  };
+
+  window.saveFavDriver = async () => {
+    if (!currentUser) return;
+    const sel = document.getElementById('fav-driver-select');
+    if (!sel.value) return;
+    await updateDoc(doc(db, 'users', currentUser.uid), { favouriteDriver: sel.value });
+    document.getElementById('dash-fav-display').textContent = `⭐ ${sel.value}`;
+    document.getElementById('fav-picker').style.display = 'none';
   };
   window.closeDashboard = () => { document.getElementById('dashboard-modal').style.display = 'none'; };
 
@@ -5593,10 +5658,13 @@ document.getElementById('era-btn').addEventListener('click', function(){
   }
 
   // ── Save simulation result ──
-  window.fbTrackSim = async (favDriverWon) => {
+  window.fbTrackSim = async (winnerName) => {
     if (!currentUser) return;
     const ref = doc(db, 'users', currentUser.uid);
-    await updateDoc(ref, { simsRun: increment(1), ...(favDriverWon ? { favWins: increment(1) } : {}) });
+    const snap = await getDoc(ref);
+    const d = snap.data() || {};
+    const favWon = d.favouriteDriver && d.favouriteDriver === winnerName;
+    await updateDoc(ref, { simsRun: increment(1), ...(favWon ? { favWins: increment(1) } : {}) });
   };
 
   // ── Save quiz result ──

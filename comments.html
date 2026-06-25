@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discussion Board — F1 Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Saira:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carbon:#192038;--carbon2:#1e2a45;--panel:#223050;--line:#2a3d60;
+    --ink:#eef2ff;--mute:#7a8ab0;--speed:#e8303a;--gold:#ffffff;
+    --p1:#3b82f6;--green:#22c55e;--shadow:rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background-color:var(--carbon);color:var(--ink);
+    font-family:'Saira',system-ui,sans-serif;font-weight:500;line-height:1.5;
+    min-height:100vh;padding-top:56px;
+    background-image:
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(59,130,246,.18) 0%, transparent 60%),
+      repeating-linear-gradient(0deg,transparent 0 31px,rgba(255,255,255,.018) 31px 32px),
+      repeating-linear-gradient(90deg,transparent 0 31px,rgba(255,255,255,.018) 31px 32px);
+    background-attachment:fixed;
+  }
+
+  /* NAV */
+  .site-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:48px;
+    background:rgba(25,32,56,.92);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.07);}
+  .site-nav-inner{max-width:1100px;margin:0 auto;height:100%;display:flex;align-items:center;gap:12px;padding:0 20px;}
+  .nav-brand{font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;color:var(--speed);letter-spacing:.04em;text-decoration:none;}
+  .nav-tabs{display:flex;gap:4px;}
+  .nav-tab{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;color:var(--mute);text-decoration:none;border:1px solid transparent;transition:all .15s;}
+  .nav-tab:hover{color:var(--gold);background:rgba(45,70,137,.08);}
+  .nav-tab.active{color:var(--gold);background:rgba(45,70,137,.11);border-color:rgba(45,70,137,.28);font-weight:800;}
+
+  /* PAGE */
+  .page-wrap{max-width:720px;margin:0 auto;padding:40px 20px 80px;}
+  .page-title{font-family:'Archivo',sans-serif;font-size:clamp(24px,5vw,36px);font-weight:900;color:var(--ink);margin-bottom:6px;}
+  .page-sub{color:var(--mute);font-size:14px;margin-bottom:32px;}
+
+  /* LOGIN PROMPT */
+  .login-prompt{background:var(--carbon2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;text-align:center;margin-bottom:32px;}
+  .login-prompt p{color:var(--mute);margin-bottom:16px;}
+  .btn-red{background:var(--speed);color:#fff;border:none;border-radius:9px;padding:11px 28px;font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:.04em;}
+  .btn-blue{background:var(--p1);color:#fff;border:none;border-radius:9px;padding:11px 28px;font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:.04em;}
+
+  /* COMPOSE */
+  .compose-box{background:var(--carbon2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;margin-bottom:32px;display:none;}
+  .compose-row{display:flex;gap:12px;}
+  .avatar-dot{width:40px;height:40px;border-radius:50%;background:var(--speed);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;font-family:'Archivo',sans-serif;overflow:hidden;}
+  .avatar-dot img{width:100%;height:100%;object-fit:cover;}
+  textarea{width:100%;background:#131929;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;color:var(--ink);font-size:14px;font-family:'Saira',sans-serif;resize:vertical;outline:none;min-height:80px;}
+  textarea:focus{border-color:var(--p1);}
+  .post-btn{margin-top:10px;background:var(--speed);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-weight:800;font-size:12px;cursor:pointer;font-family:'Archivo',sans-serif;}
+  .post-btn:hover{opacity:.88;}
+
+  /* COMMENTS */
+  .comments-list{display:flex;flex-direction:column;gap:20px;}
+  .comment-card{background:var(--carbon2);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;}
+  .comment-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .comment-author{display:flex;align-items:center;gap:10px;}
+  .comment-name{font-weight:700;font-size:14px;color:var(--ink);}
+  .comment-time{font-size:11px;color:var(--mute);}
+  .comment-text{font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:14px;}
+  .reply-toggle{background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--mute);border-radius:6px;padding:4px 12px;font-size:11px;cursor:pointer;font-weight:600;}
+  .reply-toggle:hover{border-color:var(--p1);color:var(--p1);}
+
+  /* REPLIES */
+  .replies-section{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+  .reply-card{display:flex;gap:10px;margin-bottom:12px;}
+  .reply-avatar{width:30px;height:30px;border-radius:50%;background:var(--p1);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;font-family:'Archivo',sans-serif;overflow:hidden;}
+  .reply-avatar img{width:100%;height:100%;object-fit:cover;}
+  .reply-content{flex:1;background:#131929;border-radius:10px;padding:10px 14px;}
+  .reply-name{font-weight:700;font-size:12px;color:var(--p1);margin-bottom:4px;}
+  .reply-text{font-size:13px;color:var(--ink);line-height:1.5;}
+  .reply-time{font-size:10px;color:var(--mute);margin-top:4px;}
+  .reply-compose{display:none;margin-top:10px;display:flex;gap:10px;align-items:flex-start;}
+  .reply-compose textarea{min-height:56px;font-size:13px;}
+
+  /* AUTH MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;}
+  .modal-box{background:#1e2a45;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:36px 32px;width:100%;max-width:400px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);}
+  .modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:none;color:var(--ink);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;}
+  .auth-input{width:100%;background:#131929;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:11px 14px;color:var(--ink);font-size:14px;margin-bottom:10px;outline:none;font-family:'Saira',sans-serif;}
+  .auth-input:focus{border-color:var(--p1);}
+  .auth-error{display:none;background:rgba(232,48,58,.1);border:1px solid rgba(232,48,58,.3);border-radius:8px;padding:10px 14px;color:var(--speed);font-size:12px;margin-bottom:12px;}
+
+  /* NAV USER */
+  #nav-user-info{display:none;align-items:center;gap:8px;margin-left:auto;}
+  #nav-login-btn{margin-left:auto;background:var(--speed);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;cursor:pointer;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--mute);}
+  .empty-state .big{font-size:40px;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="nav-brand" href="goat-simulator.html">F1 PROJECT</a>
+    <div class="nav-tabs">
+      <a class="nav-tab" href="goat-simulator.html">🐐 GOAT Simulator</a>
+      <a class="nav-tab" href="f1-guide.html">🏎 Beginner's Guide</a>
+      <a class="nav-tab" href="know-your-drivers.html">&#127939; Know Your Drivers</a>
+      <a class="nav-tab" href="about.html">&#128100; About</a>
+      <a class="nav-tab active" href="comments.html">💬 Discussion</a>
+    </div>
+    <button id="nav-login-btn" onclick="openAuthModal()">Sign In</button>
+    <div id="nav-user-info">
+      <img id="nav-avatar" src="" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--speed);object-fit:cover;display:none;">
+      <span id="nav-name" style="font-size:13px;color:#0d1220;font-weight:800;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <button onclick="signOutUser()" style="background:transparent;color:var(--mute);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAuthModal()">×</button>
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:28px;margin-bottom:8px;">💬</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-size:20px;font-weight:900;color:var(--ink);">Join the Discussion</h2>
+      <p style="color:var(--mute);font-size:13px;margin-top:6px;">Sign in to comment and reply</p>
+    </div>
+    <button onclick="signInWithGoogle()" style="width:100%;background:#fff;color:#1a1a1a;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;">
+      <img src="https://www.google.com/favicon.ico" style="width:18px;height:18px;"> Continue with Google
+    </button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.1);"></div>
+      <span style="color:var(--mute);font-size:12px;">or use email</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.1);"></div>
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <input class="auth-input" id="auth-email" type="email" placeholder="Email address">
+    <input class="auth-input" id="auth-password" type="password" placeholder="Password">
+    <input class="auth-input" id="auth-name" type="text" placeholder="Display name (sign up only)">
+    <div style="display:flex;gap:10px;">
+      <button onclick="signInEmail()" style="flex:1;background:var(--speed);color:#fff;border:none;border-radius:8px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Archivo',sans-serif;">Sign In</button>
+      <button onclick="signUpEmail()" style="flex:1;background:var(--p1);color:#fff;border:none;border-radius:8px;padding:12px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Archivo',sans-serif;">Sign Up</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <h1 class="page-title">💬 Discussion Board</h1>
+  <p class="page-sub">Share your thoughts, debates, predictions and hot takes with the F1 community</p>
+
+  <!-- Login prompt for guests -->
+  <div class="login-prompt" id="login-prompt">
+    <p>Sign in to join the discussion and reply to comments</p>
+    <button class="btn-red" onclick="openAuthModal()">Sign In to Comment</button>
+  </div>
+
+  <!-- Compose box for logged-in users -->
+  <div class="compose-box" id="compose-box">
+    <div class="compose-row">
+      <div class="avatar-dot" id="compose-avatar"></div>
+      <div style="flex:1;">
+        <textarea id="comment-input" placeholder="Share your thoughts, debates, predictions…"></textarea>
+        <button class="post-btn" onclick="postComment()">Post Comment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments list -->
+  <div class="comments-list" id="comments-list">
+    <div class="empty-state">
+      <div class="big">🏁</div>
+      <p>Loading comments…</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, arrayUnion, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBkYs2wek-9ZrlB8WRb6mankJrmpGwWfx8",
+    authDomain: "f1-project-9b1c7.firebaseapp.com",
+    projectId: "f1-project-9b1c7",
+    storageBucket: "f1-project-9b1c7.firebasestorage.app",
+    messagingSenderId: "222745094621",
+    appId: "1:222745094621:web:73ff9d787e30ffb7f5ae34"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  let currentUser = null;
+
+  function avatarHTML(photoURL, name, size=40, fontSize=16){
+    const initial = (name||'?')[0].toUpperCase();
+    if(photoURL) return `<img src="${photoURL}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
+    return `<span style="font-size:${fontSize}px;font-weight:900;">${initial}</span>`;
+  }
+
+  // Auth state
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+    if(user){
+      document.getElementById('nav-login-btn').style.display = 'none';
+      const ui = document.getElementById('nav-user-info');
+      ui.style.display = 'flex';
+      document.getElementById('nav-name').textContent = user.displayName || user.email.split('@')[0];
+      if(user.photoURL){ const av=document.getElementById('nav-avatar'); av.src=user.photoURL; av.style.display='block'; }
+      document.getElementById('login-prompt').style.display = 'none';
+      const cb = document.getElementById('compose-box');
+      cb.style.display = 'block';
+      const ca = document.getElementById('compose-avatar');
+      if(user.photoURL){ ca.innerHTML=`<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;">`; }
+      else { ca.textContent=(user.displayName||user.email)[0].toUpperCase(); }
+    } else {
+      document.getElementById('nav-login-btn').style.display = 'block';
+      document.getElementById('nav-user-info').style.display = 'none';
+      document.getElementById('login-prompt').style.display = 'block';
+      document.getElementById('compose-box').style.display = 'none';
+    }
+  });
+
+  // Post top-level comment
+  window.postComment = async () => {
+    if(!currentUser) return openAuthModal();
+    const input = document.getElementById('comment-input');
+    const text = input.value.trim();
+    if(!text) return;
+    await addDoc(collection(db,'comments'),{
+      text, uid:currentUser.uid,
+      name:currentUser.displayName||currentUser.email.split('@')[0],
+      photoURL:currentUser.photoURL||null,
+      createdAt:serverTimestamp(),
+      replies:[]
+    });
+    input.value='';
+  };
+
+  // Post reply
+  window.postReply = async (commentId) => {
+    if(!currentUser) return openAuthModal();
+    const input = document.getElementById(`reply-input-${commentId}`);
+    const text = input.value.trim();
+    if(!text) return;
+    const replyObj = {
+      text, uid:currentUser.uid,
+      name:currentUser.displayName||currentUser.email.split('@')[0],
+      photoURL:currentUser.photoURL||null,
+      createdAt: new Date().toISOString()
+    };
+    await updateDoc(doc(db,'comments',commentId),{ replies: arrayUnion(replyObj) });
+    input.value='';
+    document.getElementById(`reply-compose-${commentId}`).style.display='none';
+  };
+
+  window.toggleReplyBox = (commentId) => {
+    if(!currentUser) return openAuthModal();
+    const box = document.getElementById(`reply-compose-${commentId}`);
+    box.style.display = box.style.display==='none'||!box.style.display ? 'flex' : 'none';
+  };
+
+  // Live feed
+  const q = query(collection(db,'comments'), orderBy('createdAt','desc'));
+  onSnapshot(q, snap => {
+    const list = document.getElementById('comments-list');
+    if(snap.empty){ list.innerHTML='<div class="empty-state"><div class="big">🏁</div><p>No comments yet — be the first to start the debate!</p></div>'; return; }
+    list.innerHTML = snap.docs.map(d => {
+      const c = d.data();
+      const cid = d.id;
+      const time = c.createdAt ? new Date(c.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'just now';
+      const replies = (c.replies||[]).map(r => {
+        const rt = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+        return `<div class="reply-card">
+          <div class="reply-avatar">${avatarHTML(r.photoURL,r.name,30,12)}</div>
+          <div class="reply-content">
+            <div class="reply-name">${r.name}</div>
+            <div class="reply-text">${r.text}</div>
+            <div class="reply-time">${rt}</div>
+          </div>
+        </div>`;
+      }).join('');
+      return `<div class="comment-card">
+        <div class="comment-header">
+          <div class="comment-author">
+            <div class="avatar-dot" style="width:36px;height:36px;font-size:14px;">${avatarHTML(c.photoURL,c.name,36,14)}</div>
+            <div>
+              <div class="comment-name">${c.name}</div>
+              <div class="comment-time">${time}</div>
+            </div>
+          </div>
+        </div>
+        <div class="comment-text">${c.text}</div>
+        <button class="reply-toggle" onclick="toggleReplyBox('${cid}')">↩ Reply</button>
+        ${replies ? `<div class="replies-section">${replies}</div>` : ''}
+        <div id="reply-compose-${cid}" style="display:none;margin-top:12px;gap:10px;">
+          <div class="reply-avatar" style="width:30px;height:30px;font-size:12px;">${currentUser?avatarHTML(currentUser.photoURL,currentUser.displayName||currentUser.email,30,12):'<span>?</span>'}</div>
+          <div style="flex:1;">
+            <textarea id="reply-input-${cid}" placeholder="Write a reply…" style="min-height:56px;font-size:13px;width:100%;background:#131929;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;color:var(--ink);font-family:'Saira',sans-serif;resize:vertical;outline:none;"></textarea>
+            <button class="post-btn" style="margin-top:6px;font-size:11px;padding:7px 16px;" onclick="postReply('${cid}')">Post Reply</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  });
+
+  // Auth helpers
+  window.openAuthModal = () => { document.getElementById('auth-modal').style.display='flex'; };
+  window.closeAuthModal = () => { document.getElementById('auth-modal').style.display='none'; document.getElementById('auth-error').style.display='none'; };
+  window.signInWithGoogle = async () => {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); closeAuthModal(); }
+    catch(e){ showErr(e.message); }
+  };
+  window.signUpEmail = async () => {
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, document.getElementById('auth-email').value, document.getElementById('auth-password').value);
+      const name = document.getElementById('auth-name').value;
+      if(name) await updateProfile(cred.user,{displayName:name});
+      closeAuthModal();
+    } catch(e){ showErr(e.message); }
+  };
+  window.signInEmail = async () => {
+    try { await signInWithEmailAndPassword(auth, document.getElementById('auth-email').value, document.getElementById('auth-password').value); closeAuthModal(); }
+    catch(e){ showErr(e.message); }
+  };
+  window.signOutUser = async () => { await signOut(auth); };
+  function showErr(msg){ const el=document.getElementById('auth-error'); el.style.display='block'; el.textContent=msg.replace('Firebase:','').replace(/\(auth.*\)/,''); }
+</script>
+</body>
+</html>

@@ -961,38 +961,23 @@
 
 
   /* ── The Debate Section ── */
-  .debate-section{
-    margin-top:52px;
-    border-top:2px solid rgba(0,160,160,.2);
-    padding-top:32px;
+  .debate-cta{
+    margin-top:52px;border-top:2px solid rgba(0,160,160,.2);padding-top:36px;
+    text-align:center;
   }
-  .debate-header{
-    display:flex;align-items:center;gap:16px;margin-bottom:6px;
+  .debate-cta-label{
+    font-family:'Saira',sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:18px;
   }
-  .debate-header h2{
-    font-family:'Archivo',sans-serif;font-weight:900;
-    font-size:clamp(20px,4vw,30px);
-    text-transform:uppercase;letter-spacing:-.01em;
-    color:var(--gold);line-height:1;
+  .debate-cta-btn{
+    display:inline-block;padding:14px 36px;
+    background:var(--speed);color:#fff;border-radius:8px;
+    font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;
+    letter-spacing:.04em;text-transform:uppercase;text-decoration:none;
+    box-shadow:0 4px 20px rgba(232,48,58,.4);
+    transition:transform .18s ease, box-shadow .18s ease;
   }
-  .debate-header .dh-line{
-    flex:1;height:2px;background:rgba(0,160,160,.2);
-  }
-  .debate-sub{
-    font-family:'Saira',sans-serif;font-weight:600;
-    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--mute);margin-bottom:24px;
-  }
-  .debate-box{
-    background:#ffffff;
-    border:1px solid rgba(0,160,160,.2);
-    border-radius:8px;
-    padding:28px;
-    box-shadow:0 4px 18px var(--shadow);
-    min-height:200px;
-  }
-  /* Disqus override — force it to match our palette as much as possible */
-  #disqus_thread a{ color:var(--gold) !important; }
+  .debate-cta-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(232,48,58,.55);}
 
 
   /* ════════════════════════════════════════════════════
@@ -2169,20 +2154,10 @@
   <!-- ══════════════════════════════════════════════
        THE DEBATE SECTION
        ══════════════════════════════════════════════ -->
-  <div class="debate-section">
-
-    <div class="debate-header">
-      <h2>The Debate</h2>
-      <div class="dh-line"></div>
-    </div>
-    <div class="debate-sub">Argue freely · No wrong answers · Only strong opinions</div>
-
-    <div class="debate-box">
-      <div id="disqus_thread"></div>
-    </div>
-
+  <div class="debate-cta">
+    <div class="debate-cta-label">Argue freely · No wrong answers · Only strong opinions</div>
+    <a class="debate-cta-btn" href="comments.html">💬 Join the Debate →</a>
   </div>
-  <!-- ══ END DEBATE SECTION ══ -->
 
 
 <!-- ══ RACE ANIMATION OVERLAY ══ -->
@@ -4870,45 +4845,6 @@ function runSimulation(){
 })();
 
 
-/* ════════════════════════════════════════════════════════════════
-   DISQUS COMMENTS
-   ────────────────────────────────────────────────────────────────
-   HOW TO ACTIVATE (one-time, takes 2 minutes):
-   1. Go to https://disqus.com → click "Get Started" → sign up free
-   2. Choose "I want to install Disqus on my site"
-   3. Create a site — give it any name (e.g. "goat-simulator")
-   4. Copy the "shortname" Disqus gives you
-   5. Replace YOUR_DISQUS_SHORTNAME below with that shortname
-   6. Put your HTML file online (GitHub Pages / Netlify etc.)
-   That's it — comments will be live.
-   ════════════════════════════════════════════════════════════════ */
-(function() {
-  const SHORTNAME = 'YOUR_DISQUS_SHORTNAME'; // ← replace this
-
-  if(SHORTNAME === 'YOUR_DISQUS_SHORTNAME'){
-    // Show a friendly placeholder until set up
-    document.getElementById('disqus_thread').innerHTML = `
-      <div style="text-align:center;padding:32px 20px;font-family:'Saira',sans-serif">
-        <div style="font-family:'Archivo';font-weight:900;font-size:22px;color:var(--gold);text-transform:uppercase;letter-spacing:-.01em">
-          Comments Coming Soon
-        </div>
-        <div style="color:var(--mute);font-size:13px;margin-top:8px;letter-spacing:.06em;text-transform:uppercase;font-weight:600">
-          Set up your free Disqus shortname to activate the debate
-        </div>
-        <div style="margin-top:18px;display:inline-block;padding:10px 20px;background:var(--gold);color:#fff;border-radius:4px;font-family:'Saira';font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase">
-          <a href="https://disqus.com/profile/signup/" target="_blank" rel="noopener" style="color:#fff;text-decoration:none">
-            ↗ Create Free Disqus Account
-          </a>
-        </div>
-      </div>`;
-    return;
-  }
-
-  var d = document, s = d.createElement('script');
-  s.src = 'https://' + SHORTNAME + '.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();
 
 
 /* ════════════════════════════════════════════════════════════════

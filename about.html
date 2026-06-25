@@ -51,16 +51,17 @@
   .nav-divider{width:1px;height:22px;background:rgba(0,160,160,.25);flex-shrink:0;}
   .nav-tabs{display:flex;gap:4px;}
   .nav-tab{
-    font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--mute);text-decoration:none;padding:6px 16px;border-radius:4px;
-    border:1px solid transparent;transition:all .18s ease;white-space:nowrap;
+    font-family:'Saira',sans-serif;font-weight:900;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:#ffffff;text-decoration:none;padding:6px 14px;border-radius:5px;
+    border:1px solid rgba(59,130,246,.35);background:rgba(30,58,138,.5);
+    transition:all .18s ease;white-space:nowrap;
   }
-  .nav-tab:hover{color:#ffffff;background:rgba(232,48,58,.2);border-color:rgba(232,48,58,.4);}
-  .nav-tab.active{color:#ffffff;background:rgba(232,48,58,.35);border-color:rgba(232,48,58,.6);font-weight:800;}
+  .nav-tab:hover{background:rgba(37,99,235,.7);border-color:rgba(96,165,250,.6);color:#ffffff;}
+  .nav-tab.active{color:#ffffff;background:rgba(232,48,58,.85);border-color:rgba(232,48,58,.9);font-weight:900;}
   .nav-dropdown{position:relative;}
-  .nav-dropdown-btn{font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid transparent;padding:6px 16px;border-radius:4px;cursor:pointer;transition:all .18s ease;white-space:nowrap;display:flex;align-items:center;gap:5px;}
-  .nav-dropdown-btn:hover,.nav-dropdown:hover .nav-dropdown-btn{color:#ffffff;background:rgba(232,48,58,.2);border-color:rgba(232,48,58,.4);}
-  .nav-dropdown-btn.active{color:#ffffff;background:rgba(232,48,58,.35);border-color:rgba(232,48,58,.6);font-weight:800;}
+  .nav-dropdown-btn{font-family:'Saira',sans-serif;font-weight:900;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#ffffff;background:rgba(30,58,138,.5);border:1px solid rgba(59,130,246,.35);padding:6px 14px;border-radius:5px;cursor:pointer;transition:all .18s ease;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+  .nav-dropdown-btn:hover,.nav-dropdown:hover .nav-dropdown-btn{color:#ffffff;background:rgba(37,99,235,.7);border-color:rgba(96,165,250,.6);}
+  .nav-dropdown-btn.active{color:#ffffff;background:rgba(232,48,58,.85);border-color:rgba(232,48,58,.9);font-weight:900;}
   .nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;padding-top:4px;background:transparent;min-width:210px;z-index:500;}
   .nav-dropdown-menu-inner{background:#0d1f3c;border:2px solid rgba(59,130,246,.5);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.7);overflow:hidden;}
   .nav-dropdown-item{display:block;padding:12px 18px;font-family:'Saira',sans-serif;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#ffffff !important;text-decoration:none;transition:background .1s;border-bottom:1px solid rgba(59,130,246,.25);}
@@ -347,83 +348,83 @@
   }
   .feat-card:hover{transform:translateY(-6px);}
 
-  /* GOAT card */
-  .feat-goat{background:#2d0c0c;border:1px solid rgba(232,48,58,.5);box-shadow:0 8px 32px rgba(232,48,58,.2);}
-  .feat-goat:hover{box-shadow:0 16px 48px rgba(232,48,58,.4);}
+  /* GOAT card — light teal-white */
+  .feat-goat{background:#fff8f8;border:2px solid rgba(232,48,58,.25);border-top:4px solid #e8303a;box-shadow:0 6px 28px rgba(232,48,58,.12);}
+  .feat-goat:hover{box-shadow:0 14px 40px rgba(232,48,58,.22);}
   /* Discussion card */
-  .feat-discuss{background:#0c2a0c;border:1px solid rgba(34,197,94,.45);box-shadow:0 8px 32px rgba(34,197,94,.15);}
-  .feat-discuss:hover{box-shadow:0 16px 48px rgba(34,197,94,.32);}
+  .feat-discuss{background:#f4fff8;border:2px solid rgba(34,197,94,.25);border-top:4px solid #16a34a;box-shadow:0 6px 28px rgba(34,197,94,.1);}
+  .feat-discuss:hover{box-shadow:0 14px 40px rgba(34,197,94,.2);}
   /* Guide card */
-  .feat-guide{background:#0c0c2e;border:1px solid rgba(59,130,246,.45);box-shadow:0 8px 32px rgba(59,130,246,.15);overflow:hidden;}
-  .feat-guide:hover{box-shadow:0 16px 48px rgba(59,130,246,.32);}
+  .feat-guide{background:#f5f8ff;border:2px solid rgba(59,130,246,.25);border-top:4px solid #2563eb;box-shadow:0 6px 28px rgba(59,130,246,.1);overflow:hidden;}
+  .feat-guide:hover{box-shadow:0 14px 40px rgba(59,130,246,.2);}
   /* Drivers card */
-  .feat-drivers{background:#2a1800;border:1px solid rgba(240,160,0,.45);box-shadow:0 8px 32px rgba(240,160,0,.15);}
-  .feat-drivers:hover{box-shadow:0 16px 48px rgba(240,160,0,.32);}
+  .feat-drivers{background:#fffcf0;border:2px solid rgba(202,138,4,.25);border-top:4px solid #b45309;box-shadow:0 6px 28px rgba(202,138,4,.1);}
+  .feat-drivers:hover{box-shadow:0 14px 40px rgba(202,138,4,.2);}
 
-  .feat-header{padding:18px 20px 12px;display:flex;align-items:center;gap:10px;}
+  .feat-header{padding:18px 20px 10px;display:flex;align-items:center;gap:10px;}
   .feat-icon{font-size:22px;line-height:1;}
   .feat-title{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.04em;}
-  .feat-goat .feat-title{color:#e8303a;}
-  .feat-discuss .feat-title{color:#22c55e;}
-  .feat-guide .feat-title{color:#60a5fa;}
-  .feat-drivers .feat-title{color:#f0a000;}
+  .feat-goat .feat-title{color:#c8151e;}
+  .feat-discuss .feat-title{color:#15803d;}
+  .feat-guide .feat-title{color:#1d4ed8;}
+  .feat-drivers .feat-title{color:#92400e;}
 
-  .feat-brief{padding:0 20px 14px;font-family:'Saira',sans-serif;font-weight:600;font-size:11.5px;color:rgba(255,255,255,.6);letter-spacing:.04em;line-height:1.5;}
+  .feat-brief{padding:0 20px 14px;font-family:'Saira',sans-serif;font-weight:600;font-size:11.5px;color:#4a5568;letter-spacing:.03em;line-height:1.5;}
 
   .feat-body{flex:1;padding:0 20px 16px;}
 
   /* GOAT card — Hamilton stat bars */
-  .feat-stat-row{display:grid;grid-template-columns:80px 1fr 28px;align-items:center;gap:6px;margin-bottom:6px;}
-  .feat-stat-lbl{font-family:'Saira',sans-serif;font-weight:800;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);}
-  .feat-stat-bar{height:10px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+  .feat-stat-row{display:grid;grid-template-columns:80px 1fr 28px;align-items:center;gap:6px;margin-bottom:7px;}
+  .feat-stat-lbl{font-family:'Saira',sans-serif;font-weight:800;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#374151;}
+  .feat-stat-bar{height:10px;background:rgba(0,0,0,.08);border-radius:4px;overflow:hidden;}
   .feat-stat-fill{height:100%;border-radius:4px;}
-  .fsf-red{background:linear-gradient(90deg,#b81518,#e83030 55%,#ff7070);box-shadow:0 0 6px rgba(232,48,48,.5);}
-  .fsf-blue{background:linear-gradient(90deg,#1a5fd4,#3b8ef8 55%,#6ab4ff);box-shadow:0 0 6px rgba(59,142,248,.5);}
-  .fsf-gold{background:linear-gradient(90deg,#c47000,#f0a000 55%,#fdd05a);box-shadow:0 0 6px rgba(240,160,0,.5);}
-  .feat-stat-val{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#e83030;text-align:right;}
+  .fsf-red{background:linear-gradient(90deg,#b81518,#e83030 55%,#ff5050);}
+  .fsf-blue{background:linear-gradient(90deg,#1a5fd4,#3b8ef8 55%,#6ab4ff);}
+  .fsf-gold{background:linear-gradient(90deg,#c47000,#f0a000 55%,#fdd05a);}
+  .feat-stat-val{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#c8151e;text-align:right;}
 
-  .feat-driver-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(232,48,58,.15);border:1px solid rgba(232,48,58,.3);border-radius:6px;padding:4px 10px;margin-bottom:10px;}
+  .feat-driver-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(232,48,58,.08);border:1px solid rgba(232,48,58,.2);border-radius:6px;padding:4px 10px;margin-bottom:10px;}
   .feat-driver-flag{font-size:14px;}
-  .feat-driver-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#ffffff;}
+  .feat-driver-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#1a1a1a;}
   .feat-driver-num{font-family:'Space Mono',monospace;font-size:11px;color:#e83030;font-weight:700;}
 
   /* Discussion card — mock comments */
-  .feat-comment{background:rgba(255,255,255,.05);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:8px 10px;margin-bottom:7px;}
-  .feat-comment-user{font-family:'Saira',sans-serif;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#22c55e;margin-bottom:3px;}
-  .feat-comment-text{font-family:'Saira',sans-serif;font-weight:600;font-size:11px;color:rgba(255,255,255,.85);line-height:1.4;}
-  .feat-reply{background:rgba(255,255,255,.03);border-left:2px solid rgba(34,197,94,.4);border-radius:0 6px 6px 0;padding:6px 10px;margin-left:14px;margin-bottom:7px;}
-  .feat-reply-user{font-family:'Saira',sans-serif;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(34,197,94,.7);margin-bottom:2px;}
-  .feat-reply-text{font-family:'Saira',sans-serif;font-weight:600;font-size:10.5px;color:rgba(255,255,255,.65);line-height:1.4;}
+  .feat-comment{background:#ffffff;border:1px solid rgba(22,163,74,.2);border-radius:8px;padding:8px 10px;margin-bottom:7px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .feat-comment-user{font-family:'Saira',sans-serif;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#15803d;margin-bottom:3px;}
+  .feat-comment-text{font-family:'Saira',sans-serif;font-weight:600;font-size:11px;color:#1a1a1a;line-height:1.4;}
+  .feat-reply{background:#f0fdf4;border-left:3px solid rgba(22,163,74,.5);border-radius:0 6px 6px 0;padding:6px 10px;margin-left:14px;margin-bottom:7px;}
+  .feat-reply-user{font-family:'Saira',sans-serif;font-weight:800;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#16a34a;margin-bottom:2px;}
+  .feat-reply-text{font-family:'Saira',sans-serif;font-weight:600;font-size:10.5px;color:#374151;line-height:1.4;}
 
   /* Guide card — topics + checkered flag */
-  .feat-guide-bg{position:absolute;top:0;right:0;width:100px;height:100%;opacity:.06;background-image:repeating-conic-gradient(#fff 0% 25%,#000 0% 50%);background-size:16px 16px;pointer-events:none;}
-  .feat-topic{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(59,130,246,.1);}
+  .feat-guide-bg{position:absolute;top:0;right:0;width:90px;height:100%;opacity:.05;background-image:repeating-conic-gradient(#000 0% 25%,#fff 0% 50%);background-size:16px 16px;pointer-events:none;}
+  .feat-topic{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(59,130,246,.12);}
   .feat-topic:last-child{border-bottom:none;}
   .feat-topic-icon{font-size:13px;flex-shrink:0;}
-  .feat-topic-text{font-family:'Saira',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.85);letter-spacing:.03em;}
+  .feat-topic-text{font-family:'Saira',sans-serif;font-weight:700;font-size:11px;color:#1e3a6e;letter-spacing:.03em;}
 
   /* Know Your Drivers — retro Fangio */
   .feat-retro-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
-  .feat-retro-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid rgba(240,160,0,.5);flex-shrink:0;filter:sepia(.6) contrast(1.1);}
+  .feat-retro-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid rgba(180,83,9,.4);flex-shrink:0;filter:sepia(.5) contrast(1.1);}
   .feat-retro-photo img{width:100%;height:100%;object-fit:cover;object-position:top;}
-  .feat-retro-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:-.01em;color:#f0a000;line-height:1.1;}
-  .feat-retro-sub{font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:3px;}
+  .feat-retro-name{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:-.01em;color:#92400e;line-height:1.1;}
+  .feat-retro-sub{font-family:'Saira',sans-serif;font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#78716c;margin-top:3px;}
   .feat-retro-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-  .feat-retro-stat{background:rgba(240,160,0,.08);border:1px solid rgba(240,160,0,.2);border-radius:6px;padding:6px 8px;text-align:center;}
-  .feat-retro-num{font-family:'Space Mono',monospace;font-weight:700;font-size:16px;color:#f0a000;line-height:1;}
-  .feat-retro-lbl{font-family:'Saira',sans-serif;font-weight:700;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:2px;}
-  .feat-retro-era{margin-top:8px;font-family:'Saira',sans-serif;font-weight:700;font-size:10px;color:rgba(240,160,0,.6);letter-spacing:.1em;text-transform:uppercase;text-align:center;}
+  .feat-retro-stat{background:#fef3c7;border:1px solid rgba(180,83,9,.2);border-radius:6px;padding:6px 8px;text-align:center;}
+  .feat-retro-num{font-family:'Space Mono',monospace;font-weight:700;font-size:16px;color:#92400e;line-height:1;}
+  .feat-retro-lbl{font-family:'Saira',sans-serif;font-weight:700;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#78716c;margin-top:2px;}
+  .feat-retro-era{margin-top:8px;font-family:'Saira',sans-serif;font-weight:800;font-size:10px;color:#b45309;letter-spacing:.1em;text-transform:uppercase;text-align:center;}
 
   /* CTA footer on each card */
   .feat-cta{
     padding:12px 20px;display:flex;align-items:center;justify-content:space-between;
-    border-top:1px solid rgba(255,255,255,.06);margin-top:auto;
+    border-top:1px solid rgba(0,0,0,.07);margin-top:auto;
   }
-  .feat-cta-text{font-family:'Saira',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;}
-  .feat-goat .feat-cta-text{color:#e8303a;}
-  .feat-discuss .feat-cta-text{color:#22c55e;}
-  .feat-guide .feat-cta-text{color:#60a5fa;}
-  .feat-drivers .feat-cta-text{color:#f0a000;}
+  .feat-cta-text{font-family:'Saira',sans-serif;font-weight:900;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;}
+  .feat-goat .feat-cta-text{color:#c8151e;}
+  .feat-discuss .feat-cta-text{color:#15803d;}
+  .feat-guide .feat-cta-text{color:#1d4ed8;}
+  .feat-drivers .feat-cta-text{color:#92400e;}
   .feat-cta-arrow{font-size:16px;transition:transform .18s ease;}
   .feat-card:hover .feat-cta-arrow{transform:translateX(5px);}
 

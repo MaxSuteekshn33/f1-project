@@ -167,12 +167,12 @@
   .ratings{margin-top:14px;display:grid;gap:7px}
   .ratings .row{display:grid;grid-template-columns:22px 46px 1fr 32px;align-items:center;gap:6px}
   .ratings .icon{font-size:13px;text-align:center;line-height:1;flex-shrink:0}
-  .ratings .lbl{font-family:'Saira',sans-serif;font-weight:700;color:var(--mute);letter-spacing:.07em;font-size:9px;text-transform:uppercase}
+  .ratings .lbl{font-family:'Saira',sans-serif;font-weight:900;color:#0a0a0a;letter-spacing:.07em;font-size:9px;text-transform:uppercase}
 
   /* Dark track with fills that glow */
   .ratings .bar{
     height:14px;
-    background:#0d0d12;
+    background:#b0dcdc;
     border-radius:5px;
     overflow:hidden;
     border:1.5px solid rgba(0,160,160,.2);
@@ -210,13 +210,13 @@
                box-shadow:0 0 8px rgba(232,48,48,.5)}
 
   .ratings .val{
-    font-family:'Space Mono',monospace;text-align:right;font-size:11px;font-weight:700;
+    font-family:'Space Mono',monospace;text-align:right;font-size:12px;font-weight:900;
     transition:color .3s ease;letter-spacing:-.02em;
   }
-  .val-blue  {color:#6ab4ff}
-  .val-green {color:#4ade80}
-  .val-yellow{color:#fbbf24}
-  .val-red   {color:#ff6060}
+  .val-blue  {color:#1a5fd4}
+  .val-green {color:#0a8c3a}
+  .val-yellow{color:#c47000}
+  .val-red   {color:#cc1a1a}
 
   /* ── Custom Stat Sliders ── */
   .custom-stats-wrap{
@@ -258,10 +258,10 @@
   .cst-label{
     font-family:'Archivo',sans-serif;font-weight:900;
     font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    color:#f0f0f5;line-height:1.2;
+    color:#0a0a0a;line-height:1.2;
   }
   .cst-arrow{
-    font-size:20px;color:#f0f0f5;font-weight:900;
+    font-size:20px;color:#0a0a0a;font-weight:900;
     transition:transform .25s ease, box-shadow .25s ease;
     display:inline-flex;align-items:center;justify-content:center;
     margin-left:12px;line-height:1;
@@ -1895,9 +1895,9 @@
       <button id="nav-login-btn" onclick="openAuthModal()" style="background:var(--speed);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;cursor:pointer;letter-spacing:.04em;">Sign In</button>
       <div id="nav-user-info" style="display:none;align-items:center;gap:8px;">
         <img id="nav-user-avatar" src="" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--speed);object-fit:cover;display:none;">
-        <span id="nav-user-name" style="font-size:13px;color:#0d1220;font-weight:800;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        <button onclick="openDashboard()" style="background:transparent;color:var(--p1);border:1px solid var(--p1);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:700;">Dashboard</button>
-        <button onclick="signOutUser()" style="background:transparent;color:var(--mute);border:1px solid rgba(0,160,160,.25);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;">Sign Out</button>
+        <span id="nav-user-name" style="font-size:13px;color:#ffffff;font-weight:800;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <button onclick="openDashboard()" style="background:#e8303a;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;font-weight:800;">Dashboard</button>
+        <button onclick="signOutUser()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;font-weight:700;">Sign Out</button>
       </div>
     </div>
   </div>
@@ -4650,7 +4650,7 @@ function runSimulation(){
   const pg = document.getElementById('page-glow');
   pg.classList.remove('active');
   document.getElementById('team-streak').classList.remove('swoosh');
-  document.documentElement.style.setProperty('--carbon','#E8E8E8');
+  document.documentElement.style.setProperty('--carbon','#e0f4f4');
   runBtn.disabled=true; runBtn.textContent='Simulating…';
   document.getElementById('runsub').textContent='Running 100,000 races…';
 

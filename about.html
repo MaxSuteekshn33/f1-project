@@ -348,17 +348,17 @@
   .feat-card:hover{transform:translateY(-6px);}
 
   /* GOAT card */
-  .feat-goat{background:#0a0a0a;border:1px solid rgba(232,48,58,.35);box-shadow:0 8px 32px rgba(232,48,58,.2);}
-  .feat-goat:hover{box-shadow:0 16px 48px rgba(232,48,58,.35);}
+  .feat-goat{background:#2d0c0c;border:1px solid rgba(232,48,58,.5);box-shadow:0 8px 32px rgba(232,48,58,.2);}
+  .feat-goat:hover{box-shadow:0 16px 48px rgba(232,48,58,.4);}
   /* Discussion card */
-  .feat-discuss{background:#0d1a0d;border:1px solid rgba(34,197,94,.3);box-shadow:0 8px 32px rgba(34,197,94,.15);}
-  .feat-discuss:hover{box-shadow:0 16px 48px rgba(34,197,94,.28);}
+  .feat-discuss{background:#0c2a0c;border:1px solid rgba(34,197,94,.45);box-shadow:0 8px 32px rgba(34,197,94,.15);}
+  .feat-discuss:hover{box-shadow:0 16px 48px rgba(34,197,94,.32);}
   /* Guide card */
-  .feat-guide{background:#0a0a1a;border:1px solid rgba(59,130,246,.3);box-shadow:0 8px 32px rgba(59,130,246,.15);overflow:hidden;}
-  .feat-guide:hover{box-shadow:0 16px 48px rgba(59,130,246,.28);}
+  .feat-guide{background:#0c0c2e;border:1px solid rgba(59,130,246,.45);box-shadow:0 8px 32px rgba(59,130,246,.15);overflow:hidden;}
+  .feat-guide:hover{box-shadow:0 16px 48px rgba(59,130,246,.32);}
   /* Drivers card */
-  .feat-drivers{background:#1a1000;border:1px solid rgba(240,160,0,.3);box-shadow:0 8px 32px rgba(240,160,0,.15);}
-  .feat-drivers:hover{box-shadow:0 16px 48px rgba(240,160,0,.28);}
+  .feat-drivers{background:#2a1800;border:1px solid rgba(240,160,0,.45);box-shadow:0 8px 32px rgba(240,160,0,.15);}
+  .feat-drivers:hover{box-shadow:0 16px 48px rgba(240,160,0,.32);}
 
   .feat-header{padding:18px 20px 12px;display:flex;align-items:center;gap:10px;}
   .feat-icon{font-size:22px;line-height:1;}
@@ -451,6 +451,7 @@
     <a class="nav-brand" href="index.html">F1 Project</a>
     <div class="nav-divider"></div>
     <div class="nav-tabs">
+      <a class="nav-tab active" href="about.html">🏠 Home</a>
       <div class="nav-dropdown">
         <button class="nav-dropdown-btn">🐐 Who is the GOAT? ▾</button>
         <div class="nav-dropdown-menu">
@@ -469,7 +470,6 @@
           </div>
         </div>
       </div>
-      <a class="nav-tab active" href="about.html">👤 About</a>
     </div>
   </div>
 </nav>
@@ -658,7 +658,7 @@
               <img src="HIPPOS.jpeg" alt="HIPPOS">
             </div>
             <div class="card-hippos-name">HIPPOS</div>
-            <div class="card-hippos-sub">Founder · 6500+ Community</div>
+            <div class="card-hippos-sub">Founder of HIPPOS</div>
           </div>
         </div>
 
@@ -696,10 +696,10 @@
             <span class="cs-val val-purple">92</span>
           </div>
           <div class="card-stat-row">
-            <span class="cs-icon">🎯</span>
-            <span class="cs-lbl">CGPA</span>
-            <div class="cs-bar"><span class="cs-fill fill-blue" style="width:86%"></span></div>
-            <span class="cs-val val-blue">8.6</span>
+            <span class="cs-icon">∞</span>
+            <span class="cs-lbl">Overthinking</span>
+            <div class="cs-bar"><span class="cs-fill fill-purple" style="width:100%"></span></div>
+            <span class="cs-val val-purple">∞</span>
           </div>
         </div>
 
@@ -761,6 +761,20 @@
     </div>
   </div>
 
+  <!-- ── LINKEDIN CTA ── -->
+  <div style="max-width:700px;margin:-20px auto 40px;">
+    <a class="connect-card linkedin" href="https://www.linkedin.com/in/suteekshn-mahajan-443226172?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener" style="text-decoration:none;">
+      <div class="cc-icon linkedin-bg">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </div>
+      <div class="cc-body">
+        <div class="cc-label">LinkedIn</div>
+        <div class="cc-sub">Suteekshn Mahajan · Connect &amp; Collaborate</div>
+      </div>
+      <span class="cc-arrow">→</span>
+    </a>
+  </div>
+
   <!-- ── ABOUT TEXT ── -->
   <div class="about-section">
     <div class="section-kicker">The Story</div>
@@ -790,23 +804,6 @@
       <p>For someone who says he tends to stammer, I think I am doing a pretty good job creating those <strong>1hr+ long livestreams on YouTube</strong>, discussing and engaging on Geopolitics.</p>
       <span class="quote-pull">"You need to be right only ONE time — but to get that ONE time you need to go out and do the hard bit." — Mark Cuban</span>
       <p>If you have read this till here, you are a legend. I am <strong>Suteekshn Mahajan</strong> — an overthinker that has tried to convert his curiosity and problem-solving skills into a community of <strong>more than 6500 members</strong> across multiple platforms, talking and interacting on Geopolitics, World History and Philosophy.</p>
-    </div>
-  </div>
-
-  <!-- ── CONNECT ── -->
-  <div class="connect-section">
-    <div class="section-kicker">Connect &amp; Contact</div>
-    <div class="connect-grid">
-      <a class="connect-card linkedin" href="https://www.linkedin.com/in/suteekshn-mahajan-443226172?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener">
-        <div class="cc-icon linkedin-bg">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        </div>
-        <div class="cc-body">
-          <div class="cc-label">LinkedIn</div>
-          <div class="cc-sub">Suteekshn Mahajan · Connect &amp; Collaborate</div>
-        </div>
-        <span class="cc-arrow">→</span>
-      </a>
     </div>
   </div>
 

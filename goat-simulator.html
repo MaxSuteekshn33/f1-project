@@ -1872,10 +1872,12 @@
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
       <button id="nav-login-btn" onclick="openAuthModal()" style="background:var(--speed);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;cursor:pointer;letter-spacing:.04em;">Sign In</button>
       <div id="nav-user-info" style="display:none;align-items:center;gap:8px;">
-        <img id="nav-user-avatar" src="" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--speed);object-fit:cover;display:none;">
-        <span id="nav-user-name" style="font-size:13px;color:#ffffff;font-weight:800;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        <button onclick="openDashboard()" style="background:#e8303a;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;font-weight:800;">Dashboard</button>
-        <button onclick="signOutUser()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;font-weight:700;">Sign Out</button>
+        <button onclick="openDashboard()" style="display:flex;align-items:center;gap:8px;background:rgba(30,58,138,.85);border:1px solid rgba(96,165,250,.5);border-radius:8px;padding:5px 12px 5px 6px;cursor:pointer;">
+          <img id="nav-user-avatar" src="" style="width:26px;height:26px;border-radius:50%;border:2px solid rgba(96,165,250,.7);object-fit:cover;display:none;">
+          <div id="nav-user-avatar-initial" style="width:26px;height:26px;border-radius:50%;background:var(--speed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;font-family:'Archivo',sans-serif;flex-shrink:0;"></div>
+          <span style="font-size:11px;color:#ffffff;font-weight:800;font-family:'Archivo',sans-serif;letter-spacing:.04em;">Dashboard</span>
+        </button>
+        <button onclick="signOutUser()" style="background:transparent;color:rgba(255,255,255,.5);border:none;font-size:10px;cursor:pointer;font-family:'Saira',sans-serif;padding:4px;">Sign Out</button>
       </div>
     </div>
   </div>
@@ -1920,6 +1922,7 @@
       <div id="dash-avatar-initial" style="width:52px;height:52px;border-radius:50%;background:var(--speed);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;font-family:'Archivo',sans-serif;"></div>
       <div>
         <h2 id="dash-name" style="font-family:'Archivo',sans-serif;font-size:18px;font-weight:900;color:var(--ink);"></h2>
+        <p id="dash-hey" style="font-family:'Archivo',sans-serif;font-size:13px;font-weight:700;color:var(--speed);margin-top:2px;"></p>
         <p id="dash-email" style="color:var(--mute);font-size:12px;"></p>
       </div>
     </div>
@@ -5492,11 +5495,13 @@ document.getElementById('era-btn').addEventListener('click', function(){
       document.getElementById('nav-login-btn').style.display = 'none';
       const ui = document.getElementById('nav-user-info');
       ui.style.display = 'flex';
-      document.getElementById('nav-user-name').textContent = user.displayName || user.email.split('@')[0];
+      const initial = (user.displayName || user.email)[0].toUpperCase();
+      document.getElementById('nav-user-avatar-initial').textContent = initial;
       if (user.photoURL) {
         const av = document.getElementById('nav-user-avatar');
         av.src = user.photoURL;
         av.style.display = 'block';
+        document.getElementById('nav-user-avatar-initial').style.display = 'none';
       }
       // ensure user doc exists
       const ref = doc(db, 'users', user.uid);
@@ -5517,7 +5522,9 @@ document.getElementById('era-btn').addEventListener('click', function(){
     if (!currentUser) return;
     const snap = await getDoc(doc(db, 'users', currentUser.uid));
     const d = snap.data() || {};
-    document.getElementById('dash-name').textContent = currentUser.displayName || currentUser.email.split('@')[0];
+    const userName = currentUser.displayName || currentUser.email.split('@')[0];
+    document.getElementById('dash-name').textContent = userName;
+    document.getElementById('dash-hey').textContent = `Hey ${userName}! 👋`;
     document.getElementById('dash-email').textContent = currentUser.email;
     document.getElementById('dash-sims').textContent = d.simsRun || 0;
     document.getElementById('dash-wins').textContent = d.favWins || 0;

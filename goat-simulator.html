@@ -2880,7 +2880,7 @@ function isLocked(key){
 const DRIVER_QUIZZES = {
   verstappen:{questions:[
     {q:"Which country does Max Verstappen represent?",opts:["Netherlands","Belgium","Germany","Austria"],a:0},
-    {q:"What is Max Verstappen's current race number?",opts:["1","33","3","44"],a:0},
+    {q:"What is Max Verstappen's famous race number?",opts:["33","1","3","44"],a:0},
     {q:"Which team made Max's F1 debut?",opts:["Toro Rosso","Red Bull","McLaren","Williams"],a:0},
     {q:"In which year did Max make his F1 debut?",opts:["2015","2014","2016","2017"],a:0},
     {q:"Which team did Max join in 2016?",opts:["Red Bull Racing","Ferrari","Mercedes","Force India"],a:0},
@@ -3269,7 +3269,7 @@ function buildDriverGrid(slot){
 
     card.addEventListener('click', ()=>{
       if(locked){
-        openDriverPreview(key);
+        openDriverPreview(key, slot);
       } else {
         sel.value = key;
         sel.dispatchEvent(new Event('change'));
@@ -3299,7 +3299,7 @@ function openDriverPicker(slot){
       const key = card.dataset.key;
       if(card.classList.contains('dg-locked')){
         closeDriverPicker();
-        openDriverPreview(key);
+        openDriverPreview(key, slot);
       } else {
         const sel = slot === 1 ? d1 : d2;
         sel.value = key;
@@ -3323,9 +3323,11 @@ function closeDriverPicker(){
    DRIVER PREVIEW MODAL
    ════════════════════════════════════════════════════════════════ */
 let currentPreviewKey = null;
+let currentPreviewSlot = 1;
 
-function openDriverPreview(key){
+function openDriverPreview(key, slot){
   currentPreviewKey = key;
+  currentPreviewSlot = slot || 1;
   const drv = DRIVERS[key];
   document.getElementById('dpb-title').textContent = drv.name;
   document.getElementById('dpb-photo').src = drv.photo || '';
@@ -3580,8 +3582,9 @@ function showQuizResult(){
   body.querySelector('#qrb-play-btn')?.addEventListener('click', ()=>{
     document.getElementById('quizOverlay').classList.remove('open');
     buildDriverGrid(1); buildDriverGrid(2);
-    d1.value = currentQuizKey;
-    d1.dispatchEvent(new Event('change'));
+    const targetSel = currentPreviewSlot === 2 ? d2 : d1;
+    targetSel.value = currentQuizKey;
+    targetSel.dispatchEvent(new Event('change'));
     buildDriverGrid(1); buildDriverGrid(2);
   });
   body.querySelector('#qrb-retry-btn')?.addEventListener('click', ()=> openQuiz(currentQuizKey));

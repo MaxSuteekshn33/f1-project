@@ -1328,6 +1328,7 @@
   }
   .nav-tab:hover{background:rgba(37,99,235,.8);border-color:rgba(96,165,250,.7);color:#ffffff;}
   .nav-tab.active{color:#ffffff;background:rgba(232,48,58,.9);border-color:rgba(232,48,58,1);font-weight:900;}
+  #hero-cta:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(232,48,58,.6);}
   /* Dropdown nav */
   .nav-dropdown{ position:relative; }
   .nav-dropdown-btn{
@@ -2030,9 +2031,19 @@
     <div class="kicker">— Equal Machinery · 100,000 Race Simulation —</div>
     <h1>The <span class="goat">G.O.A.T</span> Simulator</h1>
     <div class="sub">Put any two legends in the same car. Settle the debate.</div>
+    <a href="#setup-section" id="hero-cta" onclick="event.preventDefault();document.getElementById('setup-section').scrollIntoView({behavior:'smooth',block:'start'});"
+      style="display:inline-flex;align-items:center;gap:10px;margin-top:22px;
+             background:#e8303a;color:#fff;border:none;border-radius:10px;
+             padding:14px 32px;font-family:'Archivo',sans-serif;font-weight:900;
+             font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+             text-decoration:none;cursor:pointer;
+             box-shadow:0 6px 24px rgba(232,48,58,.45);
+             transition:transform .15s ease,box-shadow .15s ease;">
+      Start Simulating &nbsp;→
+    </a>
   </header>
 
-  <div class="setup">
+  <div class="setup" id="setup-section">
     <div class="pick p1">
       <label>Driver One</label>
       <div class="driver-face" id="face1">
@@ -2275,6 +2286,7 @@
       </svg>
     </div>
     <div class="ro-status" id="ro-status">SIMULATING 100,000 RACES</div>
+    <div id="ro-race-counter" style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.08em;margin-top:6px;text-align:center;"></div>
     <div class="ro-dots-loader"><span></span><span></span><span></span></div>
   </div>
 </div>
@@ -5033,6 +5045,25 @@ function runRaceAnimation(driverA, driverB, pA, pB, trackKey, onComplete){
   statusEl.classList.remove('complete');
   statusEl.textContent = 'SIMULATING 100,000 RACES';
 
+  /* ── Live race counter ── */
+  const counterEl = document.getElementById('ro-race-counter');
+  const TOTAL_RACES = 100000;
+  counterEl.textContent = 'Race 0 of 100,000';
+  let counterStart = performance.now();
+  const COUNTER_DURATION = 4600; // slightly shorter than animation so it hits 100k before finish
+  let counterFrame;
+  function tickCounter(now){
+    const elapsed = now - counterStart;
+    const progress = Math.min(elapsed / COUNTER_DURATION, 1);
+    // ease-out so it slows near 100,000 — feels dramatic
+    const eased = 1 - Math.pow(1 - progress, 2);
+    const count = Math.floor(eased * TOTAL_RACES);
+    counterEl.textContent = `Race ${count.toLocaleString()} of 100,000`;
+    if(progress < 1) counterFrame = requestAnimationFrame(tickCounter);
+    else counterEl.textContent = 'Race 100,000 of 100,000';
+  }
+  counterFrame = requestAnimationFrame(tickCounter);
+
   const DURATION = 4800;
   const fallbackTimer = setTimeout(()=>{
     overlay.classList.remove('active','fade-out');
@@ -5041,6 +5072,8 @@ function runRaceAnimation(driverA, driverB, pA, pB, trackKey, onComplete){
 
   function finishRace(){
     clearTimeout(fallbackTimer);
+    cancelAnimationFrame(counterFrame);
+    counterEl.textContent = 'Race 100,000 of 100,000 ✓';
     statusEl.classList.add('complete');
     statusEl.textContent = (pA>=pB ? driverA.name : driverB.name).toUpperCase() + ' TAKES IT';
     setTimeout(()=>{

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIER Animation Prototype — The F1 Project</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#04030a;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'JetBrains Mono',monospace;overflow:hidden;}
+  canvas{display:block;width:100%;max-width:1100px;height:auto;}
+  .controls{position:fixed;bottom:28px;display:flex;gap:12px;align-items:center;}
+  .btn{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+    color:rgba(255,255,255,.6);padding:8px 22px;border-radius:10px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;cursor:pointer;transition:all .18s ease;
+  }
+  .btn:hover{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3);}
+  .label{color:rgba(255,255,255,.2);font-size:10px;letter-spacing:.18em;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="controls">
+  <span class="label">prototype</span>
+  <button class="btn" onclick="restart()">↺ Replay</button>
+  <button class="btn" onclick="skipToRace()">⏩ Skip to Race</button>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+const W = canvas.width  = 1100;
+const H = canvas.height = 396;
+
+// ─── Easing ───────────────────────────────────────────────
+const easeOutQuart  = t => 1 - Math.pow(1-t, 4);
+const easeInQuart   = t => t * t * t * t;
+const easeInOutCubic= t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+const lerp          = (a,b,t) => a + (b-a)*t;
+const clamp         = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+
+// ─── Phase timings (seconds) ──────────────────────────────
+const PHASES = {
+  FADE_IN:     { start: 0,    dur: 0.4  },
+  TIER_IN:     { start: 0.4,  dur: 0.9  },
+  TIER_HOLD:   { start: 1.3,  dur: 0.7  },
+  EXPLODE:     { start: 2.0,  dur: 0.7  },
+  CONVERGE:    { start: 2.7,  dur: 1.1  },
+  CAR_FORM:    { start: 3.8,  dur: 0.5  },
+  RACE:        { start: 4.3,  dur: 3.0  },
+  FADE_OUT:    { start: 7.3,  dur: 0.7  },
+};
+const TOTAL = 8.0;
+
+// ─── State ────────────────────────────────────────────────
+let startTime = null;
+let animId    = null;
+let particles = [];
+let dustParts = [];
+let textPts   = [];
+let carPts    = [];
+let carX      = 0;   // car offset during race phase
+let raceStartCarX = 0;
+
+const PARTICLE_COUNT = 1800;
+const SCALE = W / 1100;
+
+// ─── F1 Car polygon (side view, pointing right) ───────────
+function carPolygon(cx, cy) {
+  const s = SCALE;
+  return [
+    // Nose tip
+    [cx+370*s, cy+10*s],
+    // Front wing (upper surface)
+    [cx+340*s, cy-8*s],
+    [cx+280*s, cy-14*s],
+    // Body rising to cockpit
+    [cx+200*s, cy-22*s],
+    [cx+120*s, cy-28*s],
+    // Cockpit
+    [cx+60*s,  cy-68*s],
+    [cx+10*s,  cy-82*s],
+    [cx-50*s,  cy-82*s],
+    [cx-100*s, cy-65*s],
+    // Engine / rear body
+    [cx-140*s, cy-38*s],
+    [cx-220*s, cy-42*s],
+    [cx-290*s, cy-55*s],
+    // Rear wing
+    [cx-320*s, cy-100*s],
+    [cx-355*s, cy-100*s],
+    [cx-355*s, cy-55*s],
+    // Rear diffuser
+    [cx-395*s, cy-15*s],
+    // Rear lower
+    [cx-395*s, cy+25*s],
+    // Rear wheel arch cutout
+    [cx-360*s, cy+25*s],
+    [cx-310*s, cy+52*s],
+    [cx-250*s, cy+52*s],
+    [cx-200*s, cy+25*s],
+    // Flat floor
+    [cx-80*s,  cy+25*s],
+    // Front wheel arch cutout
+    [cx+60*s,  cy+25*s],
+    [cx+110*s, cy+52*s],
+    [cx+165*s, cy+52*s],
+    [cx+215*s, cy+25*s],
+    // Front wing lower
+    [cx+290*s, cy+25*s],
+    [cx+350*s, cy+18*s],
+    [cx+370*s, cy+10*s],
+  ];
+}
+
+// ─── Point-in-polygon (ray casting) ──────────────────────
+function pointInPoly(px, py, poly) {
+  let inside = false;
+  for (let i=0, j=poly.length-1; i<poly.length; j=i++) {
+    const xi=poly[i][0], yi=poly[i][1];
+    const xj=poly[j][0], yj=poly[j][1];
+    if (((yi>py) !== (yj>py)) && (px < (xj-xi)*(py-yi)/(yj-yi)+xi))
+      inside = !inside;
+  }
+  return inside;
+}
+
+// ─── Sample random points inside car polygon ─────────────
+function sampleCarPoints(n) {
+  const cx = W * 0.5, cy = H * 0.48;
+  const poly = carPolygon(cx, cy);
+  const pts  = [];
+  const minX = Math.min(...poly.map(p=>p[0]));
+  const maxX = Math.max(...poly.map(p=>p[0]));
+  const minY = Math.min(...poly.map(p=>p[1]));
+  const maxY = Math.max(...poly.map(p=>p[1]));
+  let tries = 0;
+  while (pts.length < n && tries < n * 30) {
+    const x = minX + Math.random()*(maxX-minX);
+    const y = minY + Math.random()*(maxY-minY);
+    if (pointInPoly(x, y, poly)) pts.push({x, y});
+    tries++;
+  }
+  return pts;
+}
+
+// ─── Sample text "TIER" pixels ────────────────────────────
+function sampleTextPoints(n) {
+  const off = document.createElement('canvas');
+  off.width  = W;
+  off.height = H;
+  const oc = off.getContext('2d');
+  const fontSize = Math.floor(H * 0.58);
+  oc.fillStyle = '#fff';
+  oc.font = `800 ${fontSize}px 'Archivo Narrow', sans-serif`;
+  oc.textAlign    = 'center';
+  oc.textBaseline = 'middle';
+  oc.fillText('TIER', W/2, H/2);
+
+  const data = oc.getImageData(0, 0, W, H).data;
+  const all  = [];
+  const step = 3;
+  for (let y=0; y<H; y+=step) {
+    for (let x=0; x<W; x+=step) {
+      if (data[(y*W+x)*4+3] > 100) all.push({x, y});
+    }
+  }
+  // Random subsample
+  const pts = [];
+  while (pts.length < n && all.length > 0) {
+    const i = Math.floor(Math.random()*all.length);
+    pts.push(all.splice(i,1)[0]);
+  }
+  return pts;
+}
+
+// ─── Particle class ───────────────────────────────────────
+class Particle {
+  constructor(i) {
+    this.i   = i;
+    this.reset();
+  }
+  reset() {
+    // Start scattered off-screen
+    const angle = Math.random()*Math.PI*2;
+    const dist  = W * (0.6 + Math.random()*0.5);
+    this.x  = W/2 + Math.cos(angle)*dist;
+    this.y  = H/2 + Math.sin(angle)*dist;
+    this.vx = 0; this.vy = 0;
+    this.tx = this.x; this.ty = this.y;
+    this.size  = 1.2 + Math.random()*1.4;
+    this.alpha = 0;
+    this.color = this._pickColor();
+    this.explodeVx = 0; this.explodeVy = 0;
+    this.phase = 'idle';
+  }
+  _pickColor() {
+    const r = Math.random();
+    if (r < 0.55) return '#e8303a';       // F1 red
+    if (r < 0.78) return '#ff7f50';       // orange-red
+    if (r < 0.90) return '#ffffff';       // white
+    return '#ffd700';                      // gold
+  }
+  setTarget(tx, ty) { this.tx=tx; this.ty=ty; }
+  update(dt, phase, t) {
+    if (phase === 'idle') { this.alpha=0; return; }
+
+    if (phase === 'text') {
+      // Spring toward text target
+      const dx=this.tx-this.x, dy=this.ty-this.y;
+      this.vx += dx*0.18; this.vy += dy*0.18;
+      this.vx *= 0.72;    this.vy *= 0.72;
+      this.x += this.vx;  this.y += this.vy;
+      this.alpha = clamp(t*3, 0, 1);
+    }
+
+    if (phase === 'explode') {
+      // Fly outward
+      this.x += this.explodeVx * dt * 60;
+      this.y += this.explodeVy * dt * 60;
+      this.alpha = clamp(1 - t*1.2, 0, 1);
+    }
+
+    if (phase === 'converge') {
+      // Spring toward car target
+      const dx=this.tx-this.x, dy=this.ty-this.y;
+      this.vx += dx*0.12; this.vy += dy*0.12;
+      this.vx *= 0.78;    this.vy *= 0.78;
+      this.x += this.vx;  this.y += this.vy;
+      this.alpha = clamp(t*2, 0, 0.9);
+    }
+
+    if (phase === 'race') {
+      // Drift slightly — particles are locked to car shape, just follow carX
+      const dx=this.tx-this.x, dy=this.ty-this.y;
+      this.vx += dx*0.22; this.vy += dy*0.22;
+      this.vx *= 0.70;    this.vy *= 0.70;
+      this.x += this.vx;  this.y += this.vy;
+      this.alpha = 0.88;
+    }
+  }
+  draw(ctx) {
+    if (this.alpha <= 0) return;
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle   = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+// ─── Dust particle ────────────────────────────────────────
+class Dust {
+  constructor(x, y) {
+    this.x  = x; this.y  = y;
+    this.vx = -(2 + Math.random()*4);
+    this.vy = (Math.random()-0.5)*1.5;
+    this.r  = 2 + Math.random()*5;
+    this.alpha = 0.5 + Math.random()*0.3;
+    this.life  = 0;
+    this.maxLife = 40 + Math.random()*40;
+    this.color = Math.random() < 0.5 ? '#888' : '#c8a96e';
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.r  += 0.15;
+    this.life++;
+    this.alpha *= 0.96;
+    this.vx  *= 0.97;
+  }
+  draw(ctx) {
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle   = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+    ctx.fill();
+  }
+  dead() { return this.life > this.maxLife || this.alpha < 0.01; }
+}
+
+// ─── Init ─────────────────────────────────────────────────
+function init() {
+  textPts = sampleTextPoints(PARTICLE_COUNT);
+  carPts  = sampleCarPoints(PARTICLE_COUNT);
+
+  particles = Array.from({length: PARTICLE_COUNT}, (_,i) => new Particle(i));
+
+  // Assign text targets
+  particles.forEach((p, i) => {
+    const tp = textPts[i % textPts.length];
+    p.tx = tp.x; p.ty = tp.y;
+    // Start near their text target but scattered a bit
+    p.x = tp.x + (Math.random()-0.5)*W*0.8;
+    p.y = tp.y + (Math.random()-0.5)*H*0.8;
+  });
+
+  // Assign explode velocities (radial burst + upward swirl)
+  particles.forEach(p => {
+    const angle = Math.atan2(p.ty - H/2, p.tx - W/2) + (Math.random()-0.5)*1.2;
+    const speed = 3 + Math.random()*5;
+    p.explodeVx = Math.cos(angle)*speed;
+    p.explodeVy = Math.sin(angle)*speed - 1.5; // slight upward bias
+  });
+
+  dustParts = [];
+  carX = 0;
+  raceStartCarX = 0;
+}
+
+// ─── Draw track line ─────────────────────────────────────
+function drawTrack(t) {
+  const y  = H * 0.76;
+  const s  = SCALE;
+  ctx.globalAlpha = Math.min(t*3, 1) * 0.35;
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth   = 2*s;
+  ctx.setLineDash([18*s, 12*s]);
+  ctx.beginPath();
+  ctx.moveTo(0, y);
+  ctx.lineTo(W, y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Track border lines
+  ctx.globalAlpha = Math.min(t*3, 1) * 0.12;
+  ctx.lineWidth = 1*s;
+  ctx.beginPath(); ctx.moveTo(0,y-18*s); ctx.lineTo(W,y-18*s); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,y+18*s); ctx.lineTo(W,y+18*s); ctx.stroke();
+}
+
+// ─── Draw car outline ─────────────────────────────────────
+function drawCarOutline(cx, cy, alpha) {
+  const s    = SCALE;
+  const poly = carPolygon(cx, cy);
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = '#e8303a';
+  ctx.lineWidth   = 1.5*s;
+  ctx.shadowColor = '#e8303a';
+  ctx.shadowBlur  = 18*s;
+  ctx.beginPath();
+  poly.forEach(([x,y],i) => i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y));
+  ctx.closePath();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Wheels
+  const wheels = [
+    [cx+138*s, cy+36*s, 20*s],
+    [cx-275*s, cy+36*s, 22*s],
+  ];
+  wheels.forEach(([wx,wy,wr]) => {
+    ctx.beginPath();
+    ctx.arc(wx, wy, wr, 0, Math.PI*2);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth   = 1.5*s;
+    ctx.globalAlpha = alpha * 0.7;
+    ctx.stroke();
+  });
+  ctx.shadowBlur = 0;
+}
+
+// ─── Draw TIER text ───────────────────────────────────────
+function drawTierText(x, alpha, glow) {
+  const s    = SCALE;
+  const size = Math.floor(H * 0.58);
+  ctx.globalAlpha = alpha;
+  if (glow > 0) {
+    ctx.shadowColor = '#e8303a';
+    ctx.shadowBlur  = 60 * glow * s;
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.font      = `800 ${size}px 'Archivo Narrow', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('TIER', W/2 + x, H/2);
+  ctx.shadowBlur = 0;
+}
+
+// ─── Draw speed lines ─────────────────────────────────────
+function drawSpeedLines(cx, cy, alpha) {
+  const s = SCALE;
+  ctx.globalAlpha = alpha * 0.25;
+  ctx.strokeStyle = '#e8303a';
+  ctx.lineWidth   = 1.2 * s;
+  for (let i=0; i<8; i++) {
+    const yOff = (i-4)*14*s;
+    const len  = 80*s + Math.random()*60*s;
+    ctx.beginPath();
+    ctx.moveTo(cx - 420*s, cy + yOff);
+    ctx.lineTo(cx - 420*s - len, cy + yOff);
+    ctx.stroke();
+  }
+}
+
+// ─── Draw start/finish flash ──────────────────────────────
+function drawFinishFlash(alpha) {
+  if (alpha <= 0) return;
+  const s  = SCALE;
+  const sq = 24*s;
+  const rows = Math.ceil(H/sq)+1;
+  const cols = Math.ceil(W/sq)+1;
+  ctx.globalAlpha = alpha * 0.08;
+  for (let r=0; r<rows; r++) {
+    for (let c=0; c<cols; c++) {
+      if ((r+c)%2===0) {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(c*sq, r*sq, sq, sq);
+      }
+    }
+  }
+}
+
+// ─── Main render loop ─────────────────────────────────────
+function render(ts) {
+  if (!startTime) startTime = ts;
+  const elapsed = (ts - startTime) / 1000;
+  const t = elapsed;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background fade in
+  const bgAlpha = clamp(1 - easeOutQuart(clamp(t/PHASES.FADE_IN.dur,0,1)) * 0, 0, 1);
+  ctx.fillStyle = '#04030a';
+  ctx.globalAlpha = 1;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle ambient gradient
+  ctx.globalAlpha = 0.5;
+  const grd = ctx.createRadialGradient(W*0.5, H*0.5, 0, W*0.5, H*0.5, W*0.6);
+  grd.addColorStop(0,   'rgba(140,40,40,.18)');
+  grd.addColorStop(0.5, 'rgba(60,20,80,.12)');
+  grd.addColorStop(1,   'transparent');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+  ctx.globalAlpha = 1;
+
+  // ── PHASE: TIER_IN ──────────────────────────────────────
+  const tierInT  = clamp((t - PHASES.TIER_IN.start) / PHASES.TIER_IN.dur, 0, 1);
+  const tierHoldT= clamp((t - PHASES.TIER_HOLD.start) / PHASES.TIER_HOLD.dur, 0, 1);
+  const explodeT = clamp((t - PHASES.EXPLODE.start) / PHASES.EXPLODE.dur, 0, 1);
+  const convergeT= clamp((t - PHASES.CONVERGE.start) / PHASES.CONVERGE.dur, 0, 1);
+  const carFormT = clamp((t - PHASES.CAR_FORM.start) / PHASES.CAR_FORM.dur, 0, 1);
+  const raceT    = clamp((t - PHASES.RACE.start) / PHASES.RACE.dur, 0, 1);
+  const fadeOutT = clamp((t - PHASES.FADE_OUT.start) / PHASES.FADE_OUT.dur, 0, 1);
+
+  const globalFade = 1 - easeInQuart(fadeOutT);
+
+  // ── Draw TIER text (before explosion) ───────────────────
+  if (t < PHASES.EXPLODE.start + 0.1) {
+    const slideX  = lerp(-W*0.55, 0, easeOutQuart(tierInT));
+    const textAlpha = easeOutQuart(tierInT) * (1 - easeInQuart(explodeT) * 3);
+    const glow = tierHoldT * (1 - explodeT);
+    if (textAlpha > 0) {
+      drawTierText(slideX, clamp(textAlpha, 0, 1) * globalFade, glow);
+    }
+  }
+
+  // ── Particles ───────────────────────────────────────────
+  const partPhase =
+    t < PHASES.TIER_IN.start  ? 'idle' :
+    t < PHASES.EXPLODE.start   ? 'text' :
+    t < PHASES.CONVERGE.start  ? 'explode' :
+    t < PHASES.RACE.start      ? 'converge' : 'race';
+
+  // During race, shift car targets with carX
+  if (partPhase === 'race') {
+    carX = easeOutQuart(raceT) * W * 1.25;
+    // Update particle targets with offset
+    particles.forEach((p, i) => {
+      const cp = carPts[i % carPts.length];
+      p.tx = cp.x + carX;
+      p.ty = cp.y;
+    });
+  }
+
+  const phaseT =
+    t < PHASES.TIER_IN.start  ? 0 :
+    t < PHASES.EXPLODE.start   ? tierInT :
+    t < PHASES.CONVERGE.start  ? explodeT :
+    t < PHASES.RACE.start      ? convergeT : raceT;
+
+  const dt = 1/60;
+  particles.forEach(p => p.update(dt, partPhase, phaseT));
+
+  ctx.save();
+  particles.forEach(p => {
+    p.alpha *= globalFade;
+    p.draw(ctx);
+  });
+  ctx.restore();
+
+  // ── Car outline (forms during converge, visible in race) ─
+  const cx = W * 0.5 + carX;
+  const cy = H * 0.48;
+
+  if (t > PHASES.CAR_FORM.start) {
+    const outlineAlpha = easeOutQuart(carFormT) * globalFade * (1 - raceT * 0.3);
+    drawCarOutline(cx, cy, outlineAlpha);
+  }
+
+  // ── Track ───────────────────────────────────────────────
+  if (t > PHASES.RACE.start) {
+    drawTrack(raceT);
+    drawSpeedLines(cx, cy, raceT);
+  }
+
+  // ── Dust trail ──────────────────────────────────────────
+  if (t > PHASES.RACE.start + 0.1 && carX < W * 1.1) {
+    const rearX = cx - 395 * SCALE;
+    const rearY = cy + 25  * SCALE;
+    if (Math.random() < 0.6) dustParts.push(new Dust(rearX, rearY));
+    if (Math.random() < 0.3) dustParts.push(new Dust(rearX, rearY - 10*SCALE));
+  }
+  ctx.save();
+  dustParts = dustParts.filter(d => !d.dead());
+  dustParts.forEach(d => { d.update(); d.draw(ctx); });
+  ctx.restore();
+
+  // ── Speed motion blur hint ───────────────────────────────
+  if (t > PHASES.RACE.start + 0.3 && raceT < 0.7) {
+    const blurAlpha = Math.sin(raceT * Math.PI) * 0.12 * globalFade;
+    ctx.globalAlpha = blurAlpha;
+    ctx.fillStyle   = '#04030a';
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // ── F1 Project label ────────────────────────────────────
+  if (t > PHASES.CONVERGE.start) {
+    const labelAlpha = easeOutQuart(convergeT) * globalFade * 0.55;
+    ctx.globalAlpha = labelAlpha;
+    ctx.fillStyle   = '#ffffff';
+    ctx.font        = `500 ${Math.floor(11*SCALE)}px 'JetBrains Mono', monospace`;
+    ctx.textAlign   = 'center';
+    ctx.textBaseline= 'middle';
+    ctx.letterSpacing = '0.18em';
+    ctx.fillText('THE  F1  PROJECT', W/2, H * 0.1);
+  }
+
+  // ── End card ────────────────────────────────────────────
+  if (t > PHASES.FADE_OUT.start) {
+    ctx.globalAlpha = easeInOutCubic(fadeOutT) * 0.95;
+    ctx.fillStyle   = '#04030a';
+    ctx.fillRect(0, 0, W, H);
+    // Show logo on black
+    ctx.globalAlpha = easeOutQuart(clamp((t - PHASES.FADE_OUT.start - 0.3)/0.4,0,1));
+    ctx.fillStyle   = '#ffffff';
+    ctx.font        = `800 ${Math.floor(H*0.28)}px 'Archivo Narrow', sans-serif`;
+    ctx.textAlign   = 'center';
+    ctx.textBaseline= 'middle';
+    ctx.shadowColor = '#e8303a';
+    ctx.shadowBlur  = 30*SCALE;
+    ctx.fillText('THE F1 PROJECT', W/2, H/2);
+    ctx.shadowBlur  = 0;
+  }
+
+  ctx.globalAlpha = 1;
+
+  if (t < TOTAL) {
+    animId = requestAnimationFrame(render);
+  }
+}
+
+// ─── Controls ─────────────────────────────────────────────
+function restart() {
+  cancelAnimationFrame(animId);
+  init();
+  startTime = null;
+  animId = requestAnimationFrame(render);
+}
+
+function skipToRace() {
+  // Jump to race phase by faking startTime
+  cancelAnimationFrame(animId);
+  const fakeElapsed = PHASES.RACE.start * 1000;
+  init();
+  startTime = null;
+  function go(ts) {
+    if (!startTime) startTime = ts - fakeElapsed;
+    animId = requestAnimationFrame(render.bind(null, ts));
+  }
+  // Re-assign car targets immediately
+  carPts = sampleCarPoints(PARTICLE_COUNT);
+  particles.forEach((p, i) => {
+    const cp = carPts[i % carPts.length];
+    p.tx = cp.x; p.ty = cp.y;
+    p.x  = cp.x + (Math.random()-0.5)*20;
+    p.y  = cp.y + (Math.random()-0.5)*20;
+    p.alpha = 0.88;
+  });
+  startTime = performance.now() - fakeElapsed;
+  animId = requestAnimationFrame(render);
+}
+
+// ─── Start ────────────────────────────────────────────────
+init();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>

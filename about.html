@@ -580,9 +580,32 @@
   /* Footer */
   footer{color:rgba(255,255,255,.25);border-top-color:rgba(255,255,255,.07);}
   footer .red{color:rgba(255,255,255,.45);}
+
+  /* ── Video intro overlay ── */
+  #intro-overlay{
+    position:fixed;inset:0;z-index:99999;
+    background:#04030a;
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity .9s ease;
+  }
+  #intro-overlay.hidden{opacity:0;pointer-events:none;}
+  #intro-video{width:100%;height:100%;object-fit:cover;display:block;}
+  #intro-skip{
+    position:absolute;bottom:28px;right:28px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+    color:rgba(255,255,255,.5);padding:8px 20px;border-radius:10px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;cursor:pointer;transition:all .18s ease;
+  }
+  #intro-skip:hover{background:rgba(255,255,255,.14);color:#fff;}
 </style>
 </head>
 <body>
+
+<div id="intro-overlay">
+  <video id="intro-video" src="tier-intro.mp4" autoplay muted playsinline></video>
+  <button id="intro-skip" onclick="introSkip()">Skip ↓</button>
+</div>
 
 <nav class="site-nav">
   <div class="site-nav-inner">
@@ -992,6 +1015,19 @@ document.querySelectorAll('.nav-dropdown').forEach(function(dd){
   dd.addEventListener('mouseenter',function(){menu.style.display='block';});
   dd.addEventListener('mouseleave',function(){menu.style.display='none';});
 });
+</script>
+<script>
+(function(){
+  var overlay = document.getElementById('intro-overlay');
+  var video   = document.getElementById('intro-video');
+  function dismiss(){
+    overlay.classList.add('hidden');
+    setTimeout(function(){ overlay.style.display='none'; }, 900);
+  }
+  video.addEventListener('ended', dismiss);
+  video.addEventListener('error', dismiss);
+  window.introSkip = dismiss;
+})();
 </script>
 </body>
 </html>

@@ -2206,9 +2206,10 @@
     </div>
 
     <!-- Share / Save card -->
-    <button class="share-btn" id="share-btn">
-      ↓ &nbsp;Save Result Card
-    </button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button class="share-btn" id="share-btn">↓ &nbsp;Save Result Card</button>
+      <button class="share-btn" id="share-social-btn" style="background:#000;color:#fff;border-color:#000;">𝕏 &nbsp;Share Result</button>
+    </div>
     <div id="share-tip" style="display:none;margin-top:10px;padding:12px 16px;background:rgba(218,73,76,.07);border:1px solid rgba(218,73,76,.25);border-radius:6px;font-family:'Saira',sans-serif;font-size:12px;color:var(--ink);line-height:1.7;"></div>
 
     <!-- Discussion CTA -->
@@ -4310,7 +4311,7 @@ function buildSliders(slot, key){
       : getStatValue(key, attr, slot);
     const v = isCustom ? Math.min(rawV, CUSTOM_STAT_MAX) : rawV;
     const sliderMax = isCustom ? CUSTOM_STAT_MAX : 100;
-    const sliderMin = isCustom ? CUSTOM_STAT_BASE : 1;
+    const sliderMin = isCustom ? CUSTOM_STAT_BASE : Math.max(1, (DRIVERS[key]?.[attr] || 50) - 10); // allow up to 10 below base
     const [,vc] = statColorClass(v);
     const lockedCustom  = isCustom && getCustomBudgetTotal()===0;
     const lockedBoost   = boostEntry && !getBoostState(key).completed;
@@ -4377,50 +4378,59 @@ function buildSliders(slot, key){
         refreshBudgetUI();
 
       } else if(boostEntry){
-        /* Boost slider — can only increase above driver's original stat, up to 10 pts total */
-        const base      = DRIVERS[key][a];
-        const bstate    = getBoostState(key);
-        const overBase  = Math.max(0, newV - base);
-        const curOver   = Math.max(0, curV - base);
-        const netChange = overBase - curOver;
+        /* Boost slider — 10 pts total budget, spent on ANY change (up OR down) from original stat */
+        const base     = DRIVERS[key][a];
+        const bstate   = getBoostState(key);
+        const attrs    = ['pace','quali','racecraft','wet','tyres','consistency'];
 
-        if(netChange > 0 && netChange > bstate.remaining){
-          /* Can't afford the increase */
-          const affordable = base + curOver + bstate.remaining;
-          e.target.value = affordable;
-          customStats[s][a] = affordable;
-          /* Consume remaining budget */
-          bstate.remaining = 0;
+        /* How many units are already used across ALL stats for this driver */
+        const totalUsed = attrs.reduce((sum, attr2) => {
+          const orig   = DRIVERS[key][attr2];
+          const cur2   = customStats[s][attr2] !== undefined ? customStats[s][attr2] : orig;
+          return sum + Math.abs(cur2 - orig);
+        }, 0);
+        const remaining = Math.max(0, 10 - totalUsed);
+
+        /* How much this particular slider is already using */
+        const thisUsed  = Math.abs(curV - base);
+        /* How much the new value would use */
+        const newUsed   = Math.abs(newV - base);
+        const delta     = newUsed - thisUsed; // positive = costs more, negative = frees up
+
+        if(delta > remaining){
+          /* Can't afford — clamp to max affordable in this direction */
+          const maxChange = thisUsed + remaining;
+          const clamped   = newV > base ? base + maxChange : base - maxChange;
+          e.target.value  = Math.max(parseInt(e.target.min), Math.min(parseInt(e.target.max), clamped));
+          customStats[s][a] = parseInt(e.target.value);
           document.getElementById('broski-popup').classList.add('open');
-          /* Update boost bar */
-          const bar = document.getElementById('boost-bar-'+s);
-          const ctr = document.getElementById('boost-counter-'+s);
-          if(bar) bar.style.width = '0%';
-          if(ctr) ctr.innerHTML = '<span class="rem">0</span> / 10 pts left';
-          const [,vc2] = statColorClass(affordable);
+          const [,vc2] = statColorClass(parseInt(e.target.value));
           const valEl2 = document.getElementById('cspval-'+s+'-'+a);
-          if(valEl2){ valEl2.textContent = affordable; valEl2.className='csp-val '+vc2; }
+          if(valEl2){ valEl2.textContent = e.target.value; valEl2.className='csp-val '+vc2; }
           drawRatings('r'+s, key, s);
-          return;
-        }
-        /* Clamp: can't go below driver's original stat */
-        if(newV < base){
-          e.target.value = base;
-          customStats[s][a] = base;
         } else {
           customStats[s][a] = newV;
-          bstate.remaining -= netChange;
         }
-        /* Show BROSKI if budget now exactly 0 after an increase */
-        if(netChange > 0 && bstate.remaining === 0){
+
+        /* Recalculate remaining after change */
+        const newTotalUsed = attrs.reduce((sum, attr2) => {
+          const orig  = DRIVERS[key][attr2];
+          const cur2  = customStats[s][attr2] !== undefined ? customStats[s][attr2] : orig;
+          return sum + Math.abs(cur2 - orig);
+        }, 0);
+        const newRemaining = Math.max(0, 10 - newTotalUsed);
+        bstate.remaining   = newRemaining;
+
+        /* Show BROSKI if budget hits 0 */
+        if(newRemaining === 0 && delta > 0){
           document.getElementById('broski-popup').classList.add('open');
         }
         /* Update boost bar */
-        const pct2 = Math.round((bstate.remaining/10)*100);
+        const pct2 = Math.round((newRemaining/10)*100);
         const bar2 = document.getElementById('boost-bar-'+s);
         const ctr2 = document.getElementById('boost-counter-'+s);
         if(bar2) bar2.style.width = pct2+'%';
-        if(ctr2) ctr2.innerHTML = '<span class="rem">'+bstate.remaining+'</span> / 10 pts left';
+        if(ctr2) ctr2.innerHTML = '<span class="rem">'+newRemaining+'</span> / 10 pts left';
 
       } else {
         customStats[s][a] = newV;
@@ -5545,6 +5555,53 @@ document.getElementById('share-btn').addEventListener('click', async function(){
       tip.style.display = 'block';
       tip.textContent = 'Something went wrong generating the card. Try running the simulation again.';
     }
+  }
+});
+
+/* ── Social Share button ── */
+document.getElementById('share-social-btn').addEventListener('click', async function(){
+  const r = window.__lastResult;
+  if(!r){ alert('Run a simulation first!'); return; }
+
+  const winner   = r.pA >= r.pB ? r.A : r.B;
+  const loser    = r.pA >= r.pB ? r.B : r.A;
+  const winPct   = Math.max(r.pA, r.pB);
+  const winCount = Math.round(winPct / 100 * r.N);
+  const siteUrl  = 'https://maxsuteekshn33.github.io/f1-project/goat-simulator.html';
+  const caption  = `🏆 ${winner.name} wins ${winCount.toLocaleString()} of 100,000 races vs ${loser.name} at ${r.track.name}!\n\nSettle your own GOAT debate 👇\n${siteUrl}\n\n#F1 #GOAT #F1Project`;
+
+  const btn = this;
+  btn.disabled = true;
+  btn.textContent = 'Sharing…';
+
+  try {
+    /* Try Web Share API with image on mobile */
+    if(navigator.canShare && navigator.share){
+      try {
+        const { canvas } = await buildShareCanvas(r);
+        canvas.toBlob(async blob => {
+          const file = new File([blob], 'goat-result.png', { type: 'image/png' });
+          if(navigator.canShare({ files:[file] })){
+            await navigator.share({ files:[file], title:'GOAT Simulator Result', text:caption });
+          } else {
+            await navigator.share({ title:'GOAT Simulator Result', text:caption, url:siteUrl });
+          }
+          btn.disabled = false; btn.textContent = '𝕏 Share Result';
+        }, 'image/png');
+        return;
+      } catch(shareErr){
+        if(shareErr.name !== 'AbortError') console.warn('Web Share failed, falling back to X', shareErr);
+        btn.disabled = false; btn.textContent = '𝕏 Share Result';
+        return;
+      }
+    }
+    /* Desktop fallback — open pre-filled X/Twitter post */
+    const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(caption);
+    window.open(twitterUrl, '_blank', 'noopener,width=600,height=400');
+  } catch(e){
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '𝕏 Share Result';
   }
 });
 

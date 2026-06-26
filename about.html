@@ -824,7 +824,7 @@
   card.addEventListener('click', () => {
     if(back.style.display === 'block'){
       back.style.display = 'none';
-      front.style.display = 'block';
+      front.style.display = 'grid';
     } else {
       front.style.display = 'none';
       back.style.display = 'block';
@@ -833,7 +833,7 @@
   backFlip.addEventListener('click', e => {
     e.stopPropagation();
     back.style.display = 'none';
-    front.style.display = 'block';
+    front.style.display = 'grid';
   });
 </script>
 <script>

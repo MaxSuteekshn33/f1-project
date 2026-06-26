@@ -1842,6 +1842,52 @@
     letter-spacing:.1em;text-align:center;font-style:italic;
     background:rgba(0,0,0,.08);
   }
+
+  /* ═══ LIQUID GLASS OVERRIDE ═══ */
+  :root{
+    --bg:#04030a;
+    --surface:rgba(255,255,255,.08);
+    --surface-2:rgba(255,255,255,.06);
+    --surface-3:rgba(255,255,255,.04);
+    --panel:rgba(255,255,255,.07);
+    --text:#ffffff;
+    --text-dim:rgba(255,255,255,.75);
+    --text-faint:rgba(255,255,255,.4);
+    --border:rgba(255,255,255,.1);
+    --lav-border:rgba(255,255,255,.13);
+    --ink:#ffffff;
+    --mute:rgba(255,255,255,.45);
+    --carbon:rgba(255,255,255,.06);
+    --carbon2:rgba(255,255,255,.04);
+    --line:rgba(255,255,255,.09);
+  }
+  body{background:#04030a;}
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 800px 700px at -5% -5%, rgba(92,45,145,.45) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 600px at 108% 8%, rgba(185,28,28,.38) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 500px at 38% 105%, rgba(30,58,138,.32) 0%, transparent 60%),
+      radial-gradient(ellipse 400px 400px at 88% 72%, rgba(6,95,70,.28) 0%, transparent 55%);
+  }
+  h1{color:#ffffff;}
+  h1 .goat{color:#ff6b6b;}
+  .sub{color:rgba(255,255,255,.5);}
+  .kicker{color:rgba(255,255,255,.45);}
+
+  /* Picker cards — already dark, just glassify */
+  .pick{background:rgba(14,42,42,.7);backdrop-filter:blur(40px) saturate(160%);-webkit-backdrop-filter:blur(40px) saturate(160%);border-color:rgba(0,200,180,.22);box-shadow:0 6px 28px rgba(0,0,0,.5),inset 0 1px 0 rgba(0,220,200,.08);}
+  .pick:hover{box-shadow:0 12px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(0,220,200,.14);}
+
+  /* Select dropdown → dark glass */
+  select{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23aaa' d='M6 8 0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+  select option{background:#1a1a2e;color:#fff;}
+
+  /* VS divider */
+  .vs{color:rgba(255,255,255,.3);}
+
+  /* Custom stats toggle — keep yellow, slightly more punchy on dark */
+  .custom-stats-toggle{box-shadow:0 4px 20px rgba(245,199,126,.35), 0 0 40px rgba(245,199,126,.15);}
 </style>
 </head>
 <body>

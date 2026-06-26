@@ -345,6 +345,87 @@
     .pts-table{font-size:12px}
     .tl-row{grid-template-columns:60px 4px 1fr}
   }
+
+  /* ═══ LIQUID GLASS OVERRIDE ═══ */
+  :root{
+    --bg:#04030a;
+    --surface:rgba(255,255,255,.08);
+    --surface-2:rgba(255,255,255,.06);
+    --surface-3:rgba(255,255,255,.04);
+    --panel:rgba(255,255,255,.07);
+    --text:#ffffff;
+    --text-dim:rgba(255,255,255,.75);
+    --text-faint:rgba(255,255,255,.4);
+    --border:rgba(255,255,255,.1);
+    --lav-border:rgba(255,255,255,.13);
+    --ink:#ffffff;
+    --mute:rgba(255,255,255,.45);
+    --carbon:rgba(255,255,255,.06);
+    --carbon2:rgba(255,255,255,.04);
+    --line:rgba(255,255,255,.09);
+    --lav-soft:rgba(167,139,250,.8);
+    --lav-light:#a78bfa;
+    --shadow:rgba(0,0,0,.5);
+  }
+  body{background:#04030a;}
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 800px 700px at -5% -5%, rgba(92,45,145,.45) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 600px at 108% 8%, rgba(185,28,28,.38) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 500px at 38% 105%, rgba(30,58,138,.32) 0%, transparent 60%),
+      radial-gradient(ellipse 400px 400px at 88% 72%, rgba(6,95,70,.28) 0%, transparent 55%);
+  }
+  h1{color:#ffffff;}
+  h1 .red{color:#ff6b6b;}
+  .kicker{color:rgba(255,255,255,.45);}
+  .sub{color:rgba(255,255,255,.4);}
+  .section-head h2{color:#ffffff;}
+  .section-head .sh-line{background:rgba(255,255,255,.08);}
+  .body-text{color:rgba(255,255,255,.72);}
+  .body-text strong{color:#c4b5fd;}
+  .body-text .red{color:#f87171;}
+
+  /* TOC → glass */
+  .toc{background:rgba(255,255,255,.05);backdrop-filter:blur(40px) saturate(160%);-webkit-backdrop-filter:blur(40px) saturate(160%);border:1px solid rgba(255,255,255,.1);border-left-color:rgba(167,139,250,.6);border-top-color:rgba(255,255,255,.18);box-shadow:0 4px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1);}
+  .toc-title{color:#a78bfa;}
+  .toc a{color:rgba(255,255,255,.65);}
+  .toc a:hover{color:#f87171;}
+
+  /* Cards → glass */
+  .card{background:rgba(255,255,255,.05);backdrop-filter:blur(40px) saturate(160%);-webkit-backdrop-filter:blur(40px) saturate(160%);border:1px solid rgba(255,255,255,.1);border-top-color:rgba(255,255,255,.18);box-shadow:0 4px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1);}
+  .card .card-label{color:#a78bfa;}
+  .card .card-title{color:#ffffff;}
+  .card .card-body{color:rgba(255,255,255,.65);}
+  .card .card-body strong{color:#c4b5fd;}
+  .card.accent{border-left-color:#a78bfa;}
+  .card.red-accent{border-left-color:#ef4444;}
+
+  /* Points table → dark glass */
+  .pts-table{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);backdrop-filter:blur(20px);}
+  .pts-table td{color:rgba(255,255,255,.72);border-bottom-color:rgba(255,255,255,.06);}
+  .pts-table tr:nth-child(even) td{background:rgba(255,255,255,.03);}
+  .pts-table .pos{color:#a78bfa;}
+  .pts-table .note{color:rgba(255,255,255,.4);}
+
+  /* Team cards → glass */
+  .team-card{background:rgba(255,255,255,.05);backdrop-filter:blur(40px) saturate(160%);-webkit-backdrop-filter:blur(40px) saturate(160%);border:1px solid rgba(255,255,255,.1);border-top-color:rgba(255,255,255,.18);border-left-color:#a78bfa;box-shadow:0 4px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1);}
+  .team-card:hover{box-shadow:0 12px 36px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.16);}
+  .team-card .tc-name{color:#ffffff;}
+  .team-card .tc-full{color:rgba(255,255,255,.4);}
+  .team-card .tc-stat-val{color:#ffffff;}
+  .team-card .tc-stat-label{color:rgba(255,255,255,.4);}
+  .team-card .tc-desc{color:rgba(255,255,255,.6);border-top-color:rgba(255,255,255,.07);}
+  .team-card .tc-desc strong{color:#c4b5fd;}
+
+  /* Glossary → glass */
+  .gloss-item{background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.09);border-top-color:rgba(255,255,255,.15);}
+  .gloss-item .gi-term{color:#f87171;}
+  .gloss-item .gi-def{color:rgba(255,255,255,.65);}
+
+  /* Footer */
+  footer{color:rgba(255,255,255,.25);}
+  footer .red{color:#f87171;}
 </style>
 </head>
 <body>

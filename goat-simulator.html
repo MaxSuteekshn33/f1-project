@@ -5575,27 +5575,29 @@ document.getElementById('share-social-btn').addEventListener('click', async func
   btn.textContent = 'Sharing…';
 
   try {
-    /* Try Web Share API with image on mobile */
-    if(navigator.canShare && navigator.share){
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    /* Mobile: use Web Share API with image file (works cleanly on iOS/Android) */
+    if(isMobile && navigator.share){
       try {
         const { canvas } = await buildShareCanvas(r);
         canvas.toBlob(async blob => {
           const file = new File([blob], 'goat-result.png', { type: 'image/png' });
-          if(navigator.canShare({ files:[file] })){
+          if(navigator.canShare && navigator.canShare({ files:[file] })){
             await navigator.share({ files:[file], title:'GOAT Simulator Result', text:caption });
           } else {
-            await navigator.share({ title:'GOAT Simulator Result', text:caption, url:siteUrl });
+            await navigator.share({ title:'GOAT Simulator Result', url:siteUrl });
           }
           btn.disabled = false; btn.textContent = '𝕏 Share Result';
         }, 'image/png');
         return;
       } catch(shareErr){
-        if(shareErr.name !== 'AbortError') console.warn('Web Share failed, falling back to X', shareErr);
-        btn.disabled = false; btn.textContent = '𝕏 Share Result';
-        return;
+        if(shareErr.name === 'AbortError'){ btn.disabled=false; btn.textContent='𝕏 Share Result'; return; }
+        /* fall through to Twitter */
       }
     }
-    /* Desktop fallback — open pre-filled X/Twitter post */
+
+    /* Desktop (or mobile fallback) — open pre-filled X/Twitter post */
     const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(caption);
     window.open(twitterUrl, '_blank', 'noopener,width=600,height=400');
   } catch(e){

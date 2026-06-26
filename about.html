@@ -598,12 +598,23 @@
     text-transform:uppercase;cursor:pointer;transition:all .18s ease;
   }
   #intro-skip:hover{background:rgba(255,255,255,.14);color:#fff;}
+  #intro-sound{
+    position:absolute;bottom:28px;left:28px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+    color:rgba(255,255,255,.5);padding:8px 16px;border-radius:10px;
+    font-size:16px;cursor:pointer;transition:all .18s ease;
+    display:flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  #intro-sound:hover{background:rgba(255,255,255,.14);color:#fff;}
 </style>
 </head>
 <body>
 
 <div id="intro-overlay">
   <video id="intro-video" src="tier-intro.mp4" autoplay muted playsinline></video>
+  <button id="intro-sound" onclick="introToggleSound()">🔇 <span id="sound-label">Tap for sound</span></button>
   <button id="intro-skip" onclick="introSkip()">Skip ↓</button>
 </div>
 
@@ -1020,10 +1031,21 @@ document.querySelectorAll('.nav-dropdown').forEach(function(dd){
 (function(){
   var overlay = document.getElementById('intro-overlay');
   var video   = document.getElementById('intro-video');
+  var muted   = true;
+
   function dismiss(){
+    video.muted = true;
     overlay.classList.add('hidden');
     setTimeout(function(){ overlay.style.display='none'; }, 900);
   }
+
+  window.introToggleSound = function(){
+    muted = !muted;
+    video.muted = muted;
+    document.getElementById('intro-sound').firstChild.textContent = muted ? '🔇 ' : '🔊 ';
+    document.getElementById('sound-label').textContent = muted ? 'Tap for sound' : 'Sound on';
+  };
+
   video.addEventListener('ended', dismiss);
   video.addEventListener('error', dismiss);
   window.introSkip = dismiss;

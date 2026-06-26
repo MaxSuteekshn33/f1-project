@@ -79,10 +79,10 @@
 
   /* ── Header ── */
   header{text-align:center;margin-bottom:32px;}
-  .kicker{font-family:'Saira',sans-serif;font-weight:600;font-size:11px;letter-spacing:.32em;color:var(--mute);text-transform:uppercase;margin-bottom:10px;}
-  h1{font-family:'Archivo';font-weight:900;font-size:clamp(36px,8vw,68px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--gold);}
-  h1 .red{color:var(--speed);}
-  .sub{color:var(--mute);font-size:14px;margin-top:10px;font-family:'Saira';font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+  .kicker{font-family:'Saira',sans-serif;font-weight:600;font-size:11px;letter-spacing:.32em;color:#5a4a88;text-transform:uppercase;margin-bottom:10px;}
+  h1{font-family:'Archivo';font-weight:900;font-size:clamp(36px,8vw,68px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:#0f0f1a;}
+  h1 .red{color:#e8303a;}
+  .sub{color:#1a1a3a;font-size:14px;margin-top:10px;font-family:'Saira';font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
 
   /* ── Era Filter ── */
   .era-filter{
@@ -90,11 +90,12 @@
   }
   .era-btn{
     font-family:'Saira',sans-serif;font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
-    padding:7px 18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.10);
-    background:var(--panel);color:var(--mute);cursor:pointer;transition:all .18s ease;
+    padding:7px 18px;border-radius:8px;border:1.5px solid rgba(90,26,255,.15);
+    background:#ffffff;color:#1a1a3a;cursor:pointer;transition:all .18s ease;
+    box-shadow:0 2px 8px rgba(90,26,255,.1);
   }
-  .era-btn:hover{border-color:var(--gold);color:var(--gold);}
-  .era-btn.active{background:var(--gold);color:#0d1220;border-color:var(--gold);}
+  .era-btn:hover{border-color:#5a1aff;color:#5a1aff;box-shadow:0 4px 14px rgba(90,26,255,.18);}
+  .era-btn.active{background:#5a1aff;color:#ffffff;border-color:#5a1aff;box-shadow:0 4px 16px rgba(90,26,255,.3);}
 
   /* ── Driver Grid ── */
   .drivers-grid{

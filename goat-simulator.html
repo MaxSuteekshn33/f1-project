@@ -193,64 +193,59 @@
   .custom-stats-toggle{
     display:inline-flex;align-items:center;gap:10px;
     cursor:pointer;user-select:none;
-    border:2px solid #1a1a1a;border-radius:6px;
-    overflow:hidden;
-    box-shadow:0 3px 12px rgba(0,0,0,.18);
-    transition:transform .15s ease, box-shadow .15s ease;
+    background:#f5c77e;border:none;border-radius:8px;
+    overflow:hidden;width:100%;
+    box-shadow:0 4px 20px rgba(245,199,126,.4), 0 0 30px rgba(245,199,126,.2);
+    transition:all .2s ease;
     position:relative;
   }
   .custom-stats-toggle:hover{
-    transform:translateY(-2px);
-    box-shadow:0 6px 20px rgba(0,0,0,.22);
+    background:#f0b84e;
+    box-shadow:0 6px 24px rgba(245,199,126,.5), 0 0 40px rgba(245,199,126,.25);
   }
   .custom-stats-toggle:active{transform:translateY(0)}
   /* Chequered flag left badge */
   .cst-checker{
     width:52px;flex-shrink:0;align-self:stretch;
-    background-image:repeating-conic-gradient(#1a1a1a 0% 25%, #fff 0% 50%);
+    background-image:repeating-conic-gradient(#5a3a00 0% 25%, #f5c77e 0% 50%);
     background-size:12px 12px;
     background-position:center center;
     display:flex;align-items:center;justify-content:center;
-    border-right:2px solid #1a1a1a;
+    border-right:2px solid rgba(0,0,0,.15);
   }
   .cst-checker-icon{
     font-size:18px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));
   }
   /* Text body */
   .cst-body{
-    background:#ffffff;
+    background:transparent;
     padding:11px 20px;
     display:flex;align-items:center;gap:10px;
+    flex:1;
   }
   .cst-label{
     font-family:'Archivo',sans-serif;font-weight:900;
     font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    color:#0a0a0a;line-height:1.2;
+    color:#1a1a3a;line-height:1.2;
   }
   .cst-arrow{
-    font-size:20px;color:#0a0a0a;font-weight:900;
-    transition:transform .25s ease, box-shadow .25s ease;
+    font-size:20px;color:#1a1a3a;font-weight:900;
+    transition:transform .25s ease;
     display:inline-flex;align-items:center;justify-content:center;
     margin-left:12px;line-height:1;
     width:36px;height:36px;flex-shrink:0;
-    background:#f0fafa;
-    border:2px solid rgba(232,48,58,.5);
-    border-radius:6px;
-    box-shadow:0 0 0 3px rgba(232,48,58,.08), 0 0 14px rgba(232,48,58,.15);
   }
-  .custom-stats-toggle:hover .cst-arrow{
-    box-shadow:0 0 0 4px rgba(232,48,58,.15), 0 0 22px rgba(232,48,58,.3);
-  }
+  .custom-stats-toggle:hover .cst-arrow{}
   .custom-stats-toggle.open .cst-arrow{transform:rotate(180deg)}
 
   .custom-stats-panel{
     display:none;
     margin-top:14px;
-    background:var(--surface);
-    border:1px solid rgba(177,151,252,.18);
+    background:linear-gradient(160deg,#0e2a2a 0%,#0d2137 100%);
+    border:1px solid rgba(0,200,180,.2);
     border-radius:10px;
     padding:18px 20px 20px;
-    box-shadow:0 4px 18px rgba(0,0,0,.4);
+    box-shadow:0 4px 18px rgba(0,0,0,.4), 0 0 20px rgba(0,200,180,.06);
     text-align:left;
     animation:panelSlideIn .25s cubic-bezier(.2,.8,.2,1);
   }
@@ -267,11 +262,11 @@
   .csp-col-title.p1-title{color:var(--p1);border-color:var(--p1)}
   .csp-col-title.p2-title{color:var(--p2);border-color:var(--p2)}
   .csp-row{display:grid;grid-template-columns:52px 1fr 28px;align-items:center;gap:6px;margin-bottom:8px}
-  .csp-lbl{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:9px;letter-spacing:.1em;color:var(--text-dim);text-transform:uppercase}
+  .csp-lbl{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.7);text-transform:uppercase}
   .csp-slider{
     width:100%;-webkit-appearance:none;appearance:none;
     height:4px;border-radius:4px;outline:none;cursor:pointer;
-    background:rgba(177,151,252,.25);
+    background:rgba(0,200,180,.2);
   }
   .csp-slider::-webkit-slider-thumb{
     -webkit-appearance:none;appearance:none;
@@ -294,16 +289,16 @@
   .csp-reset{
     margin-top:14px;text-align:center;
     font-family:'Saira',sans-serif;font-weight:600;font-size:10px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--mute);
-    background:none;border:1px solid rgba(0,160,160,.3);border-radius:4px;
+    letter-spacing:.14em;text-transform:uppercase;color:rgba(0,200,180,.7);
+    background:none;border:1px solid rgba(0,200,180,.3);border-radius:4px;
     padding:6px 16px;cursor:pointer;transition:all .18s ease;
   }
-  .csp-reset:hover{color:var(--speed);border-color:var(--speed)}
+  .csp-reset:hover{color:#00c8b4;border-color:#00c8b4}
 
   /* ── Custom Driver Budget System ── */
   .csp-budget-section{
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(177,151,252,.18);
+    background:rgba(0,200,180,.05);
+    border:1px solid rgba(0,200,180,.15);
     border-radius:8px;
     padding:14px 16px;
     margin-bottom:16px;
@@ -314,11 +309,11 @@
   }
   .csp-budget-title{
     font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+    letter-spacing:.14em;text-transform:uppercase;color:#00c8b4;
   }
   .csp-budget-counter{
     font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
-    color:var(--ink);
+    color:#ffffff;
   }
   .csp-budget-counter .rem{color:var(--green)}
   .csp-budget-bar-wrap{
@@ -334,8 +329,8 @@
   .csp-quiz-row{
     display:flex;align-items:center;gap:10px;
     padding:8px 12px;border-radius:12px;
-    border:1px solid rgba(177,151,252,.2);
-    background:rgba(177,151,252,.08);
+    border:1px solid rgba(0,200,180,.18);
+    background:rgba(0,200,180,.07);
   }
   .csp-quiz-badge{
     font-family:'Space Mono',monospace;font-size:10px;font-weight:700;
@@ -345,7 +340,7 @@
   .csp-quiz-badge.done{background:var(--green)}
   .csp-quiz-name{
     font-family:'Saira',sans-serif;font-weight:700;font-size:11px;
-    color:var(--ink);flex:1;
+    color:#ffffff;flex:1;
   }
   .csp-quiz-status{
     font-size:14px;flex-shrink:0;
@@ -360,7 +355,7 @@
   .csp-quiz-take-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(218,73,76,.4)}
   .csp-quiz-take-btn:disabled{background:var(--mute);cursor:default;transform:none;box-shadow:none}
   .csp-locked-note{
-    font-family:'Saira',sans-serif;font-size:11px;color:var(--mute);
+    font-family:'Saira',sans-serif;font-size:11px;color:rgba(255,255,255,.5);
     text-align:center;padding:8px 0 4px;letter-spacing:.04em;
   }
   .csp-slider:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
@@ -403,21 +398,21 @@
 
   /* ── Boost Quiz section (non-custom drivers) ── */
   .csp-boost-section{
-    background:rgba(30,78,150,.06);
-    border:1px solid rgba(177,151,252,.18);
+    background:rgba(0,200,180,.05);
+    border:1px solid rgba(0,200,180,.15);
     border-radius:8px;
     padding:12px 14px;
     margin-bottom:14px;
     text-align:center;
   }
   .csp-boost-locked{
-    font-family:'Saira',sans-serif;font-size:11px;color:var(--mute);
+    font-family:'Saira',sans-serif;font-size:11px;color:rgba(255,255,255,.6);
     margin-bottom:10px;letter-spacing:.04em;
   }
   .csp-boost-take-btn{
     font-family:'Archivo',sans-serif;font-weight:900;font-size:11px;
     letter-spacing:.1em;text-transform:uppercase;
-    color:#0d1220;background:var(--gold);
+    color:#ffffff;background:linear-gradient(90deg,#00c8b4,#0d9488);
     border:none;border-radius:5px;padding:9px 20px;
     cursor:pointer;transition:all .15s ease;width:100%;
   }

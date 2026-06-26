@@ -122,9 +122,17 @@
   .reply-toggle{color:rgba(255,255,255,.6);}
   .login-prompt p{color:rgba(255,255,255,.7) !important;}
   .login-prompt{background:rgba(13,31,60,.6);}
-  .empty-state{color:rgba(255,255,255,.5) !important;}
-  .empty-state{text-align:center;padding:60px 20px;color:var(--mute);}
-  .empty-state .big{font-size:40px;margin-bottom:12px;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--ink);}
+  .empty-state .big{font-size:48px;margin-bottom:14px;}
+  .empty-state .empty-headline{font-family:'Archivo',sans-serif;font-size:20px;font-weight:900;color:#0a0a0a;margin-bottom:8px;}
+  .empty-state .empty-sub{font-size:14px;color:#444;margin-bottom:20px;line-height:1.6;}
+  .empty-state .empty-prompts{display:flex;flex-direction:column;gap:10px;max-width:480px;margin:0 auto 24px;}
+  .empty-prompt{background:rgba(30,58,138,.08);border:1.5px solid rgba(59,130,246,.25);border-radius:10px;padding:12px 16px;font-size:13px;color:#0a0a0a;text-align:left;cursor:pointer;font-family:'Saira',sans-serif;font-weight:600;transition:background .15s;}
+  .empty-prompt:hover{background:rgba(30,58,138,.15);}
+  /* Sort bar */
+  .sort-btn{font-family:'Archivo',sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:7px 16px;border-radius:20px;border:1.5px solid rgba(59,130,246,.3);background:transparent;color:#0a0a0a;cursor:pointer;transition:all .15s;}
+  .sort-btn:hover{background:rgba(30,58,138,.1);}
+  .sort-btn.active{background:rgba(30,58,138,.85);color:#fff;border-color:rgba(59,130,246,.6);}
 </style>
 </head>
 <body>
@@ -248,6 +256,13 @@
     </div>
   </div>
 
+  <!-- Sort tabs -->
+  <div id="sort-bar" style="display:flex;gap:8px;margin-bottom:20px;">
+    <button class="sort-btn active" data-sort="new" onclick="setSort('new')">🕐 New</button>
+    <button class="sort-btn" data-sort="top" onclick="setSort('top')">🔥 Top</button>
+    <button class="sort-btn" data-sort="hot" onclick="setSort('hot')">⚡ Hot</button>
+  </div>
+
   <!-- Comments list -->
   <div class="comments-list" id="comments-list">
     <div class="empty-state">
@@ -343,12 +358,70 @@
     box.style.display = box.style.display==='none'||!box.style.display ? 'flex' : 'none';
   };
 
+  // Sort state
+  let currentSort = 'new';
+  let allDocs = [];
+
+  const DEBATE_PROMPTS = [
+    '🐐 Who is the real GOAT — Senna, Schumacher, or Hamilton?',
+    '🌧️ Senna vs Verstappen in full wet São Paulo — who wins?',
+    '🏆 Peak Hamilton vs peak Schumacher — settle it once and for all',
+    '🔮 What if Senna raced in the 2024 ground effect era?',
+  ];
+
+  function renderEmptyState(){
+    return `<div class="empty-state">
+      <div class="big">🏎</div>
+      <div class="empty-headline">Be the first to settle the GOAT debate 👇</div>
+      <div class="empty-sub">No one has started the argument yet.<br>Pick a hot take below and fire away.</div>
+      <div class="empty-prompts">
+        ${DEBATE_PROMPTS.map(p=>`<div class="empty-prompt" onclick="fillPrompt(this.textContent.slice(2))">${p}</div>`).join('')}
+      </div>
+      <button class="btn-red" onclick="document.getElementById('comment-input')?.focus();document.getElementById('compose-box').scrollIntoView({behavior:'smooth'})">✍️ Start the Debate</button>
+    </div>`;
+  }
+
+  function sortDocs(docs, sort){
+    if(sort === 'new') return [...docs].sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
+    if(sort === 'top') return [...docs].sort((a,b)=>(b.data().replies||[]).length-(a.data().replies||[]).length);
+    if(sort === 'hot'){
+      const now = Date.now()/1000;
+      return [...docs].sort((a,b)=>{
+        const scoreA = (a.data().replies||[]).length / Math.pow((now-(a.data().createdAt?.seconds||now))/3600+2,1.5);
+        const scoreB = (b.data().replies||[]).length / Math.pow((now-(b.data().createdAt?.seconds||now))/3600+2,1.5);
+        return scoreB - scoreA;
+      });
+    }
+    return docs;
+  }
+
+  window.setSort = (sort) => {
+    currentSort = sort;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort===sort));
+    renderComments(allDocs);
+  };
+
+  window.fillPrompt = (text) => {
+    const input = document.getElementById('comment-input');
+    if(!input) return;
+    if(!currentUser){ openAuthModal(); return; }
+    input.value = text.trim();
+    document.getElementById('compose-box').scrollIntoView({behavior:'smooth'});
+    input.focus();
+  };
+
   // Live feed
   const q = query(collection(db,'comments'), orderBy('createdAt','desc'));
   onSnapshot(q, snap => {
+    allDocs = snap.docs;
+    renderComments(allDocs);
+  });
+
+  function renderComments(docs){
     const list = document.getElementById('comments-list');
-    if(snap.empty){ list.innerHTML='<div class="empty-state"><div class="big">🏁</div><p>No comments yet — be the first to start the debate!</p></div>'; return; }
-    list.innerHTML = snap.docs.map(d => {
+    if(!docs.length){ list.innerHTML = renderEmptyState(); return; }
+    const sorted = sortDocs(docs, currentSort);
+    list.innerHTML = sorted.map(d => {
       const c = d.data();
       const cid = d.id;
       const time = c.createdAt ? new Date(c.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'just now';
@@ -385,7 +458,7 @@
         </div>
       </div>`;
     }).join('');
-  });
+  }
 
   // Auth helpers
   window.openAuthModal = () => { document.getElementById('auth-modal').style.display='flex'; };

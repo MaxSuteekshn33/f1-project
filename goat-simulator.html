@@ -1832,8 +1832,9 @@
     border-bottom:1px solid rgba(0,0,0,.08);padding-bottom:10px;align-items:start;
   }
   .rat-row:last-child{border-bottom:none;padding-bottom:0}
-  .rat-label{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:9px;letter-spacing:.12em;color:#5a1aff;text-transform:uppercase;padding-top:2px}
-  .rat-text{font-size:13px;color:#0f0f1a;line-height:1.6;font-family:'Inter',sans-serif;font-weight:600}
+  .rat-label{font-family:'JetBrains Mono',monospace;font-weight:900;font-size:9px;letter-spacing:.12em;color:#5a1aff;text-transform:uppercase;padding-top:2px}
+  .rat-num{font-family:'Archivo Narrow',sans-serif;font-weight:900;font-size:22px;color:#e8303a;line-height:1;margin-top:2px}
+  .rat-text{font-size:13px;color:#1a237e;line-height:1.6;font-family:'Inter',sans-serif;font-weight:700}
 
   .modal-footer{
     padding:12px 20px;border-top:1px solid rgba(0,0,0,.1);
@@ -4668,7 +4669,7 @@ function openModal(key){
   /* Rating rationale */
   document.getElementById('modal-rationale').innerHTML = order.map(([attr, lab]) => `
     <div class="rat-row">
-      <span class="rat-label">${lab}<br><span style="color:var(--ink);font-size:14px;font-family:'Archivo';font-weight:800">${d[attr]}</span></span>
+      <span class="rat-label">${lab}<br><span style="color:#e8303a;font-size:22px;font-family:'Archivo Narrow';font-weight:900;line-height:1">${d[attr]}</span></span>
       <span class="rat-text">${d.rationale[attr].replace(/^\d+ — /, '')}</span>
     </div>`).join('');
 

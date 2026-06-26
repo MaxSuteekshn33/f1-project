@@ -1492,6 +1492,47 @@
     display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;
   }
   @media(max-width:480px){.driver-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* ── Change Driver Button ── */
+  .change-driver-btn{
+    display:flex;align-items:center;gap:0;width:100%;margin-top:14px;
+    background:#ffffff;border:2px solid #1a1a1a;border-radius:10px;
+    cursor:pointer;overflow:hidden;padding:0;font-family:'Archivo',sans-serif;
+    transition:box-shadow .18s ease;
+  }
+  .change-driver-btn:hover{box-shadow:0 4px 18px rgba(0,0,0,.12);}
+  .cdb-checker{
+    width:52px;min-width:52px;height:52px;flex-shrink:0;
+    background:repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0/14px 14px;
+  }
+  .cdb-text{
+    flex:1;padding:0 14px;font-size:11px;font-weight:900;
+    letter-spacing:.14em;text-transform:uppercase;color:#1a1a1a;text-align:left;
+  }
+  .cdb-arrow{
+    width:40px;min-width:40px;height:40px;margin-right:6px;
+    border:1.5px solid rgba(232,48,58,.5);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--speed);
+  }
+
+  /* ── Driver Picker Modal ── */
+  #driver-picker-modal{
+    display:none;position:fixed;inset:0;z-index:8000;
+    background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
+    align-items:flex-end;justify-content:center;
+  }
+  @media(min-width:600px){
+    #driver-picker-modal{align-items:center;}
+    #driver-picker-inner{border-radius:18px !important;max-height:80vh !important;}
+  }
+  #driver-picker-inner{
+    background:#f0f9f9;width:100%;max-width:540px;
+    border-radius:18px 18px 0 0;padding:24px 20px 32px;
+    max-height:85vh;overflow-y:auto;position:relative;
+    box-shadow:0 -8px 40px rgba(0,0,0,.3);
+  }
+  #driver-picker-inner .driver-grid{display:grid !important;margin-top:0;}
   .dg-card{
     background:#ffffff;border:1.5px solid rgba(0,160,160,.2);border-radius:7px;
     padding:8px 6px 7px;cursor:pointer;text-align:center;
@@ -1883,6 +1924,17 @@
   </div>
 </nav>
 
+<!-- ── DRIVER PICKER MODAL ── -->
+<div id="driver-picker-modal" onclick="if(event.target===this)closeDriverPicker()">
+  <div id="driver-picker-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3 id="driver-picker-title" style="font-family:'Archivo',sans-serif;font-size:16px;font-weight:900;color:#0a0a0a;letter-spacing:.04em;">Choose Driver One</h3>
+      <button onclick="closeDriverPicker()" style="background:rgba(0,0,0,.08);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:#0a0a0a;display:flex;align-items:center;justify-content:center;">×</button>
+    </div>
+    <div id="driver-picker-grid" class="driver-grid"></div>
+  </div>
+</div>
+
 <!-- ── AUTH MODAL ── -->
 <div id="auth-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#ffffff;border:1px solid rgba(0,160,160,.25);border-radius:16px;padding:36px 32px;width:100%;max-width:400px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);">
@@ -1995,7 +2047,12 @@
       </div>
       <div class="ratings" id="r1"></div>
       <select id="d1" style="display:none"></select>
-      <div class="driver-grid" id="dg1"></div>
+      <div class="driver-grid" id="dg1" style="display:none"></div>
+      <button class="change-driver-btn" onclick="openDriverPicker(1)">
+        <span class="cdb-checker"></span>
+        <span class="cdb-text">Click here to change driver</span>
+        <span class="cdb-arrow">▼</span>
+      </button>
     </div>
     <div class="vs">VS</div>
     <div class="pick p2">
@@ -2012,7 +2069,12 @@
       </div>
       <div class="ratings" id="r2"></div>
       <select id="d2" style="display:none"></select>
-      <div class="driver-grid" id="dg2"></div>
+      <div class="driver-grid" id="dg2" style="display:none"></div>
+      <button class="change-driver-btn" onclick="openDriverPicker(2)">
+        <span class="cdb-checker"></span>
+        <span class="cdb-text">Click here to change driver</span>
+        <span class="cdb-arrow">▼</span>
+      </button>
     </div>
   </div>
 
@@ -3218,6 +3280,43 @@ function buildDriverGrid(slot){
 
     gridEl.appendChild(card);
   });
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DRIVER PICKER MODAL
+   ════════════════════════════════════════════════════════════════ */
+let _pickerSlot = 1;
+function openDriverPicker(slot){
+  _pickerSlot = slot;
+  document.getElementById('driver-picker-title').textContent = `Choose Driver ${slot === 1 ? 'One' : 'Two'}`;
+  // Clone the hidden grid content into the modal grid
+  const srcGrid = document.getElementById('dg' + slot);
+  const destGrid = document.getElementById('driver-picker-grid');
+  destGrid.innerHTML = srcGrid.innerHTML;
+  // Re-attach click events on the cloned cards
+  destGrid.querySelectorAll('.dg-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const key = card.dataset.key;
+      if(card.classList.contains('dg-locked')){
+        closeDriverPicker();
+        openDriverPreview(key);
+      } else {
+        const sel = slot === 1 ? d1 : d2;
+        sel.value = key;
+        sel.dispatchEvent(new Event('change'));
+        buildDriverGrid(1);
+        buildDriverGrid(2);
+        closeDriverPicker();
+      }
+    });
+  });
+  const modal = document.getElementById('driver-picker-modal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeDriverPicker(){
+  document.getElementById('driver-picker-modal').style.display = 'none';
+  document.body.style.overflow = '';
 }
 
 /* ════════════════════════════════════════════════════════════════

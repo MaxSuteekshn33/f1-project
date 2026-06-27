@@ -309,6 +309,62 @@
   /* Driver cards — already dark, just glass-ify */
   .driver-card{background:rgba(14,42,42,.6);backdrop-filter:blur(30px) saturate(150%);-webkit-backdrop-filter:blur(30px) saturate(150%);border-color:rgba(0,200,180,.2);box-shadow:0 4px 24px rgba(0,0,0,.5),inset 0 1px 0 rgba(0,220,200,.06);}
   .driver-card:hover{box-shadow:0 10px 36px rgba(0,0,0,.6),inset 0 1px 0 rgba(0,220,200,.12);}
+
+  /* ── Mobile Responsiveness ── */
+  @media(max-width:480px){
+    /* Wrap */
+    .wrap{padding:24px 14px 80px;}
+
+    /* Header */
+    header{margin-bottom:20px;}
+    .sub{font-size:12px;letter-spacing:.04em;}
+
+    /* Era filter — smaller buttons, tighter wrap */
+    .era-btn{font-size:9px;padding:6px 12px;letter-spacing:.12em;}
+
+    /* Driver grid — already 2-col, just tighten card internals */
+    .dc-photo{height:110px;}
+    .dc-info{padding:9px 9px 8px;}
+    .dc-name{font-size:13px;}
+    .dc-team{font-size:8px;}
+    .dc-titles{font-size:9px;padding:2px 6px;}
+
+    /* Profile modal */
+    .profile-overlay{padding:8px;}
+    .profile-box{border-radius:18px;}
+
+    /* Hero — stack driver photo only, hide car image on mobile */
+    .pb-hero{height:180px;}
+    .pb-hero-driver{width:100%;object-position:center top;}
+    .pb-hero-car{display:none;}
+    .pb-name{font-size:22px;}
+
+    /* Pills — tighter */
+    .pb-pills{padding:12px 14px;gap:6px;}
+    .pb-pill{padding:4px 10px 4px 8px;font-size:10px;}
+    .pb-pill-icon{font-size:12px;}
+
+    /* Body */
+    .pb-body{padding:14px;}
+
+    /* Rating bars — shrink label column */
+    .pb-rat-row{grid-template-columns:16px 68px 1fr 28px;gap:5px;}
+    .pb-rat-lbl{font-size:8px;}
+    .pb-rat-val{font-size:11px;}
+    .pb-rat-bar{height:11px;}
+
+    /* Bio */
+    .pb-bio{font-size:13px;padding:12px 14px;}
+
+    /* Facts — already 2-col at 480px */
+    .pb-fact-v{font-size:16px;}
+
+    /* Quote */
+    .pb-quote{font-size:13px;padding:14px 16px;}
+
+    /* CTA button */
+    .pb-cta{margin:12px 14px 16px;padding:12px 16px;font-size:13px;}
+  }
 </style>
 </head>
 <body>

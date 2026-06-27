@@ -581,6 +581,58 @@
   footer{color:rgba(255,255,255,.25);border-top-color:rgba(255,255,255,.07);}
   footer .red{color:rgba(255,255,255,.45);}
 
+  /* ── Mobile Responsiveness ── */
+  @media(max-width:480px){
+    /* Wrap */
+    .wrap{padding:24px 14px 80px;}
+
+    /* Page header */
+    .page-header{margin-bottom:28px;padding-top:4px;}
+    h1{font-size:clamp(32px,10vw,52px);}
+    .sub{font-size:11px;letter-spacing:.08em;}
+
+    /* Creator card */
+    .card-front{min-height:auto;}
+    .card-left{padding:20px 16px;}
+    .card-right{padding:18px 16px;}
+    .card-avatar{width:90px;height:90px;}
+    .card-stat-row{grid-template-columns:16px 72px 1fr 28px;gap:6px;}
+    .cs-lbl{font-size:9px;}
+    .cs-val{font-size:11px;}
+    .card-back{padding:18px 16px;}
+
+    /* About blocks */
+    .about-block{padding:18px 16px;font-size:14px;}
+    .about-section{margin-bottom:32px;}
+
+    /* Reason items */
+    .reason-item{padding:12px 14px;gap:12px;}
+    .reason-num{font-size:16px;}
+    .reason-text{font-size:13px;}
+
+    /* Stats strip */
+    .stat-cell{padding:18px 10px;}
+
+    /* Feature cards */
+    .feat-card{min-height:auto;}
+    .feat-header{padding:20px 18px 8px;}
+    .feat-brief{padding:0 18px 12px;font-size:15px;}
+    .feat-body{padding:0 18px 16px;}
+    .feat-cta{padding:14px 18px;}
+    .feat-title{font-size:17px;}
+
+    /* Connect card */
+    .connect-card{padding:14px 18px;gap:12px;}
+    .cc-icon{width:40px;height:40px;font-size:18px;}
+
+    /* Section kicker */
+    .section-kicker{font-size:9px;}
+    .creator-kicker{font-size:9px;}
+
+    /* Kicker pill */
+    .kicker{font-size:9px;padding:4px 12px;}
+  }
+
   /* ── Video intro overlay ── */
   #intro-overlay{
     position:fixed;inset:0;z-index:99999;

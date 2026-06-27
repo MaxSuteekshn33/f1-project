@@ -220,6 +220,46 @@
   .sort-btn{border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.45);}
   .sort-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff;}
   .sort-btn.active{background:rgba(167,139,250,.15);color:#a78bfa;border-color:rgba(167,139,250,.4);}
+
+  /* ── Mobile Responsiveness ── */
+  @media(max-width:480px){
+    /* Page padding */
+    .page-wrap{padding:24px 14px 80px;}
+
+    /* Compose box */
+    .compose-box{padding:14px;}
+    .compose-row{gap:8px;}
+    .avatar-dot{width:32px;height:32px;font-size:13px;flex-shrink:0;}
+
+    /* Comment cards */
+    .comment-card{padding:14px;}
+    .comment-header{flex-direction:column;align-items:flex-start;gap:6px;}
+    .comment-name{font-size:13px;}
+    .comment-text{font-size:13px;}
+
+    /* Reply compose */
+    .reply-compose{gap:8px;}
+    .reply-avatar{width:26px;height:26px;font-size:10px;}
+
+    /* Auth modal */
+    .modal-box{padding:24px 18px;border-radius:18px;margin:0 12px;}
+
+    /* Dashboard modal */
+    #dashboard-modal > div{padding:24px 16px !important;border-radius:14px !important;}
+
+    /* Sort bar — wrap on very small screens */
+    #sort-bar{flex-wrap:wrap;gap:6px;}
+    .sort-btn{font-size:9px;padding:6px 12px;}
+
+    /* Nav sign in button */
+    #nav-login-btn{padding:6px 10px;font-size:11px;}
+
+    /* Login prompt */
+    .login-prompt{padding:24px 16px;}
+
+    /* Empty state prompts */
+    .empty-prompts{padding:0 4px;}
+  }
 </style>
 </head>
 <body>
@@ -300,7 +340,7 @@
 </div>
 
 <!-- DASHBOARD MODAL -->
-<div id="dashboard-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+<div id="dashboard-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
   <div style="background:#ffffff;border:1px solid rgba(0,160,160,.25);border-radius:16px;padding:32px;width:100%;max-width:520px;position:relative;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.6);">
     <button onclick="closeDashboard()" style="position:absolute;top:14px;right:14px;background:rgba(0,160,160,.2);border:none;color:var(--ink);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;">×</button>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">

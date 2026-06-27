@@ -251,16 +251,27 @@
   }
   .pb-quote::before{content:'"';font-size:28px;color:#e8303a;line-height:.6;display:block;margin-bottom:6px;}
 
-  /* CTA to GOAT simulator */
+  /* CTA — rectangle outline (21st.dev style) */
   .pb-cta{
-    display:block;margin:16px 20px 20px;padding:14px 20px;
-    background:var(--speed);color:#fff;border-radius:8px;
-    font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;
-    letter-spacing:.04em;text-transform:uppercase;text-decoration:none;text-align:center;
-    transition:transform .1s ease,box-shadow .2s ease;
-    box-shadow:0 6px 20px rgba(218,73,76,.3);
+    display:block;margin:16px 20px 20px;padding:14px 24px;
+    background:transparent;color:#00c8b4;
+    border:1.5px solid rgba(0,200,180,.55);border-radius:2px;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;
+    letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;
+    position:relative;overflow:hidden;
+    transition:color .22s ease,border-color .22s ease,box-shadow .22s ease;
   }
-  .pb-cta:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(218,73,76,.45);}
+  .pb-cta::before{
+    content:"";position:absolute;inset:0;
+    background:rgba(0,200,180,.09);
+    transform:scaleX(0);transform-origin:left;
+    transition:transform .22s ease;
+  }
+  .pb-cta:hover::before{transform:scaleX(1);}
+  .pb-cta:hover{
+    color:#fff;border-color:rgba(0,200,180,.9);
+    box-shadow:0 0 18px rgba(0,200,180,.22),inset 0 0 12px rgba(0,200,180,.06);
+  }
 
   /* Hidden card (filter) */
   .driver-card.hidden{display:none;}
@@ -295,6 +306,13 @@
       radial-gradient(ellipse 500px 500px at 38% 105%, rgba(30,58,138,.32) 0%, transparent 60%),
       radial-gradient(ellipse 400px 400px at 88% 72%, rgba(6,95,70,.28) 0%, transparent 55%);
   }
+  /* Subtle dot grid */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(circle, rgba(0,200,180,.13) 1px, transparent 1px);
+    background-size:26px 26px;
+    opacity:.55;
+  }
   h1{color:#ffffff;}
   h1 .red{color:#ff6b6b;}
   .kicker{color:rgba(255,255,255,.45);}
@@ -306,9 +324,16 @@
   .era-btn:hover{border-color:rgba(255,255,255,.3);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.4);}
   .era-btn.active{background:rgba(167,139,250,.2);color:#c4b5fd;border-color:rgba(167,139,250,.45);box-shadow:0 4px 16px rgba(167,139,250,.2);}
 
-  /* Driver cards — already dark, just glass-ify */
+  /* Driver cards — glass + neon */
   .driver-card{background:rgba(14,42,42,.6);backdrop-filter:blur(30px) saturate(150%);-webkit-backdrop-filter:blur(30px) saturate(150%);border-color:rgba(0,200,180,.2);box-shadow:0 4px 24px rgba(0,0,0,.5),inset 0 1px 0 rgba(0,220,200,.06);}
-  .driver-card:hover{box-shadow:0 10px 36px rgba(0,0,0,.6),inset 0 1px 0 rgba(0,220,200,.12);}
+  .driver-card:hover{box-shadow:0 10px 36px rgba(0,0,0,.6),0 0 22px rgba(0,200,180,.18),inset 0 1px 0 rgba(0,220,200,.18);border-color:rgba(0,200,180,.45);}
+
+  /* Bento — featured drivers span 2 columns */
+  .driver-card.featured{grid-column:span 2;}
+  .driver-card.featured .dc-photo{height:200px;}
+  .driver-card.featured .dc-name{font-size:18px;}
+  .driver-card.featured .dc-titles{font-size:11px;}
+  @media(max-width:480px){.driver-card.featured{grid-column:span 2;}.driver-card.featured .dc-photo{height:140px;}}
 
   /* ── Mobile Responsiveness ── */
   @media(max-width:480px){
@@ -363,7 +388,7 @@
     .pb-quote{font-size:13px;padding:14px 16px;}
 
     /* CTA button */
-    .pb-cta{margin:12px 14px 16px;padding:12px 16px;font-size:13px;}
+    .pb-cta{margin:12px 14px 16px;padding:12px 16px;font-size:10px;letter-spacing:.12em;}
   }
 </style>
 </head>
@@ -522,7 +547,7 @@ const KYD_DRIVERS = [
     facts:[{k:'Championships',v:'4'},{k:'Race Wins',v:'51'},{k:'Pole Positions',v:'33'},{k:'Fastest Laps',v:'41'},{k:'Peak Year',v:'1989'},{k:'Teams',v:'3 major'}],
   },
   {
-    key:'senna', name:'Ayrton Senna', country:'Brazil', era:'1980s',
+    key:'senna', featured:true, name:'Ayrton Senna', country:'Brazil', era:'1980s',
     team:'McLaren · Williams', peak:'1988–1991',
     photo:'senna.jpg', car:'Senna 1991.webp', teamColor:'#c8102e',
     pace:99, quali:100, racecraft:95, wet:100, tyres:88, consistency:90,
@@ -572,7 +597,7 @@ const KYD_DRIVERS = [
     facts:[{k:'Championships',v:'2'},{k:'Race Wins',v:'32'},{k:'Pole Positions',v:'22'},{k:'Fastest Laps',v:'23'},{k:'Peak Year',v:'2012'},{k:'Le Mans',v:'2018 & 2019 wins'}],
   },
   {
-    key:'hamilton', name:'Lewis Hamilton', country:'United Kingdom', era:'modern',
+    key:'hamilton', featured:true, name:'Lewis Hamilton', country:'United Kingdom', era:'modern',
     team:'McLaren · Mercedes', peak:'2017–2020',
     photo:'hamilton.jpg', car:'Hamilton 2020.avif', teamColor:'#848484',
     pace:97, quali:98, racecraft:96, wet:96, tyres:95, consistency:97,
@@ -612,7 +637,7 @@ const KYD_DRIVERS = [
     facts:[{k:'Championships',v:'2'},{k:'Race Wins',v:'20'},{k:'Pole Positions',v:'26'},{k:'Peak Year',v:'1998'},{k:'Team',v:'McLaren only'},{k:'Senna feared',v:'Confirmed'}],
   },
   {
-    key:'verstappen', name:'Max Verstappen', country:'Netherlands', era:'modern',
+    key:'verstappen', featured:true, name:'Max Verstappen', country:'Netherlands', era:'modern',
     team:'Red Bull', peak:'2021–2023',
     photo:'verstappen.jpeg', car:'Verstappen 2023.avif', teamColor:'#1e4796',
     pace:99, quali:97, racecraft:99, wet:97, tyres:92, consistency:96,
@@ -667,7 +692,7 @@ const grid = document.getElementById('drivers-grid');
 
 KYD_DRIVERS.forEach(drv=>{
   const card = document.createElement('div');
-  card.className = 'driver-card';
+  card.className = 'driver-card' + (drv.featured ? ' featured' : '');
   card.dataset.era = drv.era;
 
   let photoHtml = drv.photo

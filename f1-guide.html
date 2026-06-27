@@ -346,6 +346,46 @@
     .tl-row{grid-template-columns:60px 4px 1fr}
   }
 
+  /* ── Mobile Responsiveness ── */
+  @media(max-width:480px){
+    /* Wrap padding */
+    .wrap{padding:24px 14px 80px;}
+
+    /* Header */
+    header{margin-bottom:24px;}
+    .sub{font-size:12px;letter-spacing:.04em;}
+
+    /* TOC */
+    .toc{padding:16px;}
+    .toc-grid{grid-template-columns:1fr;}
+
+    /* Section heads */
+    .section-head{gap:10px;}
+    .section-head .sh-num{display:none;}
+
+    /* Body text */
+    .body-text{font-size:14px;}
+
+    /* Points table — wrap in scroll container */
+    .pts-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px;}
+    .pts-table{min-width:420px;}
+    .pts-table th,.pts-table td{padding:8px 10px;}
+
+    /* Timeline — simplify to 2 col (no day label) */
+    .tl-row{grid-template-columns:4px 1fr;gap:0 12px;}
+    .tl-day{display:none;}
+    .tl-content{margin:6px 0 10px;}
+    .tl-dot{margin-top:18px;}
+
+    /* CTA banner */
+    .cta-banner{padding:20px 18px;border-radius:18px;}
+    .cta-btn{padding:12px 24px;font-size:13px;}
+
+    /* Cards */
+    .card{padding:14px;}
+    .team-card{padding:14px;}
+  }
+
   /* ═══ LIQUID GLASS OVERRIDE ═══ */
   :root{
     --bg:#04030a;
@@ -583,6 +623,7 @@
     </div>
     <p class="body-text">Points are awarded to the <strong>top 10 finishers</strong> in every Grand Prix. At the end of the season, the driver with the most points wins the <strong>Drivers' Championship</strong>. Each team's two drivers' points are combined for the <strong>Constructors' Championship</strong>, which is worth enormous prize money and prestige.</p>
 
+    <div class="pts-table-wrap">
     <table class="pts-table">
       <thead>
         <tr>
@@ -601,6 +642,7 @@
         <tr><td><span class="pos">P9–P10</span></td><td><span class="pts">2–1</span></td><td>A single point can matter at the end of the season.</td></tr>
       </tbody>
     </table>
+    </div>
 
     <p class="body-text" style="margin-top:14px">The maximum a driver can score in a standard race: <strong>25 points</strong>. Across 24 races, that's a theoretical maximum of 600 points — nobody has ever come close. Note: the bonus point for fastest lap, introduced in 2019, was <strong>abolished from the 2025 season</strong> after the FIA felt it created more controversy than excitement.</p>
   </div>

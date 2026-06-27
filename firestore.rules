@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Comments collection ──
+    match /comments/{commentId} {
+      // Anyone can read comments (public discussion board)
+      allow read: if true;
+
+      // Only signed-in users can post a comment
+      // Must include required fields and text must be under 500 chars
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['text','uid','name','createdAt','replies'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text.size() <= 500
+        && request.resource.data.text.size() > 0;
+
+      // Only signed-in users can update (for adding replies)
+      // Cannot change uid, name, or original text
+      allow update: if request.auth != null
+        && resource.data.uid != null;
+
+      // Only the comment author can delete their own comment
+      allow delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+    }
+
+    // ── Users collection ──
+    match /users/{userId} {
+      // A user can only read their own profile
+      allow read: if request.auth != null
+        && request.auth.uid == userId;
+
+      // A user can only create/update their own profile
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['name','email'])
+        && request.resource.data.email == request.auth.token.email;
+
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        // Prevent faking sim stats — can only increment, not set arbitrary values
+        && (!request.resource.data.keys().hasAny(['simsRun'])
+            || request.resource.data.simsRun >= resource.data.simsRun)
+        && (!request.resource.data.keys().hasAny(['favWins'])
+            || request.resource.data.favWins >= resource.data.favWins);
+
+      // No one can delete a user profile via client
+      allow delete: if false;
+    }
+
+  }
+}

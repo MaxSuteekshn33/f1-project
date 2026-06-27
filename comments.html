@@ -395,8 +395,11 @@
     <div class="compose-row">
       <div class="avatar-dot" id="compose-avatar"></div>
       <div style="flex:1;">
-        <textarea id="comment-input" placeholder="Share your thoughts, debates, predictions…"></textarea>
-        <button class="post-btn" onclick="postComment()">Post Comment</button>
+        <textarea id="comment-input" placeholder="Share your thoughts, debates, predictions…" maxlength="500" oninput="document.getElementById('comment-char-count').textContent=this.value.length+'/500'"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <span id="comment-char-count" style="font-size:11px;color:rgba(255,255,255,.35);font-family:'JetBrains Mono',monospace;">0/500</span>
+          <button class="post-btn" onclick="postComment()">Post Comment</button>
+        </div>
       </div>
     </div>
   </div>
@@ -464,15 +467,48 @@
     }
   });
 
+  // ── Security: Input sanitisation ──
+  function sanitize(str){
+    return str
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#x27;')
+      .trim();
+  }
+  const MAX_COMMENT_LENGTH = 500;
+
+  // ── Security: Rate limiting ──
+  let lastCommentAt = 0;
+  const COMMENT_COOLDOWN_MS = 30000; // 30 seconds between posts
+
+  function checkRateLimit(){
+    const now = Date.now();
+    const secondsLeft = Math.ceil((COMMENT_COOLDOWN_MS - (now - lastCommentAt)) / 1000);
+    if(now - lastCommentAt < COMMENT_COOLDOWN_MS){
+      alert(`Please wait ${secondsLeft} seconds before posting again.`);
+      return false;
+    }
+    return true;
+  }
+
   // Post top-level comment
   window.postComment = async () => {
     if(!currentUser) return openAuthModal();
+    if(!checkRateLimit()) return;
     const input = document.getElementById('comment-input');
-    const text = input.value.trim();
-    if(!text) return;
+    const raw = input.value.trim();
+    if(!raw) return;
+    if(raw.length > MAX_COMMENT_LENGTH){
+      alert(`Comments must be under ${MAX_COMMENT_LENGTH} characters. Yours is ${raw.length}.`);
+      return;
+    }
+    const text = sanitize(raw);
+    lastCommentAt = Date.now();
     await addDoc(collection(db,'comments'),{
       text, uid:currentUser.uid,
-      name:currentUser.displayName||currentUser.email.split('@')[0],
+      name:sanitize(currentUser.displayName||currentUser.email.split('@')[0]),
       photoURL:currentUser.photoURL||null,
       createdAt:serverTimestamp(),
       replies:[]
@@ -483,15 +519,22 @@
   // Post reply
   window.postReply = async (commentId) => {
     if(!currentUser) return openAuthModal();
+    if(!checkRateLimit()) return;
     const input = document.getElementById(`reply-input-${commentId}`);
-    const text = input.value.trim();
-    if(!text) return;
+    const raw = input.value.trim();
+    if(!raw) return;
+    if(raw.length > MAX_COMMENT_LENGTH){
+      alert(`Replies must be under ${MAX_COMMENT_LENGTH} characters.`);
+      return;
+    }
     const replyObj = {
-      text, uid:currentUser.uid,
-      name:currentUser.displayName||currentUser.email.split('@')[0],
+      text: sanitize(raw),
+      uid:currentUser.uid,
+      name:sanitize(currentUser.displayName||currentUser.email.split('@')[0]),
       photoURL:currentUser.photoURL||null,
       createdAt: new Date().toISOString()
     };
+    lastCommentAt = Date.now();
     await updateDoc(doc(db,'comments',commentId),{ replies: arrayUnion(replyObj) });
     input.value='';
     document.getElementById(`reply-compose-${commentId}`).style.display='none';

@@ -1888,6 +1888,78 @@
 
   /* Custom stats toggle — keep yellow, slightly more punchy on dark */
   .custom-stats-toggle{box-shadow:0 4px 20px rgba(245,199,126,.35), 0 0 40px rgba(245,199,126,.15);}
+
+  /* ── Mobile Responsiveness ── */
+  @media(max-width:480px){
+    /* Wrap */
+    .wrap{padding:20px 12px 80px;}
+
+    /* Header */
+    header{margin-bottom:16px;}
+    h1{font-size:clamp(32px,10vw,52px);}
+    .sub{font-size:11px;letter-spacing:.05em;}
+
+    /* Setup — driver picker cards */
+    .setup{gap:8px;}
+    .pick{padding:16px 14px 14px;}
+    .avatar{width:50px;height:50px;}
+    .driver-info .driver-chosen{font-size:13px;}
+    .ratings .row{grid-template-columns:18px 38px 1fr 26px;gap:4px;}
+    .ratings .lbl{font-size:8px;}
+    .ratings .bar{height:11px;}
+    select{font-size:13px;padding:10px;}
+
+    /* VS divider */
+    .vs{font-size:20px;}
+
+    /* Circuit carousel */
+    .cc-card{height:140px;}
+    .cc-card .cc-name{font-size:16px;}
+
+    /* Weather picker */
+    .weather-picker{gap:6px;}
+
+    /* Split bar */
+    .splitbar{height:46px;}
+    .splitbar .seg{font-size:13px;}
+    .barnames{font-size:10px;}
+
+    /* Story card */
+    .story{padding:14px;}
+    .story p{font-size:13px;}
+
+    /* Meta cells — already 1-col at 640px */
+    .meta .cell .v{font-size:16px;}
+
+    /* Cert block */
+    .cert{font-size:9px;padding:12px;}
+
+    /* Prediction modal */
+    .pred-box{padding:20px 14px 18px;border-radius:12px;}
+    .pred-title{font-size:clamp(20px,6vw,28px);margin-bottom:16px;}
+    .pred-drivers{grid-template-columns:1fr auto 1fr;gap:8px;}
+    .pred-driver{padding:12px 8px 10px;border-radius:14px;}
+    .pred-avatar{width:50px;height:50px;}
+    .pred-dname{font-size:12px;}
+    .pred-vs{font-size:16px;}
+
+    /* Peak performance modal */
+    .modal-peak-cells{grid-template-columns:1fr !important;}
+
+    /* Era compare */
+    .era-col .ec-winner{font-size:14px;}
+
+    /* Reveal box */
+    .reveal-box{padding:24px 20px;}
+    .reveal-emoji{font-size:40px;}
+    .reveal-headline{font-size:clamp(22px,6vw,32px);}
+
+    /* CSP grid — already 1-col at 640px */
+    .csp-row{grid-template-columns:44px 1fr 24px;gap:4px;}
+
+    /* Game section labels */
+    .gs-label{font-size:10px;}
+  }
 </style>
 </head>
 <body>

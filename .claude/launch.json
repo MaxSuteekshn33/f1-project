@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "goat-simulator",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-c", "import http.server, os; os.chdir('/Users/suteekshnmahajan/Desktop/F1 Project'); http.server.test(HandlerClass=http.server.SimpleHTTPRequestHandler, port=8765)"],
+      "port": 8765
+    },
+    {
+      "name": "f1-guide",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-c", "import http.server, os; os.chdir('/Users/suteekshnmahajan/Desktop/F1 Project'); http.server.test(HandlerClass=http.server.SimpleHTTPRequestHandler, port=8766)"],
+      "port": 8766
+    }
+  ]
+}

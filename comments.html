@@ -422,7 +422,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, sendEmailVerification, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, setDoc, updateDoc, arrayUnion, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const app = initializeApp({
@@ -677,24 +677,57 @@
     document.getElementById('dashboard-modal').style.display = 'flex';
   };
   window.closeDashboard = () => { document.getElementById('dashboard-modal').style.display = 'none'; };
+  // ── Security: Session persistence — expires on tab/browser close ──
+  setPersistence(auth, browserSessionPersistence).catch(()=>{});
+
   window.signInWithGoogle = async () => {
     try { await signInWithPopup(auth, new GoogleAuthProvider()); closeAuthModal(); }
     catch(e){ showErr(e.message); }
   };
+
   window.signUpEmail = async () => {
     try {
-      const cred = await createUserWithEmailAndPassword(auth, document.getElementById('auth-email').value, document.getElementById('auth-password').value);
-      const name = document.getElementById('auth-name').value;
-      if(name) await updateProfile(cred.user,{displayName:name});
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const name = document.getElementById('auth-name').value.trim();
+      if(!name){ showErr('Please enter a display name.'); return; }
+      if(password.length < 6){ showErr('Password must be at least 6 characters.'); return; }
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, {displayName: name});
+      // ── Security: Send email verification ──
+      await sendEmailVerification(cred.user);
       closeAuthModal();
-    } catch(e){ showErr(e.message); }
+      alert('Account created! Please check your email to verify your address before commenting.');
+    } catch(e){ showErr(friendlyAuthError(e.code)); }
   };
+
   window.signInEmail = async () => {
-    try { await signInWithEmailAndPassword(auth, document.getElementById('auth-email').value, document.getElementById('auth-password').value); closeAuthModal(); }
-    catch(e){ showErr(e.message); }
+    try {
+      await signInWithEmailAndPassword(auth, document.getElementById('auth-email').value, document.getElementById('auth-password').value);
+      closeAuthModal();
+    }
+    catch(e){ showErr(friendlyAuthError(e.code)); }
   };
+
   window.signOutUser = async () => { await signOut(auth); };
-  function showErr(msg){ const el=document.getElementById('auth-error'); el.style.display='block'; el.textContent=msg.replace('Firebase:','').replace(/\(auth.*\)/,''); }
+
+  // ── Security: Friendly error messages (don't reveal if email exists) ──
+  function friendlyAuthError(code){
+    const map = {
+      'auth/invalid-email':          'Please enter a valid email address.',
+      'auth/user-not-found':         'Incorrect email or password.',
+      'auth/wrong-password':         'Incorrect email or password.',
+      'auth/invalid-credential':     'Incorrect email or password.',
+      'auth/email-already-in-use':   'An account already exists. Try signing in instead.',
+      'auth/weak-password':          'Password must be at least 6 characters.',
+      'auth/too-many-requests':      'Too many attempts. Please wait a few minutes and try again.',
+      'auth/network-request-failed': 'Network error. Check your connection and try again.',
+      'auth/popup-closed-by-user':   'Sign in was cancelled.',
+    };
+    return map[code] || 'Something went wrong. Please try again.';
+  }
+
+  function showErr(msg){ const el=document.getElementById('auth-error'); el.style.display='block'; el.textContent=msg; }
 </script>
 <script>
 document.querySelectorAll('.nav-dropdown').forEach(function(dd){

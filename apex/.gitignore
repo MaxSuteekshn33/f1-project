@@ -1,0 +1,11 @@
+# runtime data (rebuilt by `make bootstrap`): database, downloads, trained models, caches
+data/
+backend/.venv/
+backend/**/__pycache__/
+backend/.pytest_cache/
+frontend/node_modules/
+frontend/.next/
+frontend/next-env.d.ts
+*.tsbuildinfo
+.env
+backend/catboost_info/

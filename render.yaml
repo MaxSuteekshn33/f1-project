@@ -1,0 +1,23 @@
+# Render blueprint for the APEX backend (FastAPI). The Next.js front end is deployed separately on Vercel.
+# In the new repository (where apex/ is the repo root) change dockerContext/dockerfilePath to ./backend.
+services:
+  - type: web
+    name: apex-f1-backend
+    runtime: docker
+    dockerContext: ./apex/backend
+    dockerfilePath: ./apex/backend/Dockerfile
+    plan: standard            # model training needs ~2 GB RAM; the free 512 MB plan is not enough
+    healthCheckPath: /api/health
+    disk:
+      name: apex-data
+      mountPath: /srv/data    # SQLite database, downloads and trained models survive redeploys
+      sizeGB: 2
+    envVars:
+      - key: APEX_BOOTSTRAP
+        value: "1"            # first start: load history, backfill races, train models (~35 min, in the background)
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: OPENF1_USERNAME
+        sync: false
+      - key: OPENF1_PASSWORD
+        sync: false

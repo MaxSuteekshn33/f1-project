@@ -1,0 +1,27 @@
+# docker compose up --build        → http://localhost:3000
+# first run:  docker compose run --rm backend python -m app.bootstrap     (≈35 min, limited by OpenF1's free-tier rate limit)
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    environment: { POSTGRES_USER: apex, POSTGRES_PASSWORD: apex, POSTGRES_DB: apex }
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U apex"], interval: 5s, retries: 20 }
+  redis:
+    image: redis:7-alpine
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://apex:apex@db:5432/apex
+      REDIS_URL: redis://redis:6379/0
+      APEX_AUTO_RETRAIN: "0"
+      # optional paid OpenF1 account for real-time data during sessions
+      OPENF1_USERNAME: ${OPENF1_USERNAME:-}
+      OPENF1_PASSWORD: ${OPENF1_PASSWORD:-}
+    volumes: [apexdata:/srv/data]
+    depends_on: { db: { condition: service_healthy }, redis: { condition: service_started } }
+    ports: ["8000:8000"]
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["3000:3000"]
+volumes: { pgdata: {}, apexdata: {} }

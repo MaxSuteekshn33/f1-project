@@ -142,7 +142,7 @@ def make_models(xgb_params: dict | None = None) -> dict:
         "xgboost": XGBClassifier(**xp, n_jobs=4, verbosity=0, eval_metric="logloss"),
         "lightgbm": LGBMClassifier(n_estimators=300, num_leaves=15, learning_rate=0.04, subsample=0.8, subsample_freq=1,
                                    colsample_bytree=0.8, min_child_samples=30, verbose=-1, n_jobs=4),
-        "catboost": CatBoostClassifier(iterations=350, depth=5, learning_rate=0.05, verbose=0, thread_count=4),
+        "catboost": CatBoostClassifier(iterations=350, depth=5, learning_rate=0.05, verbose=0, thread_count=4, allow_writing_files=False),
         "logistic": make_pipeline(SimpleImputer(strategy="median"), StandardScaler(), LogisticRegression(C=0.5, max_iter=3000)),
     }
 

@@ -27,6 +27,23 @@ docker compose up --build -d
 docker compose run --rm backend python -m app.bootstrap
 ```
 
+### Hosting: Vercel (front end) + a Python host (API)
+
+Vercel runs the Next.js front end. It cannot run the API: the Python models, the database and the
+WebSocket loop need a long-running server, so the API is deployed separately (a Render blueprint is in
+`render.yaml`; any Docker host works).
+
+1. **API** — on Render choose *New → Blueprint* and pick this repository. The first start loads the data
+   and trains the models in the background (about 35 minutes; `GET /api/health` shows progress). Note the
+   service URL, e.g. `https://apex-f1-backend.onrender.com`.
+2. **Front end** — on Vercel choose *Add New → Project*, import the repository and set
+   **Root Directory** to `apex/frontend` (or `frontend` if `apex/` is the repo root). Add two environment
+   variables, then deploy:
+   - `BACKEND_URL` = the API URL from step 1
+   - `NEXT_PUBLIC_WS_URL` = the same host with `wss://` and `/ws/live`, e.g. `wss://apex-f1-backend.onrender.com/ws/live`
+
+The hosted setup has not been deployed or tested from this repository.
+
 ### Configuration (environment variables)
 
 | Variable | Default | Purpose |
@@ -37,6 +54,7 @@ docker compose run --rm backend python -m app.bootstrap
 | `LIVE_POLL_SECONDS` / `IDLE_POLL_SECONDS` | 8 / 300 | live-loop cadence |
 | `OPENF1_MIN_INTERVAL` etc. | 2.1 s | per-provider request spacing |
 | `MC_SIMS` | 1000 | Monte Carlo runs per scenario |
+| `APEX_BOOTSTRAP` | 0 | 1 = build the database and models on first start (`quick` = latest race only) |
 | `APEX_AUTO_RETRAIN` | 0 | 1 = refresh data and retrain on start-up when new races exist |
 | `BACKEND_URL`, `NEXT_PUBLIC_WS_URL` | localhost:8000 | front end → API proxy and WebSocket |
 

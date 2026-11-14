@@ -4,7 +4,7 @@ import asyncio, os, time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Body
 from fastapi.middleware.cors import CORSMiddleware
-from . import db, live, racestate as rs, service as sv, weather, retrain, ingest
+from . import db, live, racestate as rs, service as sv, weather, retrain, ingest, bootstrap
 from .config import CORS_ORIGINS
 
 
@@ -12,6 +12,10 @@ from .config import CORS_ORIGINS
 async def lifespan(app: FastAPI):
     db.init()
     tasks = []
+    # hosted deployments: build the database and models on first start (APEX_BOOTSTRAP=1 or "quick")
+    mode = os.getenv("APEX_BOOTSTRAP", "0")
+    if mode in ("1", "quick") and bootstrap.needed():
+        tasks.append(asyncio.create_task(asyncio.to_thread(bootstrap.run, mode == "quick")))
     if os.getenv("APEX_LIVE", "1") == "1":
         tasks.append(asyncio.create_task(live.loop()))
     if os.getenv("APEX_AUTO_RETRAIN", "0") == "1":
@@ -46,7 +50,15 @@ def default_key() -> int:
         return have[0]["session_key"]
     if k:
         return k
-    raise HTTPException(503, "No race sessions stored yet. Run `python -m app.ingest latest`.")
+    if bootstrap.state["running"]:
+        raise HTTPException(503, f"First-time setup in progress — {bootstrap.state['step']}. The dashboard fills in when it finishes.")
+    raise HTTPException(503, "No race sessions stored yet. Run `python -m app.bootstrap` (or set APEX_BOOTSTRAP=1).")
+
+
+@app.get("/api/health")
+def health():
+    """Liveness probe for hosting platforms; also reports first-time setup progress."""
+    return {"ok": True, "bootstrap": bootstrap.state}
 
 
 @app.get("/api/status")
